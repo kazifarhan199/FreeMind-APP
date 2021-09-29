@@ -7,6 +7,10 @@
 			<key>NSAllowsLocalNetworking</key>
 			<true/>
 		</dict>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Using the library for ...</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Using the camera for ...</string>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleExecutable</key>
