@@ -44,7 +44,14 @@ class InternalNetwork {
       error = "Can't connect to the server";
       return {};
     }
-    Map data = jsonDecode(utf8.decode(response.bodyBytes));
+    Map data = {};
+    try {
+      data = data = jsonDecode(utf8.decode(response.bodyBytes));
+    } catch (e) {
+      error = "Server error occured";
+      print(response.body);
+      return {};
+    }
     try {
       if (response.statusCode == expectedCode) {
         return data;
