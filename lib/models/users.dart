@@ -369,13 +369,22 @@ class User extends ChangeNotifier {
       return false;
     }
 
-    await Future.delayed(Duration(seconds: 3));
+    data = await network.requestIfPossible(
+      url: '/groups/create/',
+      requestMethod: 'POST',
+      expectedCode: 201,
+      body: {
+        "group_name": groupname,
+      },
+    );
 
-    Map newData = data;
-    newData['gid'] = 1;
-    loadBareUser(newData);
-    notifyListeners();
-    return true;
+    if (network.hasError) {
+      error = network.error;
+      return false;
+    } else {
+      loadGroup(data);
+      return true;
+    }
   }
 
   Future<Member> varifyGroupMember(String email) async {
