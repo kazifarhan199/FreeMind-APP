@@ -25,9 +25,10 @@ class _CreatePostState extends State<CreatePost>
   bool get wantKeepAlive => true;
 
   postsPageMethod() async {
-    DefaultTabController.of(context)!.animateTo(1);
     if (DefaultTabController.of(context)!.index == 1) {
       exit(0);
+    } else {
+      DefaultTabController.of(context)!.animateTo(1);
     }
   }
 
