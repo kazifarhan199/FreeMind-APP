@@ -116,22 +116,11 @@ class _CreatePostState extends State<CreatePost>
                       child: image == null
                           ? Container(
                               child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    FaIcon(
-                                      FontAwesomeIcons.cameraRetro,
-                                      size: 50.0,
-                                    ),
-                                    SizedBox(
-                                      width: 30.0,
-                                    ),
-                                    FaIcon(
-                                      FontAwesomeIcons.images,
-                                      size: 50.0,
-                                    ),
-                                  ],
-                                ),
+                                child: SizedBox(
+                                    child: Image.asset(
+                                  'assets/add_image.png',
+                                  width: 120,
+                                )),
                               ),
                             )
                           : Image.file(image!),
