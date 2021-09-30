@@ -6,8 +6,11 @@ import 'package:image_picker/image_picker.dart';
 
 Future<File?> _cropSquareImageMethod({image}) async {
   File? _newimage = await ImageCropper.cropImage(
+      aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0)
+      maxHeight: 720,
+      maxWidth: 1280,
       sourcePath: image.path,
-      aspectRatioPresets: [CropAspectRatioPreset.square],
+      // aspectRatioPresets: [CropAspectRatioPreset.square],
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'PhamilyHealth',
           toolbarColor: Colors.deepOrange,
@@ -19,13 +22,14 @@ Future<File?> _cropSquareImageMethod({image}) async {
         title: 'PhamilyHealth',
       ));
   return _newimage;
-  return File(image.path);
 }
 
 Future<File?> _cropImageMethod({image}) async {
   File? _newimage = await ImageCropper.cropImage(
+      aspectRatio: CropAspectRatio(ratioX: 5.0, ratioY: 4.0)
       sourcePath: image.path,
-      aspectRatioPresets: [CropAspectRatioPreset.ratio5x4],
+      maxHeight: 720,
+      maxWidth: 1280,
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: 'PhamilyHealth',
           toolbarColor: Colors.deepOrange,
