@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:social/models/posts.dart';
 import 'package:social/screens/utils/alert.dart';
 import 'package:social/screens/utils/image.dart';
@@ -107,7 +108,28 @@ class _CreatePostState extends State<CreatePost>
                     height: MediaQuery.of(context).size.width * 4 / 5,
                     child: InkWell(
                       onTap: _getImageMethod,
-                      child: image == null ? Container() : Image.file(image!),
+                      child: image == null
+                          ? Container(
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.cameraRetro,
+                                      size: 50.0,
+                                    ),
+                                    SizedBox(
+                                      width: 30.0,
+                                    ),
+                                    FaIcon(
+                                      FontAwesomeIcons.images,
+                                      size: 50.0,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Image.file(image!),
                     ),
                   ),
                 ]),
