@@ -40,6 +40,7 @@ class _CreatePostState extends State<CreatePost>
   }
 
   Future _getImageMethod() async {
+    FocusScope.of(context).unfocus();
     getImageMethod(
       context: context,
       callback: (img) => setState(() => image = img),
