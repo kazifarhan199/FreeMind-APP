@@ -25,7 +25,10 @@ class _CreatePostState extends State<CreatePost>
   bool get wantKeepAlive => true;
 
   postsPageMethod() async {
-    Navigator.of(context).pushReplacementNamed('/');
+    DefaultTabController.of(context)!.animateTo(1);
+    if (DefaultTabController.of(context)!.index == 1) {
+      exit(0);
+    }
   }
 
   raiseError() {
@@ -49,7 +52,7 @@ class _CreatePostState extends State<CreatePost>
     if (success) {
       image = null;
       title = "";
-      postsPageMethod();
+      Navigator.of(context).pushReplacementNamed('/');
     } else {
       raiseError();
     }
