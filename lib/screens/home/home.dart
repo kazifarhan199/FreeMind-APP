@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
         initialIndex: 1,
         child: Scaffold(
           body: TabBarView(
-            // physics: NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             children: [Settings(), Feeds(), CreatePost()],
           ),
         ),
