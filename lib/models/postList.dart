@@ -52,25 +52,25 @@ class PostListModel extends ChangeNotifier {
   }
 
   addLike(int id) async {
-    this.postMap[id]!.likes++;
-    this.postMap[id]!.liked = true;
-    notifyListeners();
+    // this.postMap[id]!.likes++;
+    // this.postMap[id]!.liked = true;
+    // notifyListeners();
     bool success = await this.postMap[id]!.likesAdd();
-    if (success) {
-    } else {
+    // if (success) {
+    // } else {
+    // }
       notifyListeners();
-    }
   }
 
   removeLike(int id) async {
-    this.postMap[id]!.likes--;
-    this.postMap[id]!.liked = false;
-    notifyListeners();
+    // this.postMap[id]!.likes--;
+    // this.postMap[id]!.liked = false;
+    // notifyListeners();
     bool success = await this.postMap[id]!.likesRemove();
-    if (success) {
-    } else {
+    // if (success) {
+    // } else {
+    // }
       notifyListeners();
-    }
   }
 
   addComment(int id, String text) async {

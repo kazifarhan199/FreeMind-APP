@@ -190,7 +190,9 @@ class PostCardState extends State<PostCard> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: [
-                Expanded(child: Text("widget.post.userImageURL")),
+                Expanded(child: Text(Provider.of<PostListModel>(context)
+                        .postMap[widget.id]!
+                        .title)),
               ],
             ),
           ),

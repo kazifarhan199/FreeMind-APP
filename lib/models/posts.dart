@@ -163,6 +163,7 @@ class PostModel extends ChangeNotifier {
   }
 
   Future<bool> likesAdd() async {
+    if (this.liked){return false;}
     data = await network.requestIfPossible(
       url: '/posts/likes/detail/',
       requestMethod: 'POST',
@@ -171,6 +172,8 @@ class PostModel extends ChangeNotifier {
     );
 
     if (network.hasError) {
+      this.likes--;
+      this.liked = false;
       error = network.error;
       return false;
     } else {
@@ -182,6 +185,8 @@ class PostModel extends ChangeNotifier {
   }
 
   Future<bool> likesRemove() async {
+    if (!this.liked){return false;}
+
     data = await network.requestIfPossible(
       url: '/posts/likes/detail/',
       requestMethod: 'DELETE',
@@ -190,6 +195,8 @@ class PostModel extends ChangeNotifier {
     );
 
     if (network.hasError) {
+      this.likes++;
+      this.liked = true;
       error = network.error;
       return false;
     } else {
