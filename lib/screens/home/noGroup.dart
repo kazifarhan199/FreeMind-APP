@@ -29,6 +29,14 @@ class _noGroupState extends State<noGroup> {
     if (mounted) setState(() => loading = false);
   }
 
+  logoutMethod() async {
+    bool success = await Provider.of<User>(context, listen: false).logout();
+    if (success) {
+    } else {
+      raiseError();
+    }
+  }
+
   createGroupMethod() async {
     if (mounted) setState(() => loading = true);
 
@@ -39,6 +47,7 @@ class _noGroupState extends State<noGroup> {
     }
 
     if (mounted) setState(() => loading = false);
+    refreshMethod();  
   }
 
   @override
@@ -119,6 +128,27 @@ class _noGroupState extends State<noGroup> {
                               // style: Theme.of(context).textTheme.headline5.copyWith(
                               //     color: Colors.blue, fontWeight: FontWeight.w400),
                             )),
+                            SizedBox(
+                          height: 20.0,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                child: Text(
+                                  "Logout",
+                                  style: TextStyle(fontSize: 20.0),
+                                ),
+                                onPressed: _showLogoutConfirm,
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.red),
+                                    padding: MaterialStateProperty.all(
+                                        EdgeInsets.all(10.0))),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -126,5 +156,52 @@ class _noGroupState extends State<noGroup> {
               ),
             ),
           );
+  }
+
+
+
+    Future<void> _showLogoutConfirm() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.logout),
+              SizedBox(
+                width: 10.0,
+              ),
+              Text("Logout"),
+              SizedBox(
+                width: 60,
+              )
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Text('Are you sure you whant Logout ?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancle'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Logout'),
+              onPressed: () {
+                logoutMethod();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

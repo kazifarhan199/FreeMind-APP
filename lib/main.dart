@@ -37,7 +37,7 @@ void main() async {
     user = Hive.box('userBox').getAt(0) as User;
     print(await user.getDeviceToekn());
   }
-
+  // TO handel self signed crertificate
   HttpOverrides.global = new MyHttpOverrides();
   runApp(
     MultiProvider(
