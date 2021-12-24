@@ -84,6 +84,11 @@ class _EditGroupState extends State<EditGroup> {
         if (mounted)
           setState(() {
             groupMembers.remove(email);
+                    if (email == Provider.of<User>(context, listen: false).email ){
+          Provider.of<User>(context, listen: false).profile();
+          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, '/');
+        }
           });
       });
       if (mounted) setState(() => loading = false);
