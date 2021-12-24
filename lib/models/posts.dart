@@ -172,8 +172,6 @@ class PostModel extends ChangeNotifier {
     );
 
     if (network.hasError) {
-      this.likes--;
-      this.liked = false;
       error = network.error;
       return false;
     } else {
@@ -195,8 +193,6 @@ class PostModel extends ChangeNotifier {
     );
 
     if (network.hasError) {
-      this.likes++;
-      this.liked = true;
       error = network.error;
       return false;
     } else {
