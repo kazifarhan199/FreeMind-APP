@@ -40,6 +40,19 @@ sendAwsomeNotification(Map data) {
   );
 }
 
+testingAwsomeNotification(){
+  AwesomeNotifications().createNotification(
+    content: NotificationContent(
+        id: 12,
+        locked: false,
+        channelKey: 'basic_channel',
+        title: "Test Notification",
+        body: "This is body of the notification",
+        displayOnForeground: true,
+        displayOnBackground: true),
+  );
+}
+
 awsomeNotificationListner() {
   AwesomeNotifications().actionStream.listen((receivedNotification) async {});
 }

@@ -36,6 +36,7 @@ void main() async {
   await awsomeNotificationInit();
   await awsomeNotificationPermissions();
   await awsomeNotificationListner();
+  // await testingAwsomeNotification();
 
   User user = User();
   if (Hive.box('userBox').isNotEmpty) {
