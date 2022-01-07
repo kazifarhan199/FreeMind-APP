@@ -11,11 +11,9 @@ import 'package:social/screens/wrapper.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:social/utils/awsomeNotification.dart';
 import 'package:social/utils/firebaseUtils.dart';
-import 'package:social/utils/permissiosn.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   // Hive init
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
@@ -23,9 +21,16 @@ void main() async {
 
   // Firebase
   await Firebase.initializeApp();
+  await getPermissions();
   FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  await getPermissions();
+
+  // Not needed in final one, BUT IT IS STILL IN USE FOR INITAILIZATION PURPOSE
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  String? token = await messaging.getToken();
+  print("Token is ");
+  print(token);
+  print('---');
 
   // awsome Notification
   await awsomeNotificationInit();
