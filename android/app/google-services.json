@@ -1,41 +1,34 @@
 {
   "project_info": {
-    "project_number": "575182751252",
-    "project_id": "social-87b54",
-    "storage_bucket": "social-87b54.appspot.com"
+    "project_number": "297764194816",
+    "project_id": "phamilyhealth-94204",
+    "storage_bucket": "phamilyhealth-94204.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:575182751252:android:e8f5034fb34b57d641c901",
+        "mobilesdk_app_id": "1:297764194816:android:2d2a03f52e7802bca566e5",
         "android_client_info": {
           "package_name": "edu.umn.d.hci.phamilyhealth"
         }
       },
       "oauth_client": [
         {
-          "client_id": "575182751252-83mu5tta94sdpse8fofvfn1jpjbclhbp.apps.googleusercontent.com",
+          "client_id": "297764194816-vr9aarbmvsu8sotrqkfnk90lb9dp2155.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCpxgWoeH157a4VznLPHp6_0ek5n3keEtc"
+          "current_key": "AIzaSyBRtumeMa4P_80vgidrH2EJtb_w4L8o4f4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "575182751252-83mu5tta94sdpse8fofvfn1jpjbclhbp.apps.googleusercontent.com",
+              "client_id": "297764194816-vr9aarbmvsu8sotrqkfnk90lb9dp2155.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "575182751252-0eb01o7vccqsfhf5p289lcrii82d18op.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "edu.umn.d.hci.phamilyhealth"
-              }
             }
           ]
         }
