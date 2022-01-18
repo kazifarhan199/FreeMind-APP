@@ -28,6 +28,10 @@ void main() async {
   // Not needed in final one, BUT IT IS STILL IN USE FOR INITAILIZATION PURPOSE
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   String? token = await messaging.getToken();
+  var iosToken = await FirebaseMessaging.instance.getAPNSToken();
+  print("ios token is ");
+  print(iosToken);
+
   print("Token is ");
   print(token);
   print('---');
