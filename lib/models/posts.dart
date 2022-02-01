@@ -19,12 +19,18 @@ class PostModel extends ChangeNotifier {
 
   get imageURL => this.image != null ? StaticStrings.base_url + this.image : "";
   get userImageURL =>
-      this.userImage != null ? StaticStrings.base_url + this.userImage : "";
+      this.userImage != null ? StaticStrings.base_url + this.userImage : "This is an image";
 
   PostModel(Map data) {
+    print(data);
     if (data.isNotEmpty) {
       try {
+        if (data['images'].isNotEmpty){
         image = data['images'][0]['image_url'] ?? "";
+        }
+        else{
+          image = "/media/image/notfound.jpg";
+        }
       } catch (e) {
         print(e.toString());
         image = "";
