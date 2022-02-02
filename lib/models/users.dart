@@ -196,7 +196,7 @@ class User extends ChangeNotifier {
       requestMethod: 'GET',
       expectedCode: 200,
     );
-    print(data);
+    // print(data);
     if (network.hasError) {
       error = network.error;
       return false;

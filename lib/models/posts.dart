@@ -22,7 +22,7 @@ class PostModel extends ChangeNotifier {
       this.userImage != null ? StaticStrings.base_url + this.userImage : "This is an image";
 
   PostModel(Map data) {
-    print(data);
+    // print(data);
     if (data.isNotEmpty) {
       try {
         if (data['images'].isNotEmpty){
