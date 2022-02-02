@@ -17,10 +17,12 @@ class PostListModel extends ChangeNotifier {
   get hasError => error == '' ? false : true;
 
   Future<List<PostModel>> getPostList({newPage = 0}) async {
+    error = "";
     return await post_caller.getPostList(newPage: newPage);
   }
 
   Future<bool> getPosts() async {
+    error = "";
     List<PostModel> tmp_p = await post_caller.getPostList();
     if (post_caller.hasError) {
       error = post_caller.error;
@@ -33,57 +35,76 @@ class PostListModel extends ChangeNotifier {
   }
 
   addAll(Map<int, PostModel> newPosts) {
+    error = "";
     postMap.addAll(newPosts);
     notifyListeners();
   }
 
   add(PostModel newPost) {
+    error = "";
     postMap[newPost.id] = newPost;
     notifyListeners();
   }
 
-  changeLikeStatus(int id) async {
+  Future<bool> changeLikeStatus(int id) async {
+    print("main root");
+    print(this.error);
+
+    error = "";
     if (this.postMap[id]!.liked) {
-      removeLike(id);
+      await removeLike(id);
     } else {
-      addLike(id);
+      await addLike(id);
     }
     notifyListeners();
+    print("Root");
+    print(this.error);
+    if (this.hasError)
+      return false;
+    else 
+      return true;
   }
 
   addLike(int id) async {
-    // this.postMap[id]!.likes++;
-    // this.postMap[id]!.liked = true;
-    // notifyListeners();
     bool success = await this.postMap[id]!.likesAdd();
-    // if (success) {
-    // } else {
-    // }
-      notifyListeners();
+    if (success) {
+    } else {
+      if (this.postMap[id]!.hasError)
+        this.error = this.postMap[id]!.error;
+      else
+        this.error = "Some error occured";
+    }
+    print(this.error);
+    notifyListeners();
   }
 
   removeLike(int id) async {
-    // this.postMap[id]!.likes--;
-    // this.postMap[id]!.liked = false;
-    // notifyListeners();
     bool success = await this.postMap[id]!.likesRemove();
-    // if (success) {
-    // } else {
-    // }
-      notifyListeners();
+    if (success) {
+    } else {
+      if (this.postMap[id]!.hasError)
+        this.error = this.postMap[id]!.error;
+      else
+        this.error = "Some error occured";
+    }
+    print(this.error);
+    notifyListeners();
   }
 
   addComment(int id, String text) async {
+    error = "";
     await this.postMap[id]!.commentsAdd(text);
     notifyListeners();
   }
 
   removeComment(int id, int commentID) {
+    error = "";
     this.postMap[id]!.commentsRemove(commentID);
     notifyListeners();
   }
 
   Future<bool> deletePost(int id, {bool silent = false}) async {
+    error = "";
     bool success = await this.postMap[id]!.deletePost();
     if (success) {
       this.postMap.remove(id);

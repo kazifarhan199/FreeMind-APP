@@ -43,8 +43,11 @@ class PostCardState extends State<PostCard> {
   }
 
   changeLikedStatus() async {
-    await Provider.of<PostListModel>(context, listen: false)
+    bool status = await Provider.of<PostListModel>(context, listen: false)
         .changeLikeStatus(widget.id);
+    if (status == false)
+      raiseError();
+    print(status);
   }
 
   optionsFunction(String result) async {
