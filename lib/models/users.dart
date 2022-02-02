@@ -114,7 +114,7 @@ class User extends ChangeNotifier {
       },
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -136,27 +136,28 @@ class User extends ChangeNotifier {
       return false;
     }
 
-    data = await network.requestIfPossible(
-      url: '/accounts/login/',
-      requestMethod: 'POST',
-      body: {
-        "username": email,
-        "password": password,
-        "devicetoken": await this.getDeviceToekn(),
-        "devicename": "somename",
-        "devicetype": "android",
-      },
-    );
-
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
+      data = await network.requestIfPossible(
+        url: '/accounts/login/',
+        requestMethod: 'POST',
+        body: {
+          "username": email,
+          "password": password,
+          "devicetoken": await this.getDeviceToekn(),
+          "devicename": "somename",
+          "devicetype": "android",
+        },
+      );
       loadBareUser(data);
       await Hive.box("userBox").put(0, this);
       notifyListeners();
       return true;
     }
+
+
   }
 
   Future<bool> logout() async {
@@ -197,7 +198,7 @@ class User extends ChangeNotifier {
       expectedCode: 200,
     );
     // print(data);
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -224,7 +225,7 @@ class User extends ChangeNotifier {
       },
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -253,7 +254,7 @@ class User extends ChangeNotifier {
       },
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -291,7 +292,7 @@ class User extends ChangeNotifier {
       },
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -321,7 +322,7 @@ class User extends ChangeNotifier {
             ],
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -353,7 +354,7 @@ class User extends ChangeNotifier {
       },
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -378,7 +379,7 @@ class User extends ChangeNotifier {
       },
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -402,7 +403,7 @@ class User extends ChangeNotifier {
       expectedCode: 200,
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return Member({});
     } else {
@@ -427,7 +428,7 @@ class User extends ChangeNotifier {
         requestMethod: 'GET',
         expectedCode: 200,
       );
-      if (network.hasError) {
+      if (await network.hasError) {
         error = network.error;
         return false;
       }
@@ -442,7 +443,7 @@ class User extends ChangeNotifier {
           requestMethod: 'POST',
           expectedCode: 201,
         );
-        if (network.hasError) {
+        if (await network.hasError) {
           error = network.error;
           return false;
         }
@@ -460,7 +461,7 @@ class User extends ChangeNotifier {
       expectedCode: 200,
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -485,7 +486,7 @@ class User extends ChangeNotifier {
       requestMethod: 'DELETE',
       expectedCode: 202,
     );
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     }

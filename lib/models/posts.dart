@@ -72,7 +72,7 @@ class PostModel extends ChangeNotifier {
       requestMethod: 'GET',
       expectedCode: 200,
     );
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return [];
     } else {
@@ -121,7 +121,7 @@ class PostModel extends ChangeNotifier {
       },
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -137,7 +137,7 @@ class PostModel extends ChangeNotifier {
       expectedCode: 202,
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -152,7 +152,7 @@ class PostModel extends ChangeNotifier {
       requestMethod: 'GET',
       expectedCode: 200,
     );
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return [];
     } else {
@@ -177,7 +177,7 @@ class PostModel extends ChangeNotifier {
       expectedCode: 201,
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -198,7 +198,7 @@ class PostModel extends ChangeNotifier {
       expectedCode: 202,
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return false;
     } else {
@@ -217,7 +217,7 @@ class PostModel extends ChangeNotifier {
       expectedCode: 201,
     );
 
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return CommentsModel({});
     } else {
@@ -234,7 +234,7 @@ class PostModel extends ChangeNotifier {
       requestMethod: 'GET',
       expectedCode: 200,
     );
-    if (network.hasError) {
+    if (await network.hasError) {
       error = network.error;
       return [];
     } else {

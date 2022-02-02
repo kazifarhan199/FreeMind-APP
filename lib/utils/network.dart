@@ -5,9 +5,21 @@ import 'package:http/http.dart';
 import 'package:social/models/users.dart';
 import 'package:social/utils/staticStrings.dart';
 
+InternalNetwork network = InternalNetwork();
+
+
 class InternalNetwork {
   String error = '';
-  get hasError => error == '' ? false : true;
+
+  get hasError async{
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (error == "Internet not available")
+      error = "";
+    if (connectivityResult == ConnectivityResult.none)
+      error = "Internet not available";
+    
+    return error == '' ? false : true;
+  }
 
   Future<Map> requestIfPossible({
     Map<String, String> body = const {},
@@ -27,8 +39,11 @@ class InternalNetwork {
       };
     // Check for internet
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none)
-      throw Exception("Internet not available");
+    if (connectivityResult == ConnectivityResult.none){
+
+      error = "Internet not available";
+      return {};
+    }
 
     Response response;
     var uri = Uri.parse(StaticStrings.base_url + url);

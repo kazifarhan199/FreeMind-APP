@@ -11,6 +11,7 @@ import 'package:social/screens/wrapper.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:social/utils/awsomeNotification.dart';
 import 'package:social/utils/firebaseUtils.dart';
+import 'package:social/utils/network.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,16 +26,23 @@ void main() async {
   FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  // Not needed in final one, BUT IT IS STILL IN USE FOR INITAILIZATION PURPOSE
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  String? token = await messaging.getToken();
-  var iosToken = await FirebaseMessaging.instance.getAPNSToken();
-  print("ios token is ");
-  print(iosToken);
+  InternalNetwork network = InternalNetwork();
 
-  print("Token is ");
-  print(token);
-  print('---');
+  // Not needed in final one, BUT IT IS STILL IN USE FOR INITAILIZATION PURPOSE
+  if (await network.hasError){
+    print("device not connected to the internet");
+  }
+  else{
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? token = await messaging.getToken();
+    var iosToken = await FirebaseMessaging.instance.getAPNSToken();
+    print("ios token is ");
+    print(iosToken);
+
+    print("Token is ");
+    print(token);
+    print('---');
+  }
 
   // awsome Notification
   await awsomeNotificationInit();
