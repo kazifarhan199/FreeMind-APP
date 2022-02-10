@@ -34,9 +34,12 @@ class _EditGroupState extends State<EditGroup> {
 
   saveGroupMethod() async {
     if (mounted) setState(() => loading = true);
+    print("Here");
     List<String> emails = membersToAddMap.keys.toList();
+    print(emails);
     bool success = await Provider.of<User>(context, listen: false)
         .editGroup(emails, groupName);
+
     if (success) {
       Navigator.pop(context);
     } else {
