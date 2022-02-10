@@ -254,7 +254,7 @@ class PostCardState extends State<PostCard> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: postDetailMethod,
                         icon: FaIcon(FontAwesomeIcons.comment),
                       ),
                       Text(Provider.of<PostListModel>(context)
