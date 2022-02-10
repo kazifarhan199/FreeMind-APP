@@ -170,6 +170,9 @@ class _EditGroupState extends State<EditGroup> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    SizedBox(height: 10.0),
+                    Text("Group Name"),
+                    SizedBox(height: 10.0),
                     // GroupName
                     Card(
                       child: Container(
@@ -180,13 +183,16 @@ class _EditGroupState extends State<EditGroup> {
                           textInputAction: TextInputAction.next,
                           controller: groupNameController,
                           decoration: InputDecoration(
-                            labelText: "GroupName",
+                            labelText: "Name",
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                     ),
                     // Email
+                    SizedBox(height: 10.0),
+                    Text("Add a new group member"),
+                    SizedBox(height: 10.0),
                     Card(
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
