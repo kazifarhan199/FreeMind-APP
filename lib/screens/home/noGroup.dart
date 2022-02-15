@@ -187,7 +187,7 @@ class _noGroupState extends State<noGroup> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancle'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

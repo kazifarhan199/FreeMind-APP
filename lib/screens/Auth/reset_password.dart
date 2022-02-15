@@ -97,7 +97,7 @@ class _PasswordResetState extends State<PasswordReset> {
             ),
           ),
         ),
-        // password-re
+        // confirm password
         Card(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 15.0),

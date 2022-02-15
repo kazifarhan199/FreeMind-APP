@@ -160,13 +160,13 @@ class _SettingsState extends State<Settings> {
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Text('Are you sure you whant Logout ?'),
+                Text('Are you sure you want to logout?'),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancle'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

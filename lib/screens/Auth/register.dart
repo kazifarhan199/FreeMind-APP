@@ -123,7 +123,7 @@ class _RegisterState extends State<Register> {
                             ),
                           ),
                         ),
-                        // password-re
+                        // confirm password
                         Card(
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -133,7 +133,7 @@ class _RegisterState extends State<Register> {
                               keyboardType: TextInputType.visiblePassword,
                               initialValue: passwordre,
                               decoration: InputDecoration(
-                                labelText: "Password-re",
+                                labelText: "Confirm Password",
                                 border: InputBorder.none,
                                 suffix: InkWell(
                                   child: Icon(
@@ -164,7 +164,7 @@ class _RegisterState extends State<Register> {
                         SizedBox(height: 20.0),
                         TextButton(
                           onPressed: loginMethod,
-                          child: Text("Login"),
+                          child: Text("Back to login"),
                         ),
                       ],
                     ),

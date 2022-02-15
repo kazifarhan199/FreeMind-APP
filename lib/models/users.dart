@@ -156,8 +156,6 @@ class User extends ChangeNotifier {
       notifyListeners();
       return true;
     }
-
-
   }
 
   Future<bool> logout() async {
