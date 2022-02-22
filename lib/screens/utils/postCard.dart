@@ -86,6 +86,23 @@ class PostCardState extends State<PostCard> {
       print(statuses[
           Permission.storage]); // it should print PermissionStatus.granted
     }
+    print(status.isRestricted);
+    if (status.isRestricted)  {
+      // You can request multiple permissions at once.
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.storage,
+      ].request();
+      print(statuses[
+          Permission.storage]); // it should print PermissionStatus.granted
+    }
+    if (status.isPermanentlyDenied){
+      // This if statement is not working on android not tested on ios
+      showAlertDialog(context: context, title: Text("Storage permission is required for downloading image"),  children:[Text("Allow storage from settings")]);   
+    }
+    if (status.isDenied)  {
+      showAlertDialog(context: context, title: Text("Storage permission is required for downloading image"));
+    }
+    if (status.isGranted) {
     Response result = await get(Uri.parse(
         Provider.of<PostListModel>(context, listen: false)
             .postMap[widget.id]!
@@ -98,6 +115,7 @@ class PostCardState extends State<PostCard> {
       showAlertDialog(
           context: context,
           title: Text("Can't save file \n" + r['errorMessage'].toString()));
+    }
     if (mounted)
       setState(() {
         loading = false;
@@ -236,7 +254,7 @@ class PostCardState extends State<PostCard> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: postDetailMethod,
                         icon: FaIcon(FontAwesomeIcons.comment),
                       ),
                       Text(Provider.of<PostListModel>(context)

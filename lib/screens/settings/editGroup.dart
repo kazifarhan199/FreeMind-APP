@@ -34,9 +34,12 @@ class _EditGroupState extends State<EditGroup> {
 
   saveGroupMethod() async {
     if (mounted) setState(() => loading = true);
+    print("Here");
     List<String> emails = membersToAddMap.keys.toList();
+    print(emails);
     bool success = await Provider.of<User>(context, listen: false)
         .editGroup(emails, groupName);
+
     if (success) {
       Navigator.pop(context);
     } else {
@@ -167,7 +170,10 @@ class _EditGroupState extends State<EditGroup> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Group Name
+                    SizedBox(height: 10.0),
+                    Text("Group Name"),
+                    SizedBox(height: 10.0),
+                    // GroupName
                     Card(
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -177,13 +183,16 @@ class _EditGroupState extends State<EditGroup> {
                           textInputAction: TextInputAction.next,
                           controller: groupNameController,
                           decoration: InputDecoration(
-                            labelText: "Group Name",
+                            labelText: "Name",
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                     ),
                     // Email
+                    SizedBox(height: 10.0),
+                    Text("Add a new group member"),
+                    SizedBox(height: 10.0),
                     Card(
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15.0),

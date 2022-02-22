@@ -419,12 +419,12 @@ class User extends ChangeNotifier {
 
     if (name != groupName) {
       data = await network.requestIfPossible(
-        url: '/groups/members/',
+        url: '/groups/',
         body: {
-          'email': email,
+          'group_name': name,
         },
-        requestMethod: 'GET',
-        expectedCode: 200,
+        requestMethod: 'PUT',
+        expectedCode: 202,
       );
       if (await network.hasError) {
         error = network.error;
