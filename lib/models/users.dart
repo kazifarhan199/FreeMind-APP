@@ -126,6 +126,7 @@ class User extends ChangeNotifier {
   }
 
   Future<bool> login(String email, String password) async {
+
     error = '';
     if (email == '') {
       error = "Email is required";
@@ -135,11 +136,6 @@ class User extends ChangeNotifier {
       error = "Password is required";
       return false;
     }
-
-    if (await network.hasError) {
-      error = network.error;
-      return false;
-    } else {
       data = await network.requestIfPossible(
         url: '/accounts/login/',
         requestMethod: 'POST',
@@ -151,6 +147,13 @@ class User extends ChangeNotifier {
           "devicetype": "android",
         },
       );
+      
+    if (await network.hasError) {
+    print("HEREH");
+      error = network.error;
+      return false;
+    } else {
+
       loadBareUser(data);
       await Hive.box("userBox").put(0, this);
       notifyListeners();
