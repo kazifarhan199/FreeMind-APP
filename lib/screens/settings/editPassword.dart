@@ -86,7 +86,7 @@ class _EditPasswordState extends State<EditPassword> {
                         ),
                       ),
                     ),
-                    // password-re
+                    // confirm password
                     Card(
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -96,7 +96,7 @@ class _EditPasswordState extends State<EditPassword> {
                           keyboardType: TextInputType.visiblePassword,
                           initialValue: passwordre,
                           decoration: InputDecoration(
-                            labelText: "Password-re",
+                            labelText: "Confirm Password",
                             border: InputBorder.none,
                             suffix: InkWell(
                               child: Icon(
