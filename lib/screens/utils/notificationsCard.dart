@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:social/models/notifiactions.dart';
 
 class NotificationsCard extends StatefulWidget {
-  const NotificationsCard({Key? key}) : super(key: key);
+  NotificationsModel notification;
+  NotificationsCard(this.notification);
 
   @override
   _NotificationsCardState createState() => _NotificationsCardState();
 }
 
 class _NotificationsCardState extends State<NotificationsCard> {
-  NotificationsModel notification = NotificationsModel();
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +20,10 @@ class _NotificationsCardState extends State<NotificationsCard> {
           child: Row(
             children: [
               CircleAvatar(
-                  // backgroundImage: NetworkImage(notification.image),
+                  backgroundImage: NetworkImage(widget.notification.imageURL),
                   ),
               SizedBox(width: 8.0),
-              Text(notification.text),
+              Expanded(child: Text(widget.notification.text)),
             ],
           ),
         ),
