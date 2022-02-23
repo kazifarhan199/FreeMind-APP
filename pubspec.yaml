@@ -43,6 +43,7 @@ dependencies:
   connectivity: ^3.0.6
   awesome_notifications: ^0.0.6+10
   image_gallery_saver: ^1.7.0
+  flutter_rating_bar: ^4.0.0
   
 dev_dependencies:
   flutter_test:

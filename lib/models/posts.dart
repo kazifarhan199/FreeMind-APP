@@ -287,13 +287,35 @@ class LikesModel {
 class CommentsModel {
   int id = 0;
   String userName = '', userImage = '', text = '', dateTime = '';
+  bool need_feadback=false;
+  String error = '';
+  get hasError => error == '' ? false : true;
+  Map data = {};
 
   get userImageURL => StaticStrings.base_url + this.userImage;
 
   CommentsModel(Map data) {
+    id = data['id'] ?? 0;
     userName = data['username'] ?? "";
     userImage = data['userimage'] ?? "";
     text = data['text'] ?? "";
     dateTime = data['created_on'] ?? "";
+    need_feadback = data['need_feadback'] ?? false;
+  }
+
+  Future<bool> sendfeedback(String text, int rating) async {
+    error = '';
+    data = await network.requestIfPossible(
+      url: '/posts/feedback/',
+      requestMethod: 'POST',
+      body: {'comment': this.id.toString(), 'text': text, 'rating': rating.toString()},
+      expectedCode: 201,
+    );
+
+    if (await network.hasError) {
+      error = network.error;
+      return false;
+    } 
+    return true;
   }
 }
