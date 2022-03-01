@@ -10,9 +10,9 @@
 			<true/>
 		</dict>
 		<key>NSBonjourServices</key>
-<array>
-    <string>_dartobservatory._tcp</string>
-</array>
+		<array>
+			<string>_dartobservatory._tcp</string>
+		</array>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Using the library for ...</string>
 		<key>NSCameraUsageDescription</key>
