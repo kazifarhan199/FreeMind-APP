@@ -1,321 +1,309 @@
 import 'dart:io';
 import 'package:http/http.dart';
+import 'package:social/models/vars.dart';
+import 'package:social/models/request.dart';
 
-import 'package:flutter/material.dart';
-import 'package:social/utils/network.dart';
-import 'package:social/utils/staticStrings.dart';
+class PostModel {
+  String userName, userImage, title, image;
+  int likes, comments, id;
+  bool owner, liked, moreAvailable = true;
+  String get userImageUrl => base_url + userImage;
+  String get imageUrl => base_url + image;
+  List<CommentModel> commentsList = [];
+  List<LikeModel> likesList = [];
 
-class PostModel extends ChangeNotifier {
-  String userName = '', userImage = '';
-  String title = '', image = '', dateTime = '';
-  int likes = 0, comments = 0, id = 0;
-  bool liked = false;
-  int page = 1;
-  String next = "initial text";
-  String error = '';
-  InternalNetwork network = InternalNetwork();
-  Map data = {};
-  bool get hasError => this.error == '' ? false : true;
+  PostModel({
+    required this.userName,
+    required this.userImage,
+    required this.title,
+    required this.image,
+    required this.likes,
+    required this.comments,
+    required this.owner,
+    required this.liked,
+    required this.id,
+  });
 
-  get imageURL => this.image != null ? StaticStrings.base_url + this.image : "";
-  get userImageURL =>
-      this.userImage != null ? StaticStrings.base_url + this.userImage : "This is an image";
-
-  PostModel(Map data) {
-    // print(data);
-    if (data.isNotEmpty) {
-      try {
-        if (data['images'].isNotEmpty){
-        image = data['images'][0]['image_url'] ?? "";
-        }
-        else{
-          image = "/media/image/notfound.jpg";
-        }
-      } catch (e) {
-        print(e.toString());
-        image = "";
+  static PostModel fromJson(Map data) {
+    String userName = data['username'] ?? 'User Name :)';
+    String userImage = data['user_image'] ?? '/media/image/notfound.jpg';
+    String title = data['title'] ?? 'This is title';
+    String image = '/media/image/notfound.jpg';
+    if (data['images'] != null) {
+      if (data['images'].isNotEmpty) {
+        image = data['images'][0]['image_url'] ??
+            '/media/image/notfound.jpg';
       }
-      id = data['id'] ?? 0;
-      title = data['title'] ?? "";
-      likes = data['like_count'] ?? 0;
-      comments = data['comment_count'] ?? 0;
-      dateTime = data['datetime'] ?? '';
-      userName = data['username'] ?? '';
-      userImage = data['user_image'] ?? '';
-      liked = data['liked'] ?? false;
+    }
+    int likes = data['like_count'] ?? 0;
+    int comments = data['comment_count'] ?? 0;
+    int id = data['id'] ?? 0;
+    bool owner = data['owner'] ?? false;
+    bool liked = data['liked'] ?? false;
+    return PostModel(
+        userName: userName,
+        userImage: userImage,
+        title: title,
+        image: image,
+        likes: likes,
+        comments: comments,
+        owner: owner,
+        liked: liked,
+        id: id);
+  }
+
+  static Future<PostModel> createPost(
+      {required String title, required File image}) async {
+    if (title == '' ? true : false) {
+      throw Exception("Please write describing");
+    }
+
+    try {
+      Iterable<MultipartFile> file = image == null
+          ? []
+          : [
+              await MultipartFile.fromPath(
+                'images',
+                image.path,
+              )
+            ];
+      Map data = await requestIfPossible(
+        url: '/posts/create/',
+        requestMethod: 'POST',
+        expectedCode: 201,
+        files: file,
+        body: {
+          "title": title,
+        },
+      );
+      return PostModel.fromJson(data);
+    } on Exception catch (e) {
+      throw e;
     }
   }
 
-  Future<void> updateView() async {
-    notifyListeners();
+  static Future<PostModel> getPost({required int id}) async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/detail/?post=' + id.toString(),
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+      return PostModel.fromJson(data);
+    } on Exception catch (e) {
+      throw e;
+    }
   }
 
-  changeLikeStatus() async {
-    if (this.liked) {
-      await likesRemove();
-    } else {
-      await likesAdd();
-    }
-    notifyListeners();
-  }
-
-  Future<List<PostModel>> getPostList({int newPage: 0}) async {
-    List<PostModel> posts = [];
-    error = '';
-
-    if (newPage != 0) {
-      page = newPage;
-    }
-    if (this.next == "" && newPage == 0) {
-      return [];
-    }
-
-    // await Future.delayed(Duration(seconds: 3));
-    data = await network.requestIfPossible(
-      url: '/posts/?page=' + page.toString(),
-      requestMethod: 'GET',
-      expectedCode: 200,
-    );
-    if (await network.hasError) {
-      error = network.error;
-      return [];
-    } else {
-      page++;
-      this.next = data['next'] ?? "";
-      List results = data['results'];
-      for (var r in results) {
-        posts.add(PostModel(r));
+  Future<List<PostModel>> getPostList({required int page}) async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/?page=' + page.toString(),
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+      if (data['results'].length == 0) {
+        this.moreAvailable = false;
+        return [];
       }
 
-      return posts;
+      return data['results']
+          .map((d) => PostModel.fromJson(d))
+          .toList()
+          .cast<PostModel>();
+    } on Exception catch (e) {
+      throw e;
     }
   }
 
-  Future<PostModel> getPost() async {
-    await Future.delayed(Duration(seconds: 3));
-    // get page using page
-    return PostModel(data);
+  Future<List<LikeModel>> getLikeList() async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/likes/?post=' + this.id.toString(),
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+      if (data['results'].length == 0) {
+        return [];
+      }
+
+      return data['results']
+          .map((d) => LikeModel.fromJson(d))
+          .toList()
+          .cast<LikeModel>();
+    } on Exception catch (e) {
+      throw e;
+    }
   }
 
-  Future<bool> createPost(String title, File? image) async {
-    if (title == '') {
-      error = "Title is required";
-      return false;
+  Future<LikeModel> addLike() async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/likes/detail/',
+        requestMethod: 'POST',
+        body: {'post': this.id.toString()},
+        expectedCode: 201,
+      );
+      this.liked = true;
+      this.likes += 1;
+      return LikeModel.fromJson(data);
+    } on Exception catch (e) {
+      throw e;
     }
-    if (image == null) {
-      error = "Image is required";
-      return false;
+  }
+
+  Future<LikeModel> removeLike() async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/likes/detail/',
+        requestMethod: 'DELETE',
+        body: {'post': this.id.toString()},
+        expectedCode: 202,
+      );
+      this.liked = false;
+      this.likes -= 1;
+      return LikeModel.fromJson(data);
+    } on Exception catch (e) {
+      throw e;
     }
-    Iterable<MultipartFile> file = image == null
-        ? []
-        : [
-            await MultipartFile.fromPath(
-              'images',
-              image.path,
-            )
-          ];
+  }
 
-    data = await network.requestIfPossible(
-      url: '/posts/create/',
-      requestMethod: 'POST',
-      expectedCode: 201,
-      files: file,
-      body: {
-        "title": title,
-      },
-    );
+  Future<List<CommentModel>> getCommentList() async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/comments/?post=' + this.id.toString(),
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+      if (data['results'].length == 0) {
+        return [];
+      }
 
-    if (await network.hasError) {
-      error = network.error;
-      return false;
-    } else {
+      List<CommentModel> localComments =  data['results']
+          .map((d) => CommentModel.fromJson(d))
+          .toList()
+          .cast<CommentModel>();
+      this.commentsList = localComments;
+      this.comments = this.commentsList.length;
+      return localComments;
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+  Future<CommentModel> addComment(String text) async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/comments/detail/',
+        requestMethod: 'POST',
+        body: {'post': this.id.toString(), 'text': text},
+        expectedCode: 201,
+      );
+      CommentModel comment = CommentModel.fromJson(data);
+      this.commentsList += [comment];
+      this.comments = this.commentsList.length;
+      return comment;
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+  Future<bool> removeComment(int id) async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/comments/detail/',
+        requestMethod: 'DELETE',
+        body: {'post': this.id.toString(), 'comment': id.toString()},
+        expectedCode: 202,
+      );
+      this.commentsList.removeWhere((value) => value.id == id);
+      this.comments = this.commentsList.length;
       return true;
+    } on Exception catch (e) {
+      throw e;
     }
   }
 
   Future<bool> deletePost() async {
-    data = await network.requestIfPossible(
-      url: '/posts/delete/',
-      requestMethod: 'DELETE',
-      body: {'post': this.id.toString()},
-      expectedCode: 202,
-    );
-
-    if (await network.hasError) {
-      error = network.error;
-      return false;
-    } else {
-      notifyListeners();
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/delete/',
+        requestMethod: 'DELETE',
+        body: {'post': this.id.toString()},
+        expectedCode: 202,
+      );
       return true;
-    }
-  }
-
-  Future<List<LikesModel>> likesList() async {
-    data = await network.requestIfPossible(
-      url: '/posts/likes/?post=' + this.id.toString(),
-      requestMethod: 'GET',
-      expectedCode: 200,
-    );
-    if (await network.hasError) {
-      error = network.error;
-      return [];
-    } else {
-      List<LikesModel> likes = [];
-      likes =
-          data["results"].map((d) => LikesModel(d)).toList().cast<LikesModel>();
-      notifyListeners();
-      return likes;
-    }
-  }
-
-  likeFromJson(Map data) {
-    return LikesModel(data);
-  }
-
-  Future<bool> likesAdd() async {
-    if (this.liked){return false;}
-
-    this.likes++;
-    this.liked = true;
-    notifyListeners();
-
-    data = await network.requestIfPossible(
-      url: '/posts/likes/detail/',
-      requestMethod: 'POST',
-      body: {'post': this.id.toString()},
-      expectedCode: 201,
-    );
-
-    if (await network.hasError) {
-      this.likes--;
-      this.liked = false;
-      notifyListeners();
-      error = network.error;
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  Future<bool> likesRemove() async {
-    if (!this.liked){return false;}
-
-    this.likes--;
-    this.liked = false;
-    notifyListeners();
-
-    data = await network.requestIfPossible(
-      url: '/posts/likes/detail/',
-      requestMethod: 'DELETE',
-      body: {'post': this.id.toString()},
-      expectedCode: 202,
-    );
-
-    if (await network.hasError) {
-      this.likes++;
-      this.liked = true;
-      notifyListeners();
-      error = network.error;
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  Future<CommentsModel> commentsAdd(String text) async {
-    data = await network.requestIfPossible(
-      url: '/posts/comments/detail/',
-      requestMethod: 'POST',
-      body: {'post': this.id.toString(), 'text': text},
-      expectedCode: 201,
-    );
-
-    if (await network.hasError) {
-      error = network.error;
-      return CommentsModel({});
-    } else {
-      this.comments++;
-      notifyListeners();
-      return CommentsModel(data);
-    }
-  }
-
-  Future<List<CommentsModel>> commentsList() async {
-    error = "";
-    data = await network.requestIfPossible(
-      url: '/posts/comments/?post=' + this.id.toString(),
-      requestMethod: 'GET',
-      expectedCode: 200,
-    );
-    if (await network.hasError) {
-      error = network.error;
-      return [];
-    } else {
-      List<CommentsModel> comments = [];
-      comments = data["results"]
-          .map((d) => CommentsModel(d))
-          .toList()
-          .cast<CommentsModel>();
-      notifyListeners();
-      return comments;
-    }
-  }
-
-  Future<bool> commentsRemove(int commentID) async {
-    if (commentID == 0) {
-      error = "Comment is required";
-      return false;
-    }
-    await Future.delayed(Duration(seconds: 3));
-    this.comments--;
-    notifyListeners();
-    return true;
-  }
-}
-
-class LikesModel {
-  String userName = '', userImage = '';
-
-  get userImageURL => StaticStrings.base_url + this.userImage;
-
-  LikesModel(Map data) {
-    userName = data['username'];
-    userImage = data['userimage'];
-  }
-}
-
-class CommentsModel {
-  int id = 0;
-  String userName = '', userImage = '', text = '', dateTime = '';
-  bool need_feadback=false;
-  String error = '';
-  get hasError => error == '' ? false : true;
-  Map data = {};
-
-  get userImageURL => StaticStrings.base_url + this.userImage;
-
-  CommentsModel(Map data) {
-    id = data['id'] ?? 0;
-    userName = data['username'] ?? "";
-    userImage = data['userimage'] ?? "";
-    text = data['text'] ?? "";
-    dateTime = data['created_on'] ?? "";
-    need_feadback = data['need_feadback'] ?? false;
-  }
-
-  Future<bool> sendfeedback(String text, int rating) async {
-    error = '';
-    data = await network.requestIfPossible(
-      url: '/posts/feedback/',
-      requestMethod: 'POST',
-      body: {'comment': this.id.toString(), 'text': text, 'rating': rating.toString()},
-      expectedCode: 201,
-    );
-
-    if (await network.hasError) {
-      error = network.error;
-      return false;
+    } catch (e) {
+      throw e;
     } 
-    return true;
+  }
+}
+
+class CommentModel {
+  String userName = '', userImage = '', text = '';
+  int id = 0;
+  bool needFeedback;
+  String get userImageUrl => base_url + this.userImage;
+
+  CommentModel(
+      {required this.userName,
+      required this.userImage,
+      required this.text,
+      required this.id,
+      required this.needFeedback,});
+
+  static CommentModel fromJson(Map data) {
+    String userName = data['username'] ?? 'User Name';
+    String userImage = data['userimage'] ?? '/media/image/notfound.jpg';
+    String text = data['text'] ?? 'this is text';
+    int id = data['id'] ?? 0;
+    bool needFeedback = data['need_feadback'] ?? false;
+    return CommentModel(
+        userName: userName, userImage: userImage, text: text, id: id, needFeedback:needFeedback);
+  }
+
+  sendfeedback({required FeedbackModel feeback}) async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/feedback/',
+        requestMethod: 'POST',
+        body: {'comment': this.id.toString(), 'text': feeback.text, 'rating': feeback.rating.toString()},
+        expectedCode: 201,
+      ); 
+      this.needFeedback = false;
+    }catch(e){
+      throw e;
+    }
+  }
+}
+
+class LikeModel {
+  String userName = '', userImage = '';
+  int id = 0;
+  String get userImageUrl => base_url + this.userImage;
+
+  LikeModel(
+      {required this.userName, required this.userImage, required this.id});
+
+  static LikeModel fromJson(Map data) {
+    String userName = data['username'] ?? 'User Name';
+    String userImage = data['userimage'] ?? '/media/image/notfound.jpg';
+    int id = data['id'] ?? 0;
+    return LikeModel(userName: userName, userImage: userImage, id: id);
+  }
+}
+
+
+class FeedbackModel {
+  String text;
+  int rating;
+
+  FeedbackModel(
+      {required this.rating, required this.text});
+
+  static FeedbackModel fromJson(Map data) {
+    int rating = data['rating'] ?? 0;
+    String text = data['text'] ?? '';
+    return FeedbackModel(rating: rating, text: text);
   }
 }

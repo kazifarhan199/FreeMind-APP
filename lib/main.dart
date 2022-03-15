@@ -1,91 +1,77 @@
-import 'dart:io';
-
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:social/routing.dart';
+import 'package:social/wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
 import 'package:social/models/users.dart';
-import 'package:social/routeManager.dart';
-import 'package:social/screens/wrapper.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:social/utils/awsomeNotification.dart';
-import 'package:social/utils/firebaseUtils.dart';
-import 'package:social/utils/network.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:social/models/firebaseUtils.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:social/screans/utils/notificationUtils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Hive init
+
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   await Hive.openBox('userBox');
 
-  // Firebase
   await Firebase.initializeApp();
   await getPermissions();
   FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  InternalNetwork network = InternalNetwork();
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  String? token = await messaging.getToken();
+  var iosToken = await FirebaseMessaging.instance.getAPNSToken();
+  print(token);
+  print(iosToken);
 
-  // Not needed in final one, BUT IT IS STILL IN USE FOR INITAILIZATION PURPOSE
-  if (await network.hasError){
-    print("device not connected to the internet");
-  }
-  else{
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    String? token = await messaging.getToken();
-    var iosToken = await FirebaseMessaging.instance.getAPNSToken();
-    print("ios token is ");
-    print(iosToken);
-
-    print("Token is ");
-    print(token);
-    print('---');
-  }
-
-  // awsome Notification
   await awsomeNotificationInit();
   await awsomeNotificationPermissions();
-  await awsomeNotificationListner();
-  // await testingAwsomeNotification();
 
-  User user = User();
-  if (Hive.box('userBox').isNotEmpty) {
-    user = Hive.box('userBox').getAt(0) as User;
-    print(await user.getDeviceToekn());
-  }
-  // TO handel self signed crertificate
-  HttpOverrides.global = new MyHttpOverrides();
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider<User>(create: (_) => user),
-      ],
-      child: MyApp(),
-    ),
-  );
-}
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Phamily Health',
+      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      onGenerateRoute: generateRoute,
-      home: Wrapper(),
+      home: MainWrapper(),
     );
+  }
+}
+
+class MainWrapper extends StatefulWidget {
+  const MainWrapper({ Key? key }) : super(key: key);
+
+  @override
+  State<MainWrapper> createState() => _MainWrapperState();
+}
+
+class _MainWrapperState extends State<MainWrapper> {
+  awsomeNotificationListner() {
+    AwesomeNotifications().actionStream.listen((receivedNotification) async {
+      Routing.LoadPostPage(context, int. parse(receivedNotification.payload!['post']!));
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    awsomeNotificationListner();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrapper();
   }
 }
