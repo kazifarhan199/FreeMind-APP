@@ -201,6 +201,21 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
+              InkWell(
+                onTap: (){},
+                child: Row(
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.info),
+                        onPressed: showLogoutAlertMethod),
+                    SizedBox(
+                      width: 10.0,
+                      height: 80.0,
+                    ),
+                    Text("Version 1.0"),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
