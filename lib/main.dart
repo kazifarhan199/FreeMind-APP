@@ -13,10 +13,12 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 awsomeNotificationListner() {
-  AwesomeNotifications().actionStream.listen((receivedNotification) async {
-    print("received from the listener");
-    Routing.LoadPostPage(navigatorKey.currentContext, int. parse(receivedNotification.payload!['post']!));
-  });
+  try{    
+    AwesomeNotifications().actionStream.listen((receivedNotification) async {
+      print("received from the listener");
+      Routing.LoadPostPage(navigatorKey.currentContext, int. parse(receivedNotification.payload!['post']!));
+    });
+  }catch(e){}
 }
 
 void main() async {
