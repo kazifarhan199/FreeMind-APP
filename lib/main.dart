@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
     ]);
+    awsomeNotificationListner();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -72,10 +73,8 @@ class MainWrapper extends StatefulWidget {
 }
 
 class _MainWrapperState extends State<MainWrapper> {
-  
   @override
   Widget build(BuildContext context) {
-    awsomeNotificationListner();
     return Wrapper();
   }
 }
