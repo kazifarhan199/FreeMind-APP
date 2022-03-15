@@ -155,14 +155,15 @@ class _PostCardState extends State<PostCard> {
       errorBox(context: context, errorTitle: 'Error',error: "Storage permission is required for downloading image");   
     }
     if (status.isDenied)  {
-      status = await Permission.camera.request();
+      status = await Permission.storage.request();
       errorBox(context: context, errorTitle: 'Error',error: "Storage permission is required for downloading image");   
     }
     if (status.isGranted){
       try{      
       Response result = await get(Uri.parse(widget.post.imageUrl));
-      await ImageGallerySaver.saveImage(result.bodyBytes);
-      errorBox(context: context, errorTitle: "Saved", error: "Saved to the device");
+      dynamic success = await ImageGallerySaver.saveImage(result.bodyBytes);
+      if(success['isSuccess'])
+        errorBox(context: context, errorTitle: "Saved", error: "Saved to the device");
       }catch(e){
         errorBox(context: context, errorTitle: "Error", error: e.toString());
       }
