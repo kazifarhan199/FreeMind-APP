@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/services.dart';
 import 'package:social/routing.dart';
 import 'package:social/wrapper.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -57,6 +62,7 @@ class MainWrapper extends StatefulWidget {
 }
 
 class _MainWrapperState extends State<MainWrapper> {
+  
   awsomeNotificationListner() {
     AwesomeNotifications().actionStream.listen((receivedNotification) async {
       Routing.LoadPostPage(context, int. parse(receivedNotification.payload!['post']!));
