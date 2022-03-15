@@ -40,7 +40,9 @@ sendAwsomeNotification(Map data) {
         body: data['body'],
         payload: {"post": data["post"]},
         displayOnForeground: true,
-        displayOnBackground: true),
+        displayOnBackground: true,
+        wakeUpScreen: true,
+        ),
   );
 }
 

@@ -10,6 +10,15 @@ import 'package:social/models/firebaseUtils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:social/screans/utils/notificationUtils.dart';
 
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+awsomeNotificationListner() {
+  AwesomeNotifications().actionStream.listen((receivedNotification) async {
+    print("received from the listener");
+    Routing.LoadPostPage(navigatorKey.currentContext, int. parse(receivedNotification.payload!['post']!));
+  });
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -20,6 +29,7 @@ void main() async {
   await Firebase.initializeApp();
   await getPermissions();
   FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
+  FirebaseMessaging.onMessageOpenedApp.listen(firebaseMessagingForegroundHandler);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -30,7 +40,6 @@ void main() async {
 
   await awsomeNotificationInit();
   await awsomeNotificationPermissions();
-
   runApp(const MyApp());
 }
 
@@ -49,6 +58,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      navigatorKey: navigatorKey,
       home: MainWrapper(),
     );
   }
@@ -63,21 +73,9 @@ class MainWrapper extends StatefulWidget {
 
 class _MainWrapperState extends State<MainWrapper> {
   
-  awsomeNotificationListner() {
-    AwesomeNotifications().actionStream.listen((receivedNotification) async {
-      Routing.LoadPostPage(context, int. parse(receivedNotification.payload!['post']!));
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    awsomeNotificationListner();
-  }
-
   @override
   Widget build(BuildContext context) {
+    awsomeNotificationListner();
     return Wrapper();
   }
 }
