@@ -203,7 +203,7 @@ class User {
   static Future<bool> logout() async {
 
     try {
-      Map tmp_data = await requestIfPossible(
+      requestIfPossible(
         url: '/accounts/logout/',
         requestMethod: 'DELETE',
         expectedCode: 202,
