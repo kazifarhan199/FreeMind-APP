@@ -1,10 +1,14 @@
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:hive/hive.dart';
 import 'package:social/models/request.dart';
 import 'package:social/vars.dart';
 
 part 'users.g.dart';
+
+FirebaseMessaging messaging = FirebaseMessaging.instance;
+
 
 @HiveType(typeId: 0)
 class User {
@@ -35,7 +39,7 @@ class User {
       required this.token});
 
   static Future<String> getDeviceToekn() async {
-    return 'some token';
+    return (await messaging.getToken())!;
   }
 
   static User fromJson(Map data) {
