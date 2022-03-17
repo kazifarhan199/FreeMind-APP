@@ -7,7 +7,8 @@ class SurveyModel{
   SurveyModel({required this.text, required this.id});
 
   static SurveyModel fromJson(Map data){
-    String text = data['text'] ?? 'survey question';
+    print(data);
+    String text = data['name'] ?? 'survey question';
     int id = data['id'] ?? 0;
     return SurveyModel(text: text, id: id);
   }
