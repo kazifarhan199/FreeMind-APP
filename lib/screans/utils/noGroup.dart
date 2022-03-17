@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
@@ -114,18 +113,20 @@ class _NoGroupState extends State<NoGroup> {
       fullscreen: true,
       child: Scaffold(
         
-          appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: AppBar(
+          appBar: 
+          // PreferredSize(
+          // preferredSize: Size.fromHeight(100.0),
+          // child: 
+          AppBar(
             automaticallyImplyLeading: false,
             centerTitle: true,
-            title: Text("No Group Found", style: GoogleFonts.laila(fontSize: 30.0)),
+            title: Text("No Group Found", style: TextStyle(fontSize: 30.0)),
             // flexibleSpace: Image(
             //   image: AssetImage('assets/background.png'),
             //   fit: BoxFit.cover,
             // ),
             // backgroundColor: Colors.transparent,
-          ),
+          // ),
         ),
           body: RefreshIndicator(
             onRefresh: refreshMethod,

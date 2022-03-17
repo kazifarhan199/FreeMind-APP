@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:hive/hive.dart';
 import 'package:social/models/request.dart';
-import 'package:social/models/vars.dart';
+import 'package:social/vars.dart';
 
 part 'users.g.dart';
 
@@ -76,7 +76,7 @@ class User {
         : password == ''
             ? true
             : false) {
-      throw Exception('Please fill all details');
+      throw Exception(ErrorStrings.all_fiields_needed);
     }
 
     try {
@@ -114,7 +114,7 @@ class User {
                 : re_password == ''
                     ? true
                     : false) {
-      throw Exception("Please fill all details");
+      throw Exception(ErrorStrings.all_fiields_needed);
     }
 
     if (password != re_password) {
@@ -145,7 +145,7 @@ class User {
   static Future<bool> sendPasswordResetEmail({required String email}) async {
 
     if (email == '' ? true : false) {
-      throw Exception("Please provide an email");
+      throw Exception(ErrorStrings.email_needed);
     }
 
     try {
@@ -176,11 +176,11 @@ class User {
             : re_password == ''
                 ? true
                 : false) {
-      throw Exception("Please fill all details");
+      throw Exception(ErrorStrings.all_fiields_needed);
     }
 
     if (password != re_password) {
-      throw Exception("Passwords do not match");
+      throw Exception(ErrorStrings.password_not_match);
     }
 
     try {
@@ -227,7 +227,7 @@ class User {
         : userName == ''
             ? true
             : false) {
-      throw Exception("Please fill all details");
+      throw Exception(ErrorStrings.all_fiields_needed);
     }
 
     try {
@@ -265,11 +265,11 @@ class User {
         : re_password == ''
             ? true
             : false) {
-      throw Exception("Please provide the password");
+      throw Exception(ErrorStrings.all_fiields_needed);
     }
 
     if (password != re_password) {
-      throw Exception("Passwords do not match");
+      throw Exception(ErrorStrings.password_not_match);
     }
 
     try {
@@ -299,7 +299,6 @@ class User {
       await Hive.box("userBox").put(0, user);
       return true;
     } catch (e) {
-      print("ITs here");
       throw e;
     }
   }

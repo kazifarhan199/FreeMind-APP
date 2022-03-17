@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:http/http.dart';
-import 'package:social/models/vars.dart';
+import 'package:social/vars.dart';
 import 'package:social/models/request.dart';
 
 class PostModel {
@@ -55,7 +55,7 @@ class PostModel {
   static Future<PostModel> createPost(
       {required String title, required File image}) async {
     if (title == '' ? true : false) {
-      throw Exception("Please write describing");
+      throw Exception(ErrorStrings.description_needed);
     }
 
     try {

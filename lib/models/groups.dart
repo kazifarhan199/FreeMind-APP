@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:social/models/request.dart';
 import 'package:social/models/users.dart';
-import 'package:social/models/vars.dart';
+import 'package:social/vars.dart';
 
 class GroupModel{
   String name;
@@ -19,7 +19,7 @@ class GroupModel{
 
   static Future<GroupModel> createNewGroup(String name) async {
     if (name=='' ? true : false){
-      throw Exception('Please provide a name for the group');
+      throw Exception(ErrorStrings.group_name_needed);
     }
     try {
       Map data =await requestIfPossible(
@@ -54,7 +54,7 @@ class GroupModel{
 
   Future<List<membersModel>> addMember({required String email}) async {
     if (email=='' ? true : false){
-      throw Exception('Please provide a email');
+      throw Exception(ErrorStrings.email_needed);
     }
     try {
       Map data = await requestIfPossible(
@@ -98,7 +98,7 @@ class GroupModel{
 
   Future<bool> editGroup({required String name}) async {
     if (name=='' ? true : false){
-      throw Exception('Please provide a name');
+      throw Exception(ErrorStrings.name_needed);
     }
     try {
       Map data = await requestIfPossible(

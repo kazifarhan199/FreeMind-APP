@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:social/models/users.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:social/models/vars.dart';
+import 'package:social/vars.dart';
 
 
 Future<Map> requestIfPossible({
@@ -16,7 +16,7 @@ Future<Map> requestIfPossible({
   // Check for internet
   var connectivityResult = await (Connectivity().checkConnectivity());
   if (connectivityResult == ConnectivityResult.none)
-    throw Exception('Internet not available');
+    throw Exception(ErrorStrings.internet_needed);
 
   
   Map<String, String> headers = {};
@@ -42,7 +42,7 @@ Future<Map> requestIfPossible({
   try {
     response = await Response.fromStream(await request.send());
   }catch(e) {
-    throw Exception("Can't connect to the server");
+    throw Exception(ErrorStrings.server_needed);
   }
   
   Map data = {};
@@ -50,7 +50,7 @@ Future<Map> requestIfPossible({
   try {
     data = data = jsonDecode(utf8.decode(response.bodyBytes));
   } catch (e) {
-    throw Exception('Server error occured');
+    throw Exception(ErrorStrings.server_error);
   }
   try {
     if (response.statusCode == expectedCode) {

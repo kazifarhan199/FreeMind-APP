@@ -11,6 +11,7 @@ import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/loading.dart';
 import 'package:social/screans/utils/textInput.dart';
 import 'package:social/screans/utils/imagePicker.dart';
+import 'package:social/vars.dart';
 
 class CreatePost extends StatefulWidget {
   const CreatePost({Key? key}) : super(key: key);
@@ -35,17 +36,17 @@ class _CreatePostState extends State<CreatePost> {
         errorBox(
             context: context,
             errorTitle: 'Error',
-            error: 'Please select an image');
+            error: ErrorStrings.image_needed);
     } else if (title == '') {
       if (mounted)
         errorBox(
             context: context,
             errorTitle: 'Error',
-            error: 'Please leave a title for the post');
+            error: ErrorStrings.title_needed);
     } else {
       try {
         if (image == null) {
-          throw Exception("Please select an image");
+          throw Exception(ErrorStrings.image_needed);
         }
         image = await cropMethod(image!);
         await PostModel.createPost(title: title, image: image!);
@@ -147,7 +148,7 @@ class _CreatePostState extends State<CreatePost> {
                   padding: EdgeInsets.all(10.0),
                   child: TextInput(
                     initialText: title,
-                    labelText: 'What are you doing for your self today ?',
+                    labelText: InfoStrings.title_info,
                     maxlength: 200,
                     keyboardtype: TextInputType.multiline,
                     maxlines: null,

@@ -1,5 +1,5 @@
 import 'package:social/models/request.dart';
-import 'package:social/models/vars.dart';
+import 'package:social/vars.dart';
 
 class NotificationsModel {
   String image, text;

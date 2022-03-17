@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:social/models/users.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:social/screans/utils/loading.dart';
 import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/textInput.dart';

@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:social/models/users.dart';
 import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/loading.dart';
+import 'package:social/vars.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -60,7 +61,7 @@ class _SettingsState extends State<Settings> {
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout ?'),
+        content: Text(InfoStrings.logout_info),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             child: const Text('No'),
@@ -80,7 +81,7 @@ class _SettingsState extends State<Settings> {
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
         title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout ?'),
+        content: Text(InfoStrings.logout_info),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             child: const Text('No'),
@@ -212,7 +213,7 @@ class _SettingsState extends State<Settings> {
                       width: 10.0,
                       height: 80.0,
                     ),
-                    Text("Version 1.0"),
+                    Text(app_version),
                   ],
                 ),
               ),

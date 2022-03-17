@@ -6,6 +6,7 @@ import 'package:social/models/survey.dart';
 import 'package:social/screans/utils/loading.dart';
 import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/SurveyCard.dart';
+import 'package:social/vars.dart';
 
 class Survey extends StatefulWidget {
   const Survey({Key? key}) : super(key: key);
@@ -36,19 +37,17 @@ class _SurveyState extends State<Survey> {
   sendQuestionReplyMethod() async {
     // if (mounted) setState(() => loading = true);
     for (var question in questions) {
-      print(question.rating.toString());
       if (question.rating == 0) {
         errorBox(
             context: context,
             errorTitle: "Error",
-            error: "Please fill all details");
+            error: ErrorStrings.all_fiields_needed);
         return;
       }
     }
     if (mounted) setState(() => loading = true);
 
     for (var question in questions) {
-      print(question.rating);
 
       try {
         await question.sendQuestionReply();
