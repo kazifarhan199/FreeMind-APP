@@ -10,6 +10,7 @@ import 'package:social/models/users.dart';
 import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/textInput.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommentCard extends StatefulWidget {
   CommentModel comment;
@@ -30,6 +31,13 @@ class _CommentCardState extends State<CommentCard> {
       await widget.comment.sendfeedback(feeback:feeback);
       setState(() {});
       Navigator.of(context).pop();
+    }catch(e){
+      errorBox(context: context, errorTitle: "Error", error: e.toString().substring(11));
+    }
+  }
+  void _launchURL(String url) async {
+    try{
+      if (!await launch(url)) throw Exception('Could not launch $url');
     }catch(e){
       errorBox(context: context, errorTitle: "Error", error: e.toString().substring(11));
     }
@@ -168,6 +176,11 @@ class _CommentCardState extends State<CommentCard> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Text(widget.comment.text),
           ),
+          widget.comment.hasLink?
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: TextButton(child: Text("Read more"), onPressed: () => _launchURL(widget.comment.link),),
+          ):Container(),
           Divider()
         ],
       ),
