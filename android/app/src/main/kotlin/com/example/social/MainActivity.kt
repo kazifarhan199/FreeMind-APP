@@ -1,4 +1,4 @@
-package com.example.social
+package edu.umn.d.hci.phamilyhealth
 
 import io.flutter.embedding.android.FlutterActivity
 
