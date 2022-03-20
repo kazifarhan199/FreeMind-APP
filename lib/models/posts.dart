@@ -247,13 +247,16 @@ class CommentModel {
   int id = 0;
   bool needFeedback;
   String get userImageUrl => base_url + this.userImage;
+  String link;
+  get hasLink => link==''?false:true;
 
   CommentModel(
       {required this.userName,
       required this.userImage,
       required this.text,
       required this.id,
-      required this.needFeedback,});
+      required this.needFeedback,
+      required this.link});
 
   static CommentModel fromJson(Map data) {
     String userName = data['username'] ?? 'User Name';
@@ -261,8 +264,9 @@ class CommentModel {
     String text = data['text'] ?? 'this is text';
     int id = data['id'] ?? 0;
     bool needFeedback = data['need_feadback'] ?? false;
+    String link = data['link'] ?? '';
     return CommentModel(
-        userName: userName, userImage: userImage, text: text, id: id, needFeedback:needFeedback);
+        userName: userName, userImage: userImage, text: text, id: id, needFeedback:needFeedback, link:link);
   }
 
   sendfeedback({required FeedbackModel feeback}) async {
