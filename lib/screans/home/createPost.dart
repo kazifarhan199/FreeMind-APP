@@ -37,12 +37,6 @@ class _CreatePostState extends State<CreatePost> {
             context: context,
             errorTitle: 'Error',
             error: ErrorStrings.image_needed);
-    } else if (title == '') {
-      if (mounted)
-        errorBox(
-            context: context,
-            errorTitle: 'Error',
-            error: ErrorStrings.title_needed);
     } else {
       try {
         if (image == null) {

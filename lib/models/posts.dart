@@ -55,7 +55,7 @@ class PostModel {
   static Future<PostModel> createPost(
       {required String title, required File image}) async {
     if (title == '' ? true : false) {
-      throw Exception(ErrorStrings.description_needed);
+      throw Exception(ErrorStrings.title_needed);
     }
 
     try {
