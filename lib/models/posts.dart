@@ -106,6 +106,9 @@ class PostModel {
         this.moreAvailable = false;
         return [];
       }
+      if(data['next']==null){
+          this.moreAvailable = false;
+      }
 
       return data['results']
           .map((d) => PostModel.fromJson(d))
