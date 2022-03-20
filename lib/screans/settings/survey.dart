@@ -18,11 +18,16 @@ class Survey extends StatefulWidget {
 class _SurveyState extends State<Survey> {
   List<SurveyModel> questions = [];
   bool loading = false;
+  int no_questions=0;
 
   getSurvey() async {
     if (mounted) setState(() => loading = true);
     try {
       List<SurveyModel> localQuestions = await SurveyModel.getSurvey();
+      for (var q in localQuestions) {
+        if(q.is_label==false)
+          no_questions++;
+      }
       if (mounted) setState(() => questions = localQuestions);
     } on Exception catch (e) {
       if (mounted)
@@ -95,10 +100,30 @@ class _SurveyState extends State<Survey> {
         child: ListView.builder(
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
-          itemCount: questions.length,
+          itemCount: questions.length+3,
           itemBuilder: (context, index) {
+            if (index == 0){
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(child: Text(InfoStrings.survey_info, style: Theme.of(context).textTheme.headline6,)),
+              );
+            }
+            if(index-1 < no_questions)
+              return SurveyCard(
+                question: questions[index-1],
+              );
+            if(index-1 == no_questions)
+              return InkWell(
+                onTap: (){},
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                  child: Text(InfoStrings.survey_label_info, style: Theme.of(context).textTheme.headline5,),
+                ),
+              );
+            if(index-2 == no_questions)
+              return Divider();
             return SurveyCard(
-              question: questions[index],
+              question: questions[index-3],
             );
           },
         ),

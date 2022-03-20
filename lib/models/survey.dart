@@ -3,14 +3,15 @@ import 'package:social/models/request.dart';
 class SurveyModel{
   String text;
   int id, rating = 0;
+  bool is_label;
 
-  SurveyModel({required this.text, required this.id});
+  SurveyModel({required this.text, required this.id, required this.is_label});
 
   static SurveyModel fromJson(Map data){
-    print(data);
     String text = data['name'] ?? 'survey question';
     int id = data['id'] ?? 0;
-    return SurveyModel(text: text, id: id);
+    bool is_label = data['is_label'] ?? false;
+    return SurveyModel(text: text, id: id, is_label:is_label);
   }
 
   Future<bool> sendQuestionReply() async {
