@@ -19,7 +19,7 @@ class SurveyModel{
       await requestIfPossible(
         url: '/recommendations/rating/',
         requestMethod: 'POST',
-        body: {'label': this.id.toString(), 'rating': this.rating.toString()},
+        body: {'label': this.id.toString(), 'rating': this.rating.toString(), 'is_label': this.is_label.toString()},
         expectedCode: 201,
       );
      return true;
