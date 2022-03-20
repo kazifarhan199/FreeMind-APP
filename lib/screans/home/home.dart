@@ -39,7 +39,6 @@ class _HomeState extends State<Home> {
 
   getPostsMethod() async {
     nextPage += 1;
-    if (mounted) setState(() => loading = true);
     try {
       List<PostModel> localPost =
           await postControler.getPostList(page: nextPage - 1);
@@ -57,15 +56,13 @@ class _HomeState extends State<Home> {
             error: e.toString().substring(11),
             errorTitle: 'Error');
     }
-
-    if (mounted) setState(() => loading = false);
   }
 
   Future<void> refreshMethod() async {
     if (mounted) setState(() => posts = []);
     nextPage = 1;
     moreAvailable = true;
-    getPostsMethod();
+    await getPostsMethod();
   }
 
   Future deletePostMethod(PostModel localPost) async {
@@ -83,10 +80,16 @@ class _HomeState extends State<Home> {
     }
   }
 
+  getInitialPosts() async {
+    if (mounted) setState(() => loading = true);
+    await getPostsMethod();
+    if (mounted) setState(() => loading = false);
+  }
+
   @override
   void initState() {
     super.initState();
-    getPostsMethod();
+    getInitialPosts();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
