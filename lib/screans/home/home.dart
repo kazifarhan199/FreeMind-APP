@@ -59,10 +59,12 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> refreshMethod() async {
+    if (mounted) setState(() => loading = true);
     if (mounted) setState(() => posts = []);
     nextPage = 1;
     moreAvailable = true;
     await getPostsMethod();
+    if (mounted) setState(() => loading = false);
   }
 
   Future deletePostMethod(PostModel localPost) async {
