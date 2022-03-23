@@ -18,15 +18,19 @@ class Survey extends StatefulWidget {
 class _SurveyState extends State<Survey> {
   List<SurveyModel> questions = [];
   bool loading = false;
-  int no_questions=0;
+  int no_questions=0, no_cuppled=0;
 
   getSurvey() async {
     if (mounted) setState(() => loading = true);
     try {
       List<SurveyModel> localQuestions = await SurveyModel.getSurvey();
       for (var q in localQuestions) {
-        if(q.is_label==false)
+        if(q.is_label==false){
+          if(q.is_coupuled == false){
+            no_cuppled++;
+          }
           no_questions++;
+        }
       }
       if (mounted) setState(() => questions = localQuestions);
     } on Exception catch (e) {
@@ -55,7 +59,7 @@ class _SurveyState extends State<Survey> {
     for (var question in questions) {
 
       try {
-        await question.sendQuestionReply();
+        question.sendQuestionReply();
       } on Exception catch (e) {
         if (mounted)
           errorBox(
@@ -81,26 +85,26 @@ class _SurveyState extends State<Survey> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Survey"),
-        // flexibleSpace: Image(
-        //   image: AssetImage('assets/background.png'),
-        //   fit: BoxFit.cover,
-        // ),
-        // backgroundColor: Colors.transparent,
-        actions: [
-          IconButton(
-              onPressed: sendQuestionReplyMethod, icon: Icon(Icons.send)),
-        ],
-      ),
-      body: Loading(
-        loading: loading,
-        child: ListView.builder(
+    return Loading(
+      loading: loading,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text("Survey"),
+          // flexibleSpace: Image(
+          //   image: AssetImage('assets/background.png'),
+          //   fit: BoxFit.cover,
+          // ),
+          // backgroundColor: Colors.transparent,
+          actions: [
+            IconButton(
+                onPressed: sendQuestionReplyMethod, icon: Icon(Icons.send)),
+          ],
+        ),
+        body: ListView.builder(
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
-          itemCount: questions.length+3,
+          itemCount: questions.length+4,
           itemBuilder: (context, index) {
             if (index == 0){
               return Padding(
@@ -108,11 +112,26 @@ class _SurveyState extends State<Survey> {
                 child: Center(child: Text(InfoStrings.survey_info, style: Theme.of(context).textTheme.headline6,)),
               );
             }
-            if(index-1 < no_questions)
+    
+            if(index-1 < no_cuppled) // index = 5 -> 0-4
               return SurveyCard(
                 question: questions[index-1],
               );
-            if(index-1 == no_questions)
+    
+            if(index-1 == no_cuppled) // index = 6
+              return InkWell(
+                onTap: (){},
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                  child: Text(InfoStrings.survey_cuppled_info, style: Theme.of(context).textTheme.headline5,),
+                ),
+              );
+    
+            if(index-2 < no_questions) // index = 7 -> 5-14
+              return SurveyCard(
+                question: questions[index-2],
+              );
+            if(index-2 == no_questions) // index = 16 
               return InkWell(
                 onTap: (){},
                 child: Padding(
@@ -120,10 +139,10 @@ class _SurveyState extends State<Survey> {
                   child: Text(InfoStrings.survey_label_info, style: Theme.of(context).textTheme.headline5,),
                 ),
               );
-            if(index-2 == no_questions)
+            if(index-3 == no_questions) // index = 17
               return Divider();
-            return SurveyCard(
-              question: questions[index-3],
+            return SurveyCard(  // index = 18 -> 
+              question: questions[index-4],
             );
           },
         ),

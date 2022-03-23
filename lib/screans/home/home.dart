@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
       List<PostModel> localPost =
           await postControler.getPostList(page: nextPage - 1);
       moreAvailable = postControler.moreAvailable;
-      setState(() {
+      if(mounted) setState(() {
         if (nextPage == 1)
           posts = localPost;
         else
