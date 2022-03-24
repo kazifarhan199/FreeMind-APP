@@ -1,7 +1,7 @@
 String base_url = 'http://131.212.41.11:50000';
 // String base_url = 'http://127.0.0.1:8000';
 
-String app_version = "Version 1.2";
+String app_version = "Version 1.3";
 
 
 class ErrorStrings{
@@ -21,8 +21,8 @@ class ErrorStrings{
 class InfoStrings{
   static String title_info = "What are you doing for yourself today ?";
   static String logout_info = "Are you sure you want to logout ?";
-  static String survey_label_info = "Do you like to ...";
-  static String survey_cuppled_info = "How much would you like the recommendation when some you post the title as ...\n";
+  static String survey_label_info = "How would you rate the following behaviors ...";
+  static String survey_cuppled_info = "How would you rate the following recommendation ...";
   static String survey_info = "Help us to help you by telling us about your linkings\n\nThis data will be used to recommend you activities to improve your self care\n";
   static String password_helper = "Help us protect you, make sure your password \n\n• Is at least 8 character long\n• Contains at least one number\n• Contains at least one special character\n";
   
