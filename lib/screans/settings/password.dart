@@ -42,7 +42,7 @@ class _PasswordState extends State<Password> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Social"),
+          title: Text("FreeMind"),
           // flexibleSpace: Image(
           //   image: AssetImage('assets/background.png'),
           //   fit: BoxFit.cover,

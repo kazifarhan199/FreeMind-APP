@@ -110,7 +110,7 @@ class _HomeState extends State<Home> {
             icon: CircleAvatar(backgroundImage: NetworkImage(user.imageUrl)),
             onPressed: settingsMethod,
           ),
-          title: Text("Social"),
+          title: Text("FreeMind"),
           // flexibleSpace: Image(
           //   image: AssetImage('assets/background.png'),
           //   fit: BoxFit.cover,
