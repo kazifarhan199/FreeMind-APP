@@ -48,19 +48,9 @@ class _CommentCardState extends State<CommentCard> {
     ? showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Container(
-        height:200,
+        height:130,
         child: (
           Column(children:  <Widget>[
-            Expanded(
-              child: CupertinoDialogAction(
-                child: const Text('Download'),
-                onPressed: () {
-                    widget.deleteComment(widget.comment.id);
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-            Divider(),
           widget.comment.userName == user.userName
               ? Expanded(
                 child: CupertinoActionSheetAction(
