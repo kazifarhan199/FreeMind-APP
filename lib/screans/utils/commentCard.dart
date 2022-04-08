@@ -74,7 +74,7 @@ class _CommentCardState extends State<CommentCard> {
             Divider(),
             Expanded(
               child: CupertinoDialogAction(
-                child: const Text('Cancle'),
+                child: const Text('Cancel'),
                 onPressed: () {
                   Navigator.pop(context);
                 },

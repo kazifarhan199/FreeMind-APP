@@ -103,7 +103,7 @@ class _PostCardState extends State<PostCard> {
             Divider(),
             Expanded(
               child: CupertinoDialogAction(
-                child: const Text('Cancle'),
+                child: const Text('Cancel'),
                 onPressed: () {
                   Navigator.pop(context);
                 },
