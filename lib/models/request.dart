@@ -61,6 +61,9 @@ Future<Map> requestIfPossible({
       }else if (data.keys.contains('detail')){
         if (data['detail']=='Invalid page.')
           return {'results':[]};
+        if (data['detail']=='Invalid token.')
+          User.logout();
+          throw Exception(ErrorStrings.loggedout);
         throw Exception(data['detail']);
       }
       throw Exception(data.values.toList()[0][0].toString());
