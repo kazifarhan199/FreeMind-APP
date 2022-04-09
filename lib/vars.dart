@@ -1,7 +1,7 @@
 String base_url = 'http://131.212.41.11:50000';
 // String base_url = 'http://127.0.0.1:8000';
 
-String app_version = "Version 1.5";
+String app_version = "Version 1.6";
 
 
 class ErrorStrings{
