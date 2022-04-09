@@ -150,12 +150,12 @@ class _PostCardState extends State<PostCard> {
   }
 
   downloadMethod() async {
-    var status = await Permission.storage.status;
+    var status = await Permission.storage.request();
+    status = await Permission.storage.status;
     if (status.isPermanentlyDenied){
       errorBox(context: context, errorTitle: 'Error',error: "Storage permission is required for downloading image");   
     }
     if (status.isDenied)  {
-      status = await Permission.storage.request();
       errorBox(context: context, errorTitle: 'Error',error: "Storage permission is required for downloading image");   
     }
     if (status.isGranted){
