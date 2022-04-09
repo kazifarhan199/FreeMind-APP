@@ -19,13 +19,17 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   bool loading=false;
 
-  bool isUserLoggedIn(){
+  bool isUserLoggedIn() {
     if (Hive.box('userBox').isNotEmpty) {
       User user = Hive.box('userBox').getAt(0) as User;
       if (user.id == 0){
         return false;
       }
       updateUserProfile();
+      user = Hive.box('userBox').getAt(0) as User;
+      if (user.id == 0){
+        return false;
+      }
       return true;
     }
     return false;
@@ -40,12 +44,14 @@ class _WrapperState extends State<Wrapper> {
   }
 
   updateUserProfile() async {
+    if (mounted) setState(() => loading=true);
     User user = Hive.box('userBox').getAt(0) as User;
     try{
       User.profile();
     }catch(e) {
       if (mounted) errorBox(context: context, errorTitle: "Error", error: e.toString().substring(11));
     }
+    if (mounted) setState(() => loading=false);
   }
 
   @override

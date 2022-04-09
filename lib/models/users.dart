@@ -219,6 +219,8 @@ class User {
       // This is so that the request method has enough time to send the logout request 
       //  (we want to be able to retrive the user token from hive before removing it)
       await Hive.box("userBox").delete(0);
+      User user = User.fromJson({});
+      await Hive.box("userBox").put(0, user);
       return true;
     } on Exception catch (e) {
       await Hive.box("userBox").delete(0);
