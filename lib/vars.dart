@@ -16,6 +16,7 @@ class ErrorStrings{
   static String password_not_match = "Passwords do not match";
   static String image_needed = "Please select an image";
   static String title_needed = "Please write a caption for the post";
+  static String loggedout = 'Logged out please logout and login again';
 }
 
 class InfoStrings{
