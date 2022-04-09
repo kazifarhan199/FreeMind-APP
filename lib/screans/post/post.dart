@@ -209,6 +209,7 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
                       ;
                       return CommentCard(
                           comment: comments[index],
+                          post: widget.post,
                           deleteComment: deleteComment);
                     },
                   ),

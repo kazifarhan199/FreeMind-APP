@@ -14,8 +14,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CommentCard extends StatefulWidget {
   CommentModel comment;
+  PostModel post;
   Function deleteComment;
-  CommentCard({required this.comment, required this.deleteComment, Key? key})
+  CommentCard({required this.comment, required this.post, required this.deleteComment, Key? key})
       : super(key: key);
 
   @override
@@ -141,7 +142,7 @@ class _CommentCardState extends State<CommentCard> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       widget.comment.needFeedback
-                          ? ElevatedButton(
+                          ? widget.post.userName == user.userName ? ElevatedButton(
                               onPressed: _showCommentFeedback,
                               style: ElevatedButton.styleFrom(
                                   primary: Colors.red,
@@ -152,7 +153,7 @@ class _CommentCardState extends State<CommentCard> {
                                     horizontal: 1.0, vertical: 1.0),
                                 child: Text("Give feedback"),
                               ),
-                            )
+                            ) : Container()
                           : Container()
                     ],
                   ),
