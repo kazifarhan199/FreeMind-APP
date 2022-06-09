@@ -59,7 +59,8 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/background.png"
+  image_path: "assets/icon.png"
+  # https://www.clipartmax.com/middle/m2i8N4K9N4m2Z5d3_brain-icon-transparent-machine/
 
 flutter_native_splash:
   color: "#ffffff"

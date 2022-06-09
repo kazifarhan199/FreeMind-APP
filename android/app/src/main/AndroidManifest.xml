@@ -8,7 +8,7 @@
 
 
    <application
-        android:label="social"
+        android:label="FreeMind"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

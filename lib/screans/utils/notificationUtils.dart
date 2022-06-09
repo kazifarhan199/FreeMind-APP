@@ -2,13 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:social/routing.dart';
-import 'package:social/screans/utils/loadPost.dart';
+
 
 awsomeNotificationInit() async {
   await AwesomeNotifications().initialize(
       // set the icon to null if you want to use the default app icon
-      'resource://drawable/logo',
+      'resource://drawable/icon',
       [
         NotificationChannel(
             channelKey: 'basic_channel',
