@@ -10,14 +10,14 @@ import 'package:social/screans/utils/nothing.dart';
 import 'package:social/screans/utils/postCard.dart';
 import 'package:social/screans/utils/errorBox.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class ProfilePost extends StatefulWidget {
+  const ProfilePost({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<ProfilePost> createState() => _ProfilePostState();
 }
 
-class _HomeState extends State<Home> {
+class _ProfilePostState extends State<ProfilePost> {
   ScrollController _scrollController = ScrollController();
   PostModel postControler = PostModel.fromJson({});
   User user = Hive.box('userBox').getAt(0) as User;
@@ -25,27 +25,15 @@ class _HomeState extends State<Home> {
   List<PostModel> posts = [];
   int nextPage = 1;
 
-  settingsMethod() {
-    Routing.settingsPage(context);
-  }
-
-  createPostMethod() {
-    Routing.createPostPage(context);
-  }
-
-  notificationsMethod() {
-    Routing.notificationsPage(context);
-  }
-
-  profileMethod() {
-    Routing.profilePage(context);
+  profileEditMethod() {
+    Routing.profileEditPage(context);
   }
 
   getPostsMethod() async {
     nextPage += 1;
     try {
       List<PostModel> localPost =
-          await postControler.getPostList(page: nextPage - 1);
+          await postControler.getProfilePostList(page: nextPage - 1);
       moreAvailable = postControler.moreAvailable;
       if(mounted) setState(() {
         if (nextPage == 1)
@@ -110,41 +98,13 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
-          leading: Padding(
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: IconButton(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    icon: CircleAvatar(backgroundImage: NetworkImage(user.imageUrl)),
-                    onPressed: profileMethod,
-                  ),
-                ),
-                SizedBox(width: 3,),
-                Expanded(
-                  child: IconButton(
-                    icon: Icon(Icons.settings),
-                    onPressed: settingsMethod,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          title: Text("FreeMind"),
+          title: Text("Profile"),
           // flexibleSpace: Image(
           //   image: AssetImage('assets/background.png'),
           //   fit: BoxFit.cover,
           // ),
           // backgroundColor: Colors.transparent,
-          actions: [
-            IconButton(
-                onPressed: notificationsMethod,
-                icon: Icon(Icons.notifications)),
-            IconButton(
-                onPressed: createPostMethod,
-                icon: Icon(Icons.add_circle_outline)),
-          ]),
+      ),
       body: Loading(
         loading: loading,
         child: RefreshIndicator(
@@ -155,9 +115,35 @@ class _HomeState extends State<Home> {
                   controller: _scrollController,
                   physics: const BouncingScrollPhysics(
                       parent: AlwaysScrollableScrollPhysics()),
-                  itemCount: posts.length + 1,
+                  itemCount: posts.length + 2,
                   itemBuilder: (context, index) {
-                    if (index >= posts.length) if (moreAvailable)
+                    if (index==0)
+                      return Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: profileEditMethod,
+                              child: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(user.imageUrl),
+                              radius: 40.0,
+                              ),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(padding: const EdgeInsets.all(8.0),
+                              child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900),),),
+                              Padding(padding: const EdgeInsets.all(8.0),
+                              child: Text("",),),
+                            ],
+                          ),
+                          Divider(),
+                        ],
+                      );
+                    if (index-1 >= posts.length) if (moreAvailable)
                       return SizedBox(
                           height: 150,
                           width: 100,
@@ -166,8 +152,9 @@ class _HomeState extends State<Home> {
                       return SizedBox(height: 100, width: 100);
                     else
                       return PostCard(
+                        hasUserDetails:false,
                         on_home: true,
-                        post: posts[index],
+                        post: posts[index-1],
                         deletePostMethod: deletePostMethod,
                       );
                   },

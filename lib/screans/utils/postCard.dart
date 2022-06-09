@@ -20,9 +20,9 @@ class PostCard extends StatefulWidget {
   bool on_home;
   PostModel post;
   Function deletePostMethod;
-  bool defaultCollapsed;
+  bool defaultCollapsed, hasUserDetails;
 
-  PostCard({required this.post, required this.deletePostMethod, this.on_home=false, this.defaultCollapsed=false, Key? key}) : super(key: key);
+  PostCard({required this.post, required this.deletePostMethod, this.on_home=false, this.defaultCollapsed=false, this.hasUserDetails=true, Key? key}) : super(key: key);
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -186,7 +186,7 @@ class _PostCardState extends State<PostCard> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
+            child: widget.hasUserDetails ? Row(
               children: [
                 CircleAvatar(
                   backgroundImage: NetworkImage(
@@ -215,7 +215,7 @@ class _PostCardState extends State<PostCard> {
                             ? Icon(Icons.arrow_drop_up_rounded)
                             : Icon(Icons.arrow_drop_down_circle_rounded)),
               ],
-            ),
+            ):Container(),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

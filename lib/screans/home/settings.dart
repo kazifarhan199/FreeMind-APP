@@ -39,8 +39,8 @@ class _SettingsState extends State<Settings> {
     if (mounted) setState(() => loading = false);
   }
 
-  profileMethod() {
-    Routing.profilePage(context);
+  profileEditMethod() {
+    Routing.profileEditPage(context);
   }
 
   passwordMethod() {
@@ -118,7 +118,7 @@ class _SettingsState extends State<Settings> {
           child: Column(
             children: [
               InkWell(
-                onTap: profileMethod,
+                onTap: profileEditMethod,
                 child: Row(
                   children: [
                     Padding(

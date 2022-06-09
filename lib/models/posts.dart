@@ -119,6 +119,30 @@ class PostModel {
     }
   }
 
+  Future<List<PostModel>> getProfilePostList({required int page}) async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/posts/profile/?page=' + page.toString(),
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+      if (data['results'].length == 0) {
+        this.moreAvailable = false;
+        return [];
+      }
+      if(data['next']==null){
+          this.moreAvailable = false;
+      }
+
+      return data['results']
+          .map((d) => PostModel.fromJson(d))
+          .toList()
+          .cast<PostModel>();
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
   Future<List<LikeModel>> getLikeList() async {
     try {
       Map data = await requestIfPossible(

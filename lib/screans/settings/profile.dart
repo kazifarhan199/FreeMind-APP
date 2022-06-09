@@ -109,7 +109,7 @@ class _ProfileState extends State<Profile> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Profile"),
+          title: Text("Edit Profile"),
           // flexibleSpace: Image(
           //   image: AssetImage('assets/background.png'),
           //   fit: BoxFit.cover,

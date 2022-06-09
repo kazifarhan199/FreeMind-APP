@@ -1,3 +1,4 @@
+import 'package:social/screans/settings/profile_posts.dart';
 import 'package:social/screans/utils/loadPost.dart';
 import 'package:social/wrapper.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,13 @@ class Routing {
   }
 
   static profilePage(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProfilePost()),
+    );
+  }
+
+  static profileEditPage(context){
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Profile()),
