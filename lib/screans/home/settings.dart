@@ -55,6 +55,10 @@ class _SettingsState extends State<Settings> {
     Routing.SurveyPage(context);
   }
 
+  channelsMethod(){
+    Routing.ChannelsPage(context);
+  }
+
   showLogoutAlertMethod() {
     Platform.isAndroid
     ? showDialog(
@@ -184,6 +188,21 @@ class _SettingsState extends State<Settings> {
                       height: 80.0,
                     ),
                     Text("Survey"),
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: channelsMethod,
+                child: Row(
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.group),
+                        onPressed: channelsMethod),
+                    SizedBox(
+                      width: 10.0,
+                      height: 80.0,
+                    ),
+                    Text("Channels"),
                   ],
                 ),
               ),

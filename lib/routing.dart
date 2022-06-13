@@ -1,3 +1,4 @@
+import 'package:social/screans/settings/channel.dart';
 import 'package:social/screans/settings/profile_posts.dart';
 import 'package:social/screans/utils/loadPost.dart';
 import 'package:social/wrapper.dart';
@@ -82,6 +83,13 @@ class Routing {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Group()),
+    );
+  }
+
+  static ChannelsPage(context){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Channel()),
     );
   }
 

@@ -61,7 +61,7 @@ class _GroupState extends State<Group> {
   addUserMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      List<membersModel> localMemebers = await group.addMember(email: _email);
+      List<membersModel> localMemebers = await group.addMember(email: _email, group:user.gid);
       setState(() => members = localMemebers);
       setState(() => _email = '');
     } on Exception catch (e) {
@@ -78,7 +78,7 @@ class _GroupState extends State<Group> {
     if (mounted) setState(() => loading = true);
 
     try {
-      List<membersModel> localMemebers = await group.removeMember(email: email);
+      List<membersModel> localMemebers = await group.removeMember(email: email, group: user.gid);
       setState(() => members = localMemebers);
       if (user.email == email) {
         Navigator.of(context).pop();

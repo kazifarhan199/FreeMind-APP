@@ -6,15 +6,18 @@ import 'package:social/vars.dart';
 class GroupModel{
   String name;
   int id;
+  bool isin;
   List<membersModel> members;
 
-  GroupModel({required this.name, required this.id, required this.members});
+  GroupModel({required this.name, required this.id, required this.members, required this.isin});
 
   static GroupModel fromJson(Map data){
+    print(data);
     String name = data['group_name'] ?? 'Group Name';
     int id = data['id'] ?? 0;
-    List<membersModel> members = data['members']==null? [membersModel.fromJson({}), membersModel.fromJson({})] : data['members'].map(membersModel.fromJson).toList().cast<membersModel>();
-    return GroupModel(name: name, id: id, members: members);
+    List<membersModel> members = data['members']==null? [] : data['members'].map(membersModel.fromJson).toList().cast<membersModel>();
+    bool isin = data['isin'] ?? true;
+    return GroupModel(name: name, id: id, members: members, isin: isin);
   }
 
   static Future<GroupModel> createNewGroup(String name) async {
@@ -38,6 +41,24 @@ class GroupModel{
   }
 
 
+  static Future<List<GroupModel>> getgChannels() async {
+    try {
+      Map data =await requestIfPossible(
+        url: '/groups/gchannel/',
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+        List<GroupModel> localComments =  data['results']
+          .map((d) => GroupModel.fromJson(d))
+          .toList()
+          .cast<GroupModel>();
+      return localComments;
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+
   static Future<GroupModel> getGroup() async {
     try {
       Map data =await requestIfPossible(
@@ -52,43 +73,61 @@ class GroupModel{
     }
   }
 
-  Future<List<membersModel>> addMember({required String email}) async {
+  Future<List<membersModel>> addMember({required String email, bool channel=false, required int group}) async {
     if (email=='' ? true : false){
       throw Exception(ErrorStrings.email_needed);
     }
+    String url = '/groups/members/';
+    if (channel){
+      url = '/groups/gchannel/';
+    }
     try {
       Map data = await requestIfPossible(
-          url: '/groups/members/',
+          url: url,
           body: {
             'email': email,
+            'group':group.toString(),
           },
           requestMethod: 'POST',
           expectedCode: 201,
         );
-      this.members+=[membersModel.fromJson({'email':email, 'username':email}), ];
+      if (!channel){
+        this.members+=[membersModel.fromJson({'email':email, 'username':email}), ];
+      }
       return this.members;
     } on Exception catch (e) {
       throw e;
     }
   }
 
-  Future<List<membersModel>> removeMember({required String email}) async {
+  Future<List<membersModel>> removeMember({required String email, bool channel=false, required int group}) async {
+    if (email=='' ? true : false){
+      throw Exception(ErrorStrings.email_needed);
+    }
+    
+    String url = '/groups/members/';
+    if (channel){
+      url = '/groups/gchannel/';
+    }
+
     try {
       Map data = await requestIfPossible(
-        url: '/groups/members/',
+        url: url,
         body: {
           'email': email,
+          'group': group.toString(),
         },
         requestMethod: 'DELETE',
         expectedCode: 202,
       );
 
-      User user = Hive.box('userBox').getAt(0) as User;
-      if(email == user.email){
-        User.addGroup(0);
+      if (!channel){
+        User user = Hive.box('userBox').getAt(0) as User;
+        if(email == user.email){
+          User.addGroup(0);
+        }
+        this.members.removeWhere((element) => element.email==email);
       }
-      
-      this.members.removeWhere((element) => element.email==email);
       return this.members;
     } on Exception catch (e) {
       throw e;
