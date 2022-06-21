@@ -49,7 +49,6 @@ class _HomeState extends State<Home> {
     if (mounted) setState(() => loading = true);
     try {
       await User.logout();
-      Navigator.of(context).pop();
       Routing.wrapperPage(context);
     } on Exception catch (e) {
       if (mounted)
