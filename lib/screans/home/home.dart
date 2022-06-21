@@ -1,5 +1,9 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +13,7 @@ import 'package:social/screans/utils/loading.dart';
 import 'package:social/screans/utils/nothing.dart';
 import 'package:social/screans/utils/postCard.dart';
 import 'package:social/screans/utils/errorBox.dart';
+import 'package:social/vars.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -25,9 +30,9 @@ class _HomeState extends State<Home> {
   List<PostModel> posts = [];
   int nextPage = 1;
 
-  settingsMethod() {
-    Routing.settingsPage(context);
-  }
+  // settingsMethod() {
+  //   Routing.settingsPage(context);
+  // }
 
   createPostMethod() {
     Routing.createPostPage(context);
@@ -37,9 +42,101 @@ class _HomeState extends State<Home> {
     Routing.notificationsPage(context);
   }
 
+
+// 
+  logoutMethod() async {
+    Navigator.pop(context);
+    if (mounted) setState(() => loading = true);
+    try {
+      await User.logout();
+      Navigator.of(context).pop();
+      Routing.wrapperPage(context);
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
+    }
+    if (mounted) setState(() => loading = false);
+  }
+
   profileMethod() {
+    Navigator.pop(context);
     Routing.profilePage(context);
   }
+
+  profileEditMethod() {
+    Navigator.pop(context);
+    Routing.profileEditPage(context);
+  }
+
+  passwordMethod() {
+    Navigator.pop(context);
+    Routing.passwordPage(context);
+  }
+
+  groupMethod() {
+    Navigator.pop(context);
+    Routing.groupsPage(context);
+  }
+
+  surveyMethod() {
+    Navigator.pop(context);
+    Routing.SurveyPage(context);
+  }
+
+  channelsMethod(){
+    Navigator.pop(context);
+    Routing.ChannelsPage(context);
+  }
+
+  showLogoutAlertMethod() {
+    Navigator.pop(context);
+    Platform.isAndroid
+    ? showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Logout'),
+        content: Text(InfoStrings.logout_info),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoDialogAction(
+            child: const Text('Yes'),
+            isDestructiveAction: true,
+            onPressed: logoutMethod,
+          )
+        ],
+      ),
+    )
+    :showCupertinoDialog<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Logout'),
+        content: Text(InfoStrings.logout_info),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoDialogAction(
+            child: const Text('Yes'),
+            isDestructiveAction: true,
+            onPressed: logoutMethod,
+          )
+        ],
+      ),
+    );
+  }
+
+  // 
 
   getPostsMethod() async {
     nextPage += 1;
@@ -108,29 +205,107 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          centerTitle: true,
-          leading: Padding(
-            padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: IconButton(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    icon: CircleAvatar(backgroundImage: NetworkImage(user.imageUrl)),
-                    onPressed: profileMethod,
+      drawer:Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          InkWell(
+            onTap: profileMethod,
+            child: DrawerHeader(
+          decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
                   ),
-                ),
-                SizedBox(width: 3,),
-                Expanded(
-                  child: IconButton(
-                    icon: Icon(Icons.settings),
-                    onPressed: settingsMethod,
+              child: 
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(user.imageUrl),
+                        radius: 35.0,
+                      ),
+                      SizedBox(height: 10.0,),
+                      Text(
+                        user.userName.substring(0, min(10, user.userName.length)),
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                        style: TextStyle(color: Colors.white, fontSize: 22.0),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.start,children: [
+                  IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: profileEditMethod,
+                      color: Colors.white,
+                    ),
+                    ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+          ListTile(
+            leading: Icon(Icons.group_outlined),
+            title: Text('Manage Group'),
+            onTap: groupMethod,
+          ),
+          ListTile(
+            leading: Icon(Icons.lock_outline),
+            title: Text('Change Password'),
+            onTap: passwordMethod,
+          ),
+          ListTile(
+            leading: Icon(Icons.question_answer),
+            title: Text('Survey'),
+            onTap: surveyMethod,
+          ),
+          ListTile(
+            leading: Icon(Icons.group),
+            title: Text('Channels'),
+            onTap: channelsMethod,
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Logout'),
+            onTap: showLogoutAlertMethod,
+          ),
+          ListTile(
+            leading: Icon(Icons.info),
+            title: Text(app_version),
+            onTap: (){},
+          ),
+        ],
+      ),
+    ),
+      appBar: AppBar(
+          centerTitle: true,
+          // leading: Padding(
+          //   padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          //   child: Row(
+          //     children: [
+          //       Expanded(
+          //         child: IconButton(
+          //           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          //           icon: CircleAvatar(backgroundImage: NetworkImage(user.imageUrl)),
+          //           onPressed: profileMethod,
+          //         ),
+          //       ),
+          //       SizedBox(width: 3,),
+          //       Expanded(
+          //         child: IconButton(
+          //           icon: Icon(Icons.settings),
+          //           onPressed: settingsMethod,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           title: Text("FreeMind"),
           // flexibleSpace: Image(
           //   image: AssetImage('assets/background.png'),
@@ -138,6 +313,15 @@ class _HomeState extends State<Home> {
           // ),
           // backgroundColor: Colors.transparent,
           actions: [
+            // IconButton(
+            //         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            //         icon: CircleAvatar(backgroundImage: NetworkImage(user.imageUrl)),
+            //         onPressed: profileMethod,
+            //       ),
+            //       IconButton(
+            //         icon: Icon(Icons.settings),
+            //         onPressed: settingsMethod,
+            //       ),
             IconButton(
                 onPressed: notificationsMethod,
                 icon: Icon(Icons.notifications)),
