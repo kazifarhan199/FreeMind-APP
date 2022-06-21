@@ -71,6 +71,7 @@ class _GroupState extends State<Group> {
             error: e.toString().substring(11),
             errorTitle: 'Error');
     }
+    await getGroupMethod();
     if (mounted) setState(() => loading = false);
   }
 
@@ -123,7 +124,7 @@ class _GroupState extends State<Group> {
       body: Loading(
         loading: loading,
         child: RefreshIndicator(
-          onRefresh: () async {},
+          onRefresh: () async {getGroupMethod();},
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
@@ -144,7 +145,7 @@ class _GroupState extends State<Group> {
                   SizedBox(height: 20.0),
                   TextInput(
                     initialText: _email,
-                    labelText: 'Email',
+                    labelText: 'Email/Username',
                     onChanged: (val) => setState(() => _email = val),
                   ),
                   SizedBox(height: 20.0),
