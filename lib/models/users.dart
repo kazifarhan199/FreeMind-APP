@@ -30,13 +30,17 @@ class User {
   @HiveField(5)
   String token;
 
+  @HiveField(6)
+  String bio;
+
   User(
       {required this.userName,
       required this.userImage,
       required this.email,
       required this.id,
       required this.gid,
-      required this.token});
+      required this.token,
+      required this.bio});
 
   static Future<String> getDeviceToekn() async {
     return (await messaging.getToken())!;
@@ -49,13 +53,15 @@ class User {
     String userImage = data['image'] ?? '/media/image/notfound.jpg';
     int id = data['id'] ?? 0;
     int gid = data['gid'] ?? 0;
+    String bio = data['bio'] ?? '';
     return User(
         userName: userName,
         userImage: userImage,
         email: email,
         id: id,
         gid: gid,
-        token: token);
+        token: token,
+        bio:bio);
   }
 
   Map data = {};
@@ -229,13 +235,13 @@ class User {
   }
 
   static Future<bool> profileEdit(
-      {required String email, required String userName, required image}) async {
+      {required String email, required String userName, required String bio, required image}) async {
 
     if (email == ''
         ? true
         : userName == ''
             ? true
-            : false) {
+            : bio == '' ? true : false) {
       throw Exception(ErrorStrings.all_fiields_needed);
     }
 
@@ -247,6 +253,7 @@ class User {
         body: {
           "email": email,
           "username": userName,
+          "bio_obj": bio
         },
         files: image == null
             ? []

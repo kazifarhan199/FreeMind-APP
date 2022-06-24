@@ -23,15 +23,14 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   User user = Hive.box('userBox').getAt(0) as User;
   final ImagePicker _picker = ImagePicker();
-  String email = '', userName = '';
+  String email = '', userName = '', bio='';
   File? image;
   bool loading = false;
 
   Future saveProfileMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      await User.profileEdit(email: email, userName: userName, image: image);
-      Navigator.of(context).pop();
+      await User.profileEdit(email: email, userName: userName, bio:bio, image: image);
       Navigator.of(context).pop();
       Routing.wrapperPage(context);
     } on Exception catch (e) {
@@ -98,6 +97,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     email = user.email;
+    bio = user.bio;
     userName = user.userName;
   }
 
@@ -154,6 +154,13 @@ class _ProfileState extends State<Profile> {
                   onChanged: (val) => userName = val,
                   initialText: user.userName,
                   labelText: 'User id',
+                ),
+                SizedBox(height: 30.0),
+                // bio
+                TextInput(
+                  onChanged: (val) => bio = val,
+                  initialText: user.bio,
+                  labelText: 'Bio',
                 ),
                 SizedBox(
                   height: 40.0,

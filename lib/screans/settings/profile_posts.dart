@@ -118,7 +118,7 @@ class _ProfilePostState extends State<ProfilePost> {
                   itemCount: posts.length + 2,
                   itemBuilder: (context, index) {
                     if (index==0)
-                      return Row(
+                      return Column(
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -127,7 +127,7 @@ class _ProfilePostState extends State<ProfilePost> {
                               child: CircleAvatar(
                               backgroundImage:
                                   NetworkImage(user.imageUrl),
-                              radius: 40.0,
+                              radius: 60.0,
                               ),
                             ),
                           ),
@@ -135,13 +135,13 @@ class _ProfilePostState extends State<ProfilePost> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(padding: const EdgeInsets.all(8.0),
-                              child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900),),),
+                              child: Center(child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 25.0), )),),
                               Padding(padding: const EdgeInsets.all(8.0),
-                              child: Text("",),),
+                              child: Expanded(child: Center(child: Text(user.bio, textAlign: TextAlign.center,))),),
                             ],
                           ),
                           Divider(),
-                        ],
+                       ],
                       );
                     if (index-1 >= posts.length) if (moreAvailable)
                       return SizedBox(
