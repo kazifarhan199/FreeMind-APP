@@ -1,5 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:flutter/rendering.dart';
 import 'package:hive/hive.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +81,11 @@ class _ProfilePostState extends State<ProfilePost> {
     if (mounted) setState(() => loading = false);
   }
 
+  postDetailMethod(PostModel post) async {
+      await Routing.PostPage(context, post, defaultCollapsed:false);
+      setState(() {post;});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -110,57 +116,48 @@ class _ProfilePostState extends State<ProfilePost> {
         child: RefreshIndicator(
           onRefresh: refreshMethod,
           child: posts.length == 0
-              ? Nothing(text: "No posts")
-              : ListView.builder(
-                  controller: _scrollController,
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  itemCount: posts.length + 2,
-                  itemBuilder: (context, index) {
-                    if (index==0)
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: InkWell(
-                              onTap: profileEditMethod,
-                              child: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(user.imageUrl),
-                              radius: 60.0,
-                              ),
-                            ),
-                          ),
-                          Column(
+          ? Nothing(text: "No posts")
+          : Expanded(
+            child: GridView.builder(
+                gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2, mainAxisSpacing: 0.0, crossAxisSpacing:15.0),
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+                itemCount: posts.length+2,
+                itemBuilder: (context, index) {
+                  if (index==0){
+                    return Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: InkWell(
+                        onTap: profileEditMethod,
+                        child: CircleAvatar(
+                        backgroundImage:
+                            NetworkImage(user.imageUrl),
+                        radius: 30.0,
+                        ),
+                      ),
+                    );
+                  }
+                  else if (index==1){
+                    return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(padding: const EdgeInsets.all(8.0),
-                              child: Center(child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 25.0), )),),
-                              Padding(padding: const EdgeInsets.all(8.0),
-                              child: Expanded(child: Center(child: Text(user.bio, textAlign: TextAlign.center,))),),
+                              child: Center(child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20.0), )),),
+                              Padding(padding: const EdgeInsets.all(5.0),
+                              child: Expanded(child: Center(child: Text(user.bio,))),),
                             ],
-                          ),
-                          Divider(),
-                       ],
-                      );
-                    if (index-1 >= posts.length) if (moreAvailable)
-                      return SizedBox(
-                          height: 150,
-                          width: 100,
-                          child: Loading(loading: true, child: Container()));
-                    else
-                      return SizedBox(height: 100, width: 100);
-                    else
-                      return PostCard(
-                        hasUserDetails:false,
-                        on_home: true,
-                        post: posts[index-1],
-                        deletePostMethod: deletePostMethod,
-                      );
-                  },
-                ),
-        ),
+                          );
+                  }
+                  else{
+                    return InkWell(
+                      onTap: (() => postDetailMethod(posts[index-2])),
+                      child: Image(image: NetworkImage(posts[index-2].imageUrl)),
+                    );
+                  }
+                }
+                )
+          ),
       ),
-    );
+    ),);
   }
 }

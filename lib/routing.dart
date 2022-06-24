@@ -93,10 +93,10 @@ class Routing {
     );
   }
 
-  static PostPage(context, PostModel post) async {
+  static PostPage(context, PostModel post, {bool defaultCollapsed=true}) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Post(post:post, defaultCollapsed: true,)),
+      MaterialPageRoute(builder: (context) => Post(post:post, defaultCollapsed: defaultCollapsed,)),
     );
   }
 
