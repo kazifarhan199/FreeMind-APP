@@ -62,7 +62,7 @@ class _HomeState extends State<Home> {
 
   profileMethod() {
     Navigator.pop(context);
-    Routing.profilePage(context);
+    Routing.profilePage(context, uid: user.id);
   }
 
   profileEditMethod() {

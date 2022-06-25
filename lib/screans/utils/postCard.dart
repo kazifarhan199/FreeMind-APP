@@ -19,10 +19,12 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 class PostCard extends StatefulWidget {
   bool on_home;
   PostModel post;
-  Function deletePostMethod;
+  Function deletePostMethod, refreshMethod;
   bool defaultCollapsed, hasUserDetails;
 
-  PostCard({required this.post, required this.deletePostMethod, this.on_home=false, this.defaultCollapsed=false, this.hasUserDetails=true, Key? key}) : super(key: key);
+  static defaultFunction(){}
+
+  PostCard({required this.post, required this.deletePostMethod, this.refreshMethod=defaultFunction, this.on_home=false, this.defaultCollapsed=false, this.hasUserDetails=true, Key? key}) : super(key: key);
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -37,6 +39,10 @@ class _PostCardState extends State<PostCard> {
   void initState() {
     super.initState();
     colaps = widget.defaultCollapsed;
+  }
+
+  profileMethod({required int uid}) {
+    Routing.profilePage(context, uid: uid);
   }
 
   likeMethod() async {
@@ -65,12 +71,19 @@ class _PostCardState extends State<PostCard> {
     return Container();
   }
 
+  profilePageMethod(){
+    if (widget.on_home){
+      profileMethod(uid: widget.post.uid);
+    }
+    else{}
+  }
+
   showOptions() {
     Platform.isAndroid 
     ? showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Container(
-        height:200,
+        height:300,
         child: (
           Column(children:  <Widget>[
             Expanded(
@@ -100,6 +113,13 @@ class _PostCardState extends State<PostCard> {
               onPressed: detailsPageMethod
             ),
           ),
+            Divider(),
+            Expanded(
+              child: CupertinoDialogAction(
+                child: const Text('Like/Unlike'),
+                onPressed: () async {Navigator.pop(context); await likeMethod();widget.refreshMethod();},
+              ),
+            ),
             Divider(),
             Expanded(
               child: CupertinoDialogAction(
@@ -138,6 +158,10 @@ class _PostCardState extends State<PostCard> {
             child: const Text('Detail'),
             onPressed: detailsPageMethod
           ),
+          CupertinoActionSheetAction(
+            child: const Text('Like/Unlike'),
+            onPressed: () async {Navigator.pop(context); await likeMethod();widget.refreshMethod();},
+          ),        
           CupertinoActionSheetAction(
             child: const Text('Cancle'),
             onPressed: () {
@@ -188,23 +212,32 @@ class _PostCardState extends State<PostCard> {
             padding: const EdgeInsets.all(8.0),
             child: widget.hasUserDetails ? Row(
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      widget.post.userImageUrl),
+                InkWell(
+                  onTap: profilePageMethod,
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        widget.post.userImageUrl),
+                  ),
                 ),
-                SizedBox(width: 10.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      InkWell(
-                        onTap: (){},
-                        child: Text(
-                          widget.post.userName,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                InkWell(
+                  onTap: profilePageMethod,
+                  child: SizedBox(width: 10.0)
+                ),
+                InkWell(
+                        onTap: profilePageMethod,
+                  child: Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: widget.on_home ? MediaQuery.of(context).size.width*0.7:MediaQuery.of(context).size.width*0.58,
+                          child: Text(
+                            widget.post.userName,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 widget.on_home
@@ -214,6 +247,9 @@ class _PostCardState extends State<PostCard> {
                         icon: colaps
                             ? Icon(Icons.arrow_drop_up_rounded)
                             : Icon(Icons.arrow_drop_down_circle_rounded)),
+
+                  IconButton(
+                           onPressed: showOptions, icon: Icon(CupertinoIcons.ellipsis))
               ],
             ):Container(),
           ),
@@ -263,8 +299,6 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ],
               ),
-              IconButton(
-                  onPressed: showOptions, icon: Icon(CupertinoIcons.ellipsis))
             ],
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
           ),

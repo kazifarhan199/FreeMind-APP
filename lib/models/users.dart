@@ -318,4 +318,18 @@ class User {
       throw e;
     }
   }
+
+  static Future<User> getUserProfile({required int uid}) async {
+    try {
+      Map  data = await requestIfPossible(
+      url: '/accounts/profile/?user='+uid.toString(),
+      requestMethod: 'GET',
+      expectedCode: 200,
+    );
+      User user = User.fromJson(data);
+      return user;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

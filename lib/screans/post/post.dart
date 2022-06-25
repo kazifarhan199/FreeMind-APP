@@ -105,12 +105,20 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
 
   Future<void> commentsRefreshMethod() async {
     if (mounted) setState(() => comments = []);
-    getCommentMethod();
+    await getCommentMethod();
   }
 
   Future<void> likesRefreshMethod() async {
     if (mounted) setState(() => likes = []);
-    getLikesMethod();
+    await getLikesMethod();
+  }
+
+  Future<void> refreshMethod() async {
+    if (mounted) setState(() => comments = []);
+    if (mounted) setState(() => likes = []);
+    
+    await getLikesMethod();
+    await getCommentMethod();
   }
 
   @override
@@ -141,6 +149,7 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
             PostCard(
               deletePostMethod: deletePostMethod,
               post: widget.post,
+              refreshMethod: refreshMethod,
               defaultCollapsed: widget.defaultCollapsed,
             ),
             TabBar(

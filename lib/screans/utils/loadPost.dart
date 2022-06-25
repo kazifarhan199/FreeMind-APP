@@ -17,7 +17,7 @@ class _LoadPostState extends State<LoadPost> {
   gotoPostMethod() async {
     if(mounted) setState(() => loading=true);
     try{
-      PostModel post = await PostModel.getPost(id: widget.id);
+      PostModel post = await PostModel.fromJson({}).getPost(id: widget.id);
       Routing.PostPageReplacement(context, post);
     }catch(e) {
 

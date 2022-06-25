@@ -58,10 +58,10 @@ class Routing {
     );
   }
 
-  static profilePage(context) {
+  static profilePage(context, {required int uid}) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProfilePost()),
+      MaterialPageRoute(builder: (context) => ProfilePost(uid: uid,)),
     );
   }
 

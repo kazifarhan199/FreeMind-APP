@@ -21,7 +21,7 @@ class _NotificationsCardState extends State<NotificationsCard> {
   goToPostMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      PostModel post = await PostModel.getPost(id: widget.notification.post);
+      PostModel post = await PostModel.fromJson({}).getPost(id: widget.notification.post);
       Routing.PostPage(context, post);
     } on Exception catch( e){
       if (mounted) errorBox(context:context, error:e.toString().substring(11), errorTitle: 'Error'); 

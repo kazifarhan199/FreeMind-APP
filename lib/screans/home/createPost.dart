@@ -43,7 +43,7 @@ class _CreatePostState extends State<CreatePost> {
           throw Exception(ErrorStrings.image_needed);
         }
         image = await cropMethod(image!);
-        await PostModel.createPost(title: title, image: image!);
+        await PostModel.fromJson({}).createPost(title: title, image: image!);
         Navigator.of(context).pop();
         Routing.wrapperPage(context);
       } on Exception catch (e) {
