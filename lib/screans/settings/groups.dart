@@ -1,10 +1,15 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:social/models/users.dart';
 import 'package:social/models/groups.dart';
+import 'package:social/screans/utils/imagePicker.dart';
 import 'package:social/screans/utils/loading.dart';
 import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/textInput.dart';
@@ -12,7 +17,8 @@ import 'package:social/screans/utils/memberCard.dart';
 
 class Group extends StatefulWidget {
   int gid;
-  Group({required this.gid, Key? key}) : super(key: key);
+  bool doublePop;
+  Group({required this.gid, this.doublePop=true, Key? key}) : super(key: key);
 
   @override
   State<Group> createState() => _GroupState();
@@ -26,12 +32,19 @@ class _GroupState extends State<Group> {
   User user = Hive.box('userBox').getAt(0) as User;
   List<membersModel> members = [];
 
-  getGroupMethod() async {
+  final ImagePicker _picker = ImagePicker();
+  File? image;
+
+
+  saveGroupMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      group = await GroupModel.getGroup(gid:widget.gid);
-      setState(() => members = group.members);
-      setState(() => _name = group.name);
+      await group.editGroup(name: _name, gid: widget.gid, image: image);
+      Navigator.of(context).pop();
+      if(widget.doublePop){
+        Navigator.of(context).pop();
+      }
+      Routing.wrapperPage(context);
     } on Exception catch (e) {
       if (mounted)
         errorBox(
@@ -42,13 +55,63 @@ class _GroupState extends State<Group> {
     if (mounted) setState(() => loading = false);
   }
 
-  saveGroupMethod() async {
+
+  getImageMethod(String fromWhere) async {
+    XFile? localImage;
+    if (fromWhere == 'camera') {
+      localImage = await getImageFromCamera(context);
+    } else if (fromWhere == 'photos') {
+      localImage = await getImageFromPhtos(context);
+    }
+    if (localImage != null) {
+      if (mounted) setState(() => image = File(localImage!.path));
+    }
+  }
+
+  fromWhereChooser() {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Image from'),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Icon(Icons.camera), Text('  Camera')],
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              getImageMethod('camera');
+            },
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: false,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Icon(Icons.photo), Text('  Photos')],
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              getImageMethod('photos');
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: const Text('Cancle'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  getGroupMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      await group.editGroup(name: _name, gid: widget.gid);
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Routing.wrapperPage(context);
+      group = await GroupModel.getGroup(gid:widget.gid);
+      setState(() => members = group.members);
+      setState(() => _name = group.name);
     } on Exception catch (e) {
       if (mounted)
         errorBox(
@@ -134,6 +197,11 @@ class _GroupState extends State<Group> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  SizedBox(height: 15.0),
+                  InkWell(
+                    onTap: () => fromWhereChooser(),
+                    child: CircleAvatar(backgroundImage: image==null? NetworkImage(group.imageUrl): FileImage(image!) as ImageProvider, radius: 130.0,)
+                    ),
                   SizedBox(height: 15.0),
                   TextInput(
                     initialText: _name,

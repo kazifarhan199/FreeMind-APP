@@ -1,3 +1,4 @@
+import 'package:http/http.dart';
 import 'package:hive/hive.dart';
 import 'package:social/models/request.dart';
 import 'package:social/models/users.dart';
@@ -8,8 +9,10 @@ class GroupModel{
   int id;
   bool isin;
   List<membersModel> members;
+  String image;
 
-  GroupModel({required this.name, required this.id, required this.members, required this.isin});
+
+  GroupModel({required this.name, required this.id, required this.members, required this.isin, required this.image});
 
   static GroupModel fromJson(Map data){
     print(data);
@@ -17,8 +20,11 @@ class GroupModel{
     int id = data['id'] ?? 0;
     List<membersModel> members = data['members']==null? [] : data['members'].map(membersModel.fromJson).toList().cast<membersModel>();
     bool isin = data['isin'] ?? true;
-    return GroupModel(name: name, id: id, members: members, isin: isin);
+    String image = data['image_path'] ?? '/media/image/default_group.jpg';
+    return GroupModel(name: name, id: id, members: members, isin: isin, image:image);
   }
+
+  String get imageUrl => base_url + this.image;
 
   static Future<GroupModel> createNewGroup(String name) async {
     if (name=='' ? true : false){
@@ -151,7 +157,7 @@ class GroupModel{
   }
 
 
-  Future<bool> editGroup({required String name, required int gid}) async {
+  Future<bool> editGroup({required String name, required int gid, image}) async {
     if (name=='' ? true : false){
       throw Exception(ErrorStrings.name_needed);
     }
@@ -161,6 +167,14 @@ class GroupModel{
         body: {
           'group_name': name,
         },
+        files: image == null
+            ? []
+            : [
+                await MultipartFile.fromPath(
+                  'image',
+                  image.path,
+                )
+              ],
         requestMethod: 'PUT',
         expectedCode: 202,
       );

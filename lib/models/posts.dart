@@ -5,12 +5,13 @@ import 'package:social/models/request.dart';
 
 class PostModel {
   String userName, userImage, title, image;
-  int likes, comments, id, uid;
+  int likes, comments, id, uid, group;
   bool owner, liked, moreAvailable = true;
   String get userImageUrl => base_url + userImage;
   String get imageUrl => base_url + image;
   List<CommentModel> commentsList = [];
   List<LikeModel> likesList = [];
+  String groupName, groupImage;
   Map data = {};
 
   PostModel({
@@ -24,6 +25,9 @@ class PostModel {
     required this.liked,
     required this.id,
     required this.uid,
+    required this.groupName, 
+    required this.groupImage,
+    required this.group,
   });
 
   Map getPreviousRawData(){
@@ -47,6 +51,9 @@ class PostModel {
     bool owner = data['owner'] ?? false;
     bool liked = data['liked'] ?? false;
     int uid = data['uid'] ?? 0;
+    String groupName = data['group_name'] ?? '';
+    String groupImage = data['group_image'] ?? '';
+    int group = data['group'] ?? 0;
     return PostModel(
         userName: userName,
         userImage: userImage,
@@ -57,11 +64,17 @@ class PostModel {
         owner: owner,
         liked: liked,
         id: id,
-        uid:uid);
+        uid:uid,
+        groupImage:groupImage,
+        groupName:groupName,
+        group:group);
   }
 
+  String get groupImageUrl => base_url + this.groupImage;
+
+
   Future<PostModel> createPost(
-      {required String title, required File image}) async {
+      {required String title, required File image, required int group}) async {
     if (title == '' ? true : false) {
       throw Exception(ErrorStrings.title_needed);
     }
@@ -82,6 +95,7 @@ class PostModel {
         files: file,
         body: {
           "title": title,
+          'group': group.toString(),
         },
       );
       return PostModel.fromJson(data);

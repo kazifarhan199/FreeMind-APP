@@ -41,8 +41,7 @@ class _GroupsCardState extends State<GroupsCard> {
             child: Row(
               children: [
                 CircleAvatar(
-                  child: Icon(Icons.group),
-                  // backgroundImage: NetworkImage(widget.group.imageURL),
+                  backgroundImage: NetworkImage(widget.group.imageUrl),
                 ),
                 SizedBox(width: 10.0),
                 Expanded(

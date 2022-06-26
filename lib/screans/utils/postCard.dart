@@ -67,6 +67,17 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
+  groupsDetailPageMethod() async {
+    print("herhehr");
+    if (mounted) setState(() => loading = true);
+    try {
+      Routing.groupsDetailPage(context, gid: widget.post.group, doublePop:false);
+    } on Exception catch( e){
+      if (mounted) errorBox(context:context, error:e.toString().substring(11), errorTitle: 'Error'); 
+    }
+    if (mounted) setState(() => loading = false);
+  }
+
   Widget androidOptionsBuilder(){
     return Container();
   }
@@ -223,21 +234,38 @@ class _PostCardState extends State<PostCard> {
                   onTap: profilePageMethod,
                   child: SizedBox(width: 10.0)
                 ),
-                InkWell(
-                        onTap: profilePageMethod,
-                  child: Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: widget.on_home ? MediaQuery.of(context).size.width*0.7:MediaQuery.of(context).size.width*0.58,
-                          child: Text(
-                            widget.post.userName,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: widget.on_home ? MediaQuery.of(context).size.width*0.7:MediaQuery.of(context).size.width*0.58,
+                        child: Text(
+                          widget.post.userName,
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ],
-                    ),
+                      ),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: groupsDetailPageMethod,
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  widget.post.groupImageUrl),
+                              radius: 10.0,
+                            ),
+                          ),
+                          SizedBox(width: 5,),
+                          SizedBox(
+                            width: widget.on_home ? MediaQuery.of(context).size.width*0.5:MediaQuery.of(context).size.width*0.4,
+                            child: Text(
+                              widget.post.groupName,
+                              style: TextStyle(fontSize: 10),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
                 widget.on_home

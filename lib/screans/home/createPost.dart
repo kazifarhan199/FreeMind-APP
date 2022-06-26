@@ -1,6 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
+import 'package:social/models/groups.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,9 +23,38 @@ class CreatePost extends StatefulWidget {
 
 class _CreatePostState extends State<CreatePost> {
   final cropKey = GlobalKey<CropState>();
+  List<GroupModel> groups = [];
   File? image;
   String title = '';
   bool loading = false;
+  GroupModel dropdownValue = GroupModel.fromJson({});
+
+  @override
+  void initState() {
+    super.initState();
+    getGroupMethod();
+  }
+
+  getGroupMethod() async {
+    if (mounted) setState(() => loading = true);
+    try {
+      List<GroupModel> g = await GroupModel.getGroups();
+      setState(() {
+        groups = g;
+      });
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
+    }
+    if (groups.length > 0)
+      setState(() {
+        dropdownValue = groups[0];
+      });
+    if (mounted) setState(() => loading = false);
+  }
 
   Future createPostMethod() async {
     if (mounted) setState(() => loading = true);
@@ -43,7 +73,7 @@ class _CreatePostState extends State<CreatePost> {
           throw Exception(ErrorStrings.image_needed);
         }
         image = await cropMethod(image!);
-        await PostModel.fromJson({}).createPost(title: title, image: image!);
+        await PostModel.fromJson({}).createPost(title: title, image: image!, group:dropdownValue.id);
         Navigator.of(context).pop();
         Routing.wrapperPage(context);
       } on Exception catch (e) {
@@ -169,9 +199,46 @@ class _CreatePostState extends State<CreatePost> {
                               ),
                       ),
                       onTap: fromWhereChooser),
-              SizedBox(
-                height: 40,
+              SizedBox(height: 40),
+              Divider(),
+              SizedBox(height: 20),
+              Text("Group", style: TextStyle(fontSize: 20.0),),
+              SizedBox(height: 20),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: DropdownButton<GroupModel>(
+                        value: dropdownValue,
+                        icon: const Icon(Icons.arrow_downward),
+                        elevation: 16,
+                        // style: TextStyle(color: Theme.of(context).primaryColor),
+                        underline: Container(
+                          height: 0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onChanged: (GroupModel? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                        },
+                        items: groups
+                            .map<DropdownMenuItem<GroupModel>>((GroupModel g) {
+                          return DropdownMenuItem<GroupModel>(
+                            value: g,
+                            child: Row(
+                              children: [
+                                CircleAvatar(backgroundImage: NetworkImage(g.imageUrl), radius: 15.0,),
+                                SizedBox(width: 8,),
+                                Text(g.name),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                ),
               ),
+
+
             ],
           ),
         ),

@@ -87,10 +87,10 @@ class Routing {
     );
   }
 
-  static groupsDetailPage(context, {required int gid}) {
+  static groupsDetailPage(context, {required int gid, bool doublePop=true}) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Group(gid: gid,)),
+      MaterialPageRoute(builder: (context) => Group(gid: gid,doublePop:doublePop)),
     );
   }
 
