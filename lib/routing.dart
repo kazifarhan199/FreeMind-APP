@@ -1,4 +1,5 @@
 import 'package:social/screans/settings/channel.dart';
+import 'package:social/screans/settings/groups_list.dart';
 import 'package:social/screans/settings/profile_posts.dart';
 import 'package:social/screans/utils/loadPost.dart';
 import 'package:social/wrapper.dart';
@@ -16,7 +17,7 @@ import 'package:social/screans/Auth/resetPassword.dart';
 import 'package:social/screans/home/notifications.dart';
 
 class Routing {
-  static wrapperPage(context) {
+  static  wrapperPage(context) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => Wrapper()),
@@ -82,7 +83,14 @@ class Routing {
   static groupsPage(context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Group()),
+      MaterialPageRoute(builder: (context) => GroupsList()),
+    );
+  }
+
+  static groupsDetailPage(context, {required int gid}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Group(gid: gid,)),
     );
   }
 

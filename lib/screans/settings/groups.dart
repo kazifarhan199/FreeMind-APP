@@ -11,7 +11,8 @@ import 'package:social/screans/utils/textInput.dart';
 import 'package:social/screans/utils/memberCard.dart';
 
 class Group extends StatefulWidget {
-  const Group({Key? key}) : super(key: key);
+  int gid;
+  Group({required this.gid, Key? key}) : super(key: key);
 
   @override
   State<Group> createState() => _GroupState();
@@ -28,7 +29,7 @@ class _GroupState extends State<Group> {
   getGroupMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      group = await GroupModel.getGroup();
+      group = await GroupModel.getGroup(gid:widget.gid);
       setState(() => members = group.members);
       setState(() => _name = group.name);
     } on Exception catch (e) {
@@ -44,7 +45,7 @@ class _GroupState extends State<Group> {
   saveGroupMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      await group.editGroup(name: _name);
+      await group.editGroup(name: _name, gid: widget.gid);
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       Routing.wrapperPage(context);
@@ -61,7 +62,7 @@ class _GroupState extends State<Group> {
   addUserMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      List<membersModel> localMemebers = await group.addMember(email: _email, group:user.gid);
+      List<membersModel> localMemebers = await group.addMember(email: _email, group:user.gid, gid: widget.gid);
       setState(() => members = localMemebers);
       setState(() => _email = '');
     } on Exception catch (e) {
@@ -79,7 +80,7 @@ class _GroupState extends State<Group> {
     if (mounted) setState(() => loading = true);
 
     try {
-      List<membersModel> localMemebers = await group.removeMember(email: email, group: user.gid);
+      List<membersModel> localMemebers = await group.removeMember(email: email, group: user.gid, gid: widget.gid);
       setState(() => members = localMemebers);
       if (user.email == email) {
         Navigator.of(context).pop();

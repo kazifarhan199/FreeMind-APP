@@ -58,11 +58,27 @@ class GroupModel{
     }
   }
 
-
-  static Future<GroupModel> getGroup() async {
+  static Future<List<GroupModel>> getGroups() async {
     try {
       Map data =await requestIfPossible(
-        url: '/groups/',
+        url: '/groups/list/',
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+        List<GroupModel> localComments =  data['results']
+          .map((d) => GroupModel.fromJson(d))
+          .toList()
+          .cast<GroupModel>();
+      return localComments;
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+  static Future<GroupModel> getGroup({required int gid}) async {
+    try {
+      Map data =await requestIfPossible(
+        url: '/groups/?group='+gid.toString(),
         requestMethod: 'GET',
         expectedCode: 200,
       );
@@ -73,11 +89,11 @@ class GroupModel{
     }
   }
 
-  Future<List<membersModel>> addMember({required String email, bool channel=false, required int group}) async {
+  Future<List<membersModel>> addMember({required String email, bool channel=false, required int group, required int gid}) async {
     if (email=='' ? true : false){
       throw Exception(ErrorStrings.email_needed);
     }
-    String url = '/groups/members/';
+    String url = '/groups/members/?group='+gid.toString();
     if (channel){
       url = '/groups/gchannel/';
     }
@@ -100,12 +116,12 @@ class GroupModel{
     }
   }
 
-  Future<List<membersModel>> removeMember({required String email, bool channel=false, required int group}) async {
+  Future<List<membersModel>> removeMember({required String email, bool channel=false, required int group, required int gid}) async {
     if (email=='' ? true : false){
       throw Exception(ErrorStrings.email_needed);
     }
     
-    String url = '/groups/members/';
+    String url = '/groups/members/?group='+gid.toString();
     if (channel){
       url = '/groups/gchannel/';
     }
@@ -135,13 +151,13 @@ class GroupModel{
   }
 
 
-  Future<bool> editGroup({required String name}) async {
+  Future<bool> editGroup({required String name, required int gid}) async {
     if (name=='' ? true : false){
       throw Exception(ErrorStrings.name_needed);
     }
     try {
       Map data = await requestIfPossible(
-        url: '/groups/',
+        url: '/groups/?group='+gid.toString(),
         body: {
           'group_name': name,
         },

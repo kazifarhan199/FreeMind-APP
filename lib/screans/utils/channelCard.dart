@@ -29,13 +29,13 @@ class _ChannelCardState extends State<ChannelCard> {
 
   addUserMethod() async {
     setState(() => loading = true);
-    await widget.group.addMember(email: user.email, channel: true, group:widget.group.id);
+    await widget.group.addMember(email: user.email, channel: true, group:widget.group.id, gid: widget.group.id);
     setState(() => loading = false);
   }
 
   removeUserMethod() async {
     setState(() => loading = true);
-    await widget.group.removeMember(email: user.email, channel: true, group: widget.group.id);
+    await widget.group.removeMember(email: user.email, channel: true, group: widget.group.id, gid: widget.group.id);
     setState(() => loading = false);
   }
 

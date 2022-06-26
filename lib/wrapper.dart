@@ -56,6 +56,7 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Loading(loading: loading,child: isUserLoggedIn()? userHasGroup()?Home():NoGroup():Login());
+    // return Loading(loading: loading,child: isUserLoggedIn()? user  HasGroup()?Home():NoGroup():Login());
+    return Loading(loading: loading,child: isUserLoggedIn()? true?Home():NoGroup():Login());
   }
 }
