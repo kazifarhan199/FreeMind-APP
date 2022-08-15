@@ -18,15 +18,15 @@ class Survey extends StatefulWidget {
 class _SurveyState extends State<Survey> {
   List<SurveyModel> questions = [];
   bool loading = false;
-  int no_questions=0, no_cuppled=0;
+  int no_questions = 0, no_cuppled = 0;
 
   getSurvey() async {
     if (mounted) setState(() => loading = true);
     try {
       List<SurveyModel> localQuestions = await SurveyModel.getSurvey();
       for (var q in localQuestions) {
-        if(q.is_label==false){
-          if(q.is_coupuled == false){
+        if (q.is_label == false) {
+          if (q.is_coupuled == false) {
             no_cuppled++;
           }
           no_questions++;
@@ -57,7 +57,6 @@ class _SurveyState extends State<Survey> {
     if (mounted) setState(() => loading = true);
 
     for (var question in questions) {
-
       try {
         question.sendQuestionReply();
       } on Exception catch (e) {
@@ -69,7 +68,6 @@ class _SurveyState extends State<Survey> {
       }
     }
 
-    Navigator.of(context).pop();
     Navigator.of(context).pop();
     Routing.wrapperPage(context);
 
@@ -104,45 +102,58 @@ class _SurveyState extends State<Survey> {
         body: ListView.builder(
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
-          itemCount: questions.length+4,
+          itemCount: questions.length + 4,
           itemBuilder: (context, index) {
-            if (index == 0){
+            if (index == 0) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Center(child: Text(InfoStrings.survey_info, style: Theme.of(context).textTheme.headline6,)),
+                child: Center(
+                    child: Text(
+                  InfoStrings.survey_info,
+                  style: Theme.of(context).textTheme.headline6,
+                )),
               );
             }
-    
-            if(index-1 < no_cuppled) // index = 5 -> 0-4
+
+            if (index - 1 < no_cuppled) // index = 5 -> 0-4
               return SurveyCard(
-                question: questions[index-1],
+                question: questions[index - 1],
               );
-    
-            if(index-1 == no_cuppled) // index = 6
+
+            if (index - 1 == no_cuppled) // index = 6
               return InkWell(
-                onTap: (){},
+                onTap: () {},
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                  child: Text(InfoStrings.survey_cuppled_info, style: Theme.of(context).textTheme.headline5,),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 8.0),
+                  child: Text(
+                    InfoStrings.survey_cuppled_info,
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
                 ),
               );
-    
-            if(index-2 < no_questions) // index = 7 -> 5-14
+
+            if (index - 2 < no_questions) // index = 7 -> 5-14
               return SurveyCard(
-                question: questions[index-2],
+                question: questions[index - 2],
               );
-            if(index-2 == no_questions) // index = 16 
+            if (index - 2 == no_questions) // index = 16
               return InkWell(
-                onTap: (){},
+                onTap: () {},
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                  child: Text(InfoStrings.survey_label_info, style: Theme.of(context).textTheme.headline5,),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 8.0),
+                  child: Text(
+                    InfoStrings.survey_label_info,
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
                 ),
               );
-            if(index-3 == no_questions) // index = 17
+            if (index - 3 == no_questions) // index = 17
               return Divider();
-            return SurveyCard(  // index = 18 -> 
-              question: questions[index-4],
+            return SurveyCard(
+              // index = 18 ->
+              question: questions[index - 4],
             );
           },
         ),

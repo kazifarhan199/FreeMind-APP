@@ -23,7 +23,6 @@ class _PasswordState extends State<Password> {
     try {
       await User.passwordChange(password: password, re_password: password_re);
       Navigator.of(context).pop();
-      Navigator.of(context).pop();
       Routing.wrapperPage(context);
     } on Exception catch (e) {
       if (mounted)
