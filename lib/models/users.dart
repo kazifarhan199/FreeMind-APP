@@ -9,7 +9,6 @@ part 'users.g.dart';
 
 FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-
 @HiveType(typeId: 0)
 class User {
   @HiveField(0)
@@ -61,7 +60,7 @@ class User {
         id: id,
         gid: gid,
         token: token,
-        bio:bio);
+        bio: bio);
   }
 
   Map data = {};
@@ -113,8 +112,8 @@ class User {
       {required String userName,
       required String email,
       required String password,
-      required String re_password}) async {
-
+      required String re_password,
+      required String bio}) async {
     if (userName == ''
         ? true
         : email == ''
@@ -139,6 +138,7 @@ class User {
           "username": userName,
           "email": email,
           "password": password,
+          "bio_obj": bio,
           "devicetoken": await User.getDeviceToekn(),
           "devicename": "somename",
           "devicetype": Platform.operatingSystem,
@@ -153,7 +153,6 @@ class User {
   }
 
   static Future<bool> sendPasswordResetEmail({required String email}) async {
-
     if (email == '' ? true : false) {
       throw Exception(ErrorStrings.email_needed);
     }
@@ -178,7 +177,6 @@ class User {
       required String email,
       required String password,
       required String re_password}) async {
-
     if (otp == ''
         ? true
         : password == ''
@@ -211,7 +209,6 @@ class User {
   }
 
   static Future<bool> logout() async {
-
     try {
       requestIfPossible(
         url: '/accounts/logout/',
@@ -221,8 +218,8 @@ class User {
           "devicetoken": await User.getDeviceToekn(),
         },
       );
-      await Future.delayed(Duration(seconds: 1)); 
-      // This is so that the request method has enough time to send the logout request 
+      await Future.delayed(Duration(seconds: 1));
+      // This is so that the request method has enough time to send the logout request
       //  (we want to be able to retrive the user token from hive before removing it)
       await Hive.box("userBox").delete(0);
       User user = User.fromJson({});
@@ -235,13 +232,17 @@ class User {
   }
 
   static Future<bool> profileEdit(
-      {required String email, required String userName, required String bio, required image}) async {
-
+      {required String email,
+      required String userName,
+      required String bio,
+      required image}) async {
     if (email == ''
         ? true
         : userName == ''
             ? true
-            : bio == '' ? true : false) {
+            : bio == ''
+                ? true
+                : false) {
       throw Exception(ErrorStrings.all_fiields_needed);
     }
 
@@ -250,11 +251,7 @@ class User {
         url: '/accounts/edit/',
         requestMethod: 'PUT',
         expectedCode: 200,
-        body: {
-          "email": email,
-          "username": userName,
-          "bio_obj": bio
-        },
+        body: {"email": email, "username": userName, "bio_obj": bio},
         files: image == null
             ? []
             : [
@@ -275,7 +272,6 @@ class User {
 
   static Future<bool> passwordChange(
       {required String password, required String re_password}) async {
-
     if (password == ''
         ? true
         : re_password == ''
@@ -305,11 +301,11 @@ class User {
 
   static Future<bool> profile() async {
     try {
-      Map  data = await requestIfPossible(
-      url: '/accounts/profile/',
-      requestMethod: 'GET',
-      expectedCode: 200,
-    );
+      Map data = await requestIfPossible(
+        url: '/accounts/profile/',
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
 
       User user = User.fromJson(data);
       await Hive.box("userBox").put(0, user);
@@ -321,11 +317,11 @@ class User {
 
   static Future<User> getUserProfile({required int uid}) async {
     try {
-      Map  data = await requestIfPossible(
-      url: '/accounts/profile/?user='+uid.toString(),
-      requestMethod: 'GET',
-      expectedCode: 200,
-    );
+      Map data = await requestIfPossible(
+        url: '/accounts/profile/?user=' + uid.toString(),
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
       User user = User.fromJson(data);
       return user;
     } catch (e) {

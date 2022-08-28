@@ -15,21 +15,30 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  String userName='', email='', password='', password_re='';
-  bool loading=false;
+  String userName = '', email = '', password = '', password_re = '', bio = "";
+  bool loading = false;
 
   Future RegisterMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      await User.register(userName:userName, password:password, re_password:password_re, email: email);
+      await User.register(
+          userName: userName,
+          password: password,
+          re_password: password_re,
+          email: email,
+          bio: bio);
       Navigator.of(context).pop();
       Routing.wrapperPage(context);
-    } on Exception catch( e){
-      if (mounted) errorBox(context:context, error:e.toString().substring(11), errorTitle: 'Error'); 
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
     }
     if (mounted) setState(() => loading = false);
   }
-  
+
   loginMethod() {
     Navigator.pop(context);
   }
@@ -37,33 +46,33 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Loading(
-      fullscreen:true,
+      fullscreen: true,
       loading: loading,
       child: Scaffold(
-// appBar: 
+// appBar:
 // PreferredSize(
 //           preferredSize: Size.fromHeight(100.0),
-          // child: 
-          // AppBar(
-          //   centerTitle: true,
-          //   title: Text("Register", style: GoogleFonts.laila(fontSize: 35.0)),
-            // flexibleSpace: Image(
-            //   image: AssetImage('assets/background.png'),
-            //   fit: BoxFit.cover,
-            // ),
-            // backgroundColor: Colors.transparent,
-          // ),
+        // child:
+        // AppBar(
+        //   centerTitle: true,
+        //   title: Text("Register", style: GoogleFonts.laila(fontSize: 35.0)),
+        // flexibleSpace: Image(
+        //   image: AssetImage('assets/background.png'),
+        //   fit: BoxFit.cover,
+        // ),
+        // backgroundColor: Colors.transparent,
+        // ),
         // ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-                SizedBox(height:60),
-                Text(
-                          "Register",
-                          style: Theme.of(context).textTheme.headline2,
-                        ),
+              SizedBox(height: 60),
+              Text(
+                "Register",
+                style: Theme.of(context).textTheme.headline2,
+              ),
               Container(
                 padding: EdgeInsets.all(25.0),
                 child: Column(
@@ -85,10 +94,18 @@ class _RegisterState extends State<Register> {
                     ),
                     SizedBox(height: 30.0),
                     TextInput(
+                      onChanged: (val) => bio = val,
+                      labelText: 'Tell us about yourself',
+                      initialText: bio,
+                      keyboardtype: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    SizedBox(height: 30.0),
+                    TextInput(
                       onChanged: (val) => password = val,
                       labelText: 'Password',
                       initialText: '',
-                      obscureText:true,
+                      obscureText: true,
                       textInputAction: TextInputAction.next,
                     ),
                     SizedBox(height: 30.0),
@@ -96,47 +113,47 @@ class _RegisterState extends State<Register> {
                       onChanged: (val) => password_re = val,
                       labelText: 'Repeat-Password',
                       initialText: '',
-                      obscureText:true,
+                      obscureText: true,
                     ),
                     SizedBox(height: 30.0),
-
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 40.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: RegisterMethod,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(" Register  "),
-                                Icon(Icons.send),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                      ],
-                    ),),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 40.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: RegisterMethod,
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // Icon(Icons.lock_outline),
-                                  Text("Login")
+                                  Text(" Register  "),
+                                  Icon(Icons.send),
                                 ],
                               ),
                             ),
                           ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Icon(Icons.lock_outline),
+                            Text("Login")
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
