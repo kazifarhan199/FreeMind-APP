@@ -7,8 +7,7 @@ import 'package:social/models/groups.dart';
 import 'package:social/models/users.dart';
 import 'package:social/screans/utils/loading.dart';
 
-class 
-ChannelCard extends StatefulWidget {
+class ChannelCard extends StatefulWidget {
   GroupModel group;
   ChannelCard({required this.group, Key? key}) : super(key: key);
 
@@ -17,8 +16,8 @@ ChannelCard extends StatefulWidget {
 }
 
 class _ChannelCardState extends State<ChannelCard> {
-  bool _switchValue=true;
-  bool loading=false;
+  bool _switchValue = true;
+  bool loading = false;
   User user = Hive.box('userBox').getAt(0) as User;
 
   @override
@@ -29,62 +28,91 @@ class _ChannelCardState extends State<ChannelCard> {
 
   addUserMethod() async {
     setState(() => loading = true);
-    await widget.group.addMember(email: user.email, channel: true, group:widget.group.id, gid: widget.group.id);
+    await widget.group.addMember(
+        email: user.email,
+        channel: true,
+        group: widget.group.id,
+        gid: widget.group.id);
     setState(() => loading = false);
   }
 
   removeUserMethod() async {
     setState(() => loading = true);
-    await widget.group.removeMember(email: user.email, channel: true, group: widget.group.id, gid: widget.group.id);
+    await widget.group.removeMember(
+        email: user.email,
+        channel: true,
+        group: widget.group.id,
+        gid: widget.group.id);
     setState(() => loading = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return loading?SizedBox(height: 60, width:60, child: Center(child: LoafingInternal()),):InkWell(
-      onDoubleTap: () {},
-      onTap: () {},
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+    return loading
+        ? SizedBox(
+            height: 60,
+            width: 60,
+            child: Center(child: LoafingInternal()),
+          )
+        : InkWell(
+            onDoubleTap: () {},
+            onTap: () {},
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // CircleAvatar(
-                //   backgroundImage: NetworkImage(widget.member.userImageUrl),
-                // ),
-                SizedBox(width: 10.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
                     children: [
-                      Text(
-                        widget.group.name,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      // CircleAvatar(
+                      //   backgroundImage: NetworkImage(widget.member.userImageUrl),
+                      // ),
+                      SizedBox(width: 10.0),
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(widget.group.imageUrl),
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.group.name,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  loading ? LoafingInternal() : Container(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      CupertinoSwitch(
+                        value: _switchValue,
+                        onChanged: (value) {
+                          if (value) {
+                            addUserMethod();
+                          } else {
+                            removeUserMethod();
+                          }
+                          _switchValue = value;
+                        },
                       ),
                     ],
                   ),
                 ),
-                CupertinoSwitch(
-              value: _switchValue,
-              onChanged: (value) {
-                  if (value){
-                    addUserMethod();
-                  }
-                  else{
-                    removeUserMethod();
-                  }
-                  _switchValue = value;
-              },
-            ),
+                Divider()
               ],
             ),
-          ),
-          Divider()
-        ],
-      ),
-    );
+          );
   }
 }
