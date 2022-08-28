@@ -53,6 +53,14 @@ class _CreatePostState extends State<CreatePost> {
       setState(() {
         dropdownValue = groups[0];
       });
+    else {
+      Navigator.of(context).pop();
+      errorBox(
+          context: context,
+          errorTitle: "Need to be part of a group",
+          error:
+              "You need to be part of at least one group to be able to post");
+    }
     if (mounted) setState(() => loading = false);
   }
 
@@ -73,7 +81,8 @@ class _CreatePostState extends State<CreatePost> {
           throw Exception(ErrorStrings.image_needed);
         }
         image = await cropMethod(image!);
-        await PostModel.fromJson({}).createPost(title: title, image: image!, group:dropdownValue.id);
+        await PostModel.fromJson({})
+            .createPost(title: title, image: image!, group: dropdownValue.id);
         Navigator.of(context).pop();
         Routing.wrapperPage(context);
       } on Exception catch (e) {
@@ -202,43 +211,49 @@ class _CreatePostState extends State<CreatePost> {
               SizedBox(height: 40),
               Divider(),
               SizedBox(height: 20),
-              Text("Group", style: TextStyle(fontSize: 20.0),),
+              Text(
+                "Group",
+                style: TextStyle(fontSize: 20.0),
+              ),
               SizedBox(height: 20),
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: DropdownButton<GroupModel>(
-                        value: dropdownValue,
-                        icon: const Icon(Icons.arrow_downward),
-                        elevation: 16,
-                        // style: TextStyle(color: Theme.of(context).primaryColor),
-                        underline: Container(
-                          height: 0,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        onChanged: (GroupModel? newValue) {
-                          setState(() {
-                            dropdownValue = newValue!;
-                          });
-                        },
-                        items: groups
-                            .map<DropdownMenuItem<GroupModel>>((GroupModel g) {
-                          return DropdownMenuItem<GroupModel>(
-                            value: g,
-                            child: Row(
-                              children: [
-                                CircleAvatar(backgroundImage: NetworkImage(g.imageUrl), radius: 15.0,),
-                                SizedBox(width: 8,),
-                                Text(g.name),
-                              ],
+                    value: dropdownValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    // style: TextStyle(color: Theme.of(context).primaryColor),
+                    underline: Container(
+                      height: 0,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onChanged: (GroupModel? newValue) {
+                      setState(() {
+                        dropdownValue = newValue!;
+                      });
+                    },
+                    items: groups
+                        .map<DropdownMenuItem<GroupModel>>((GroupModel g) {
+                      return DropdownMenuItem<GroupModel>(
+                        value: g,
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(g.imageUrl),
+                              radius: 15.0,
                             ),
-                          );
-                        }).toList(),
-                      ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(g.name),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
-
-
             ],
           ),
         ),
