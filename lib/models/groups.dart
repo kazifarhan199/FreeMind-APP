@@ -4,38 +4,56 @@ import 'package:social/models/request.dart';
 import 'package:social/models/users.dart';
 import 'package:social/vars.dart';
 
-class GroupModel{
+class GroupModel {
   String name;
   int id;
-  bool isin;
+  bool isin, is_channel;
   List<membersModel> members;
   String image;
 
+  GroupModel({
+    required this.name,
+    required this.id,
+    required this.members,
+    required this.isin,
+    required this.image,
+    required this.is_channel,
+  });
 
-  GroupModel({required this.name, required this.id, required this.members, required this.isin, required this.image});
-
-  static GroupModel fromJson(Map data){
+  static GroupModel fromJson(Map data) {
     print(data);
     String name = data['group_name'] ?? 'Group Name';
     int id = data['id'] ?? 0;
-    List<membersModel> members = data['members']==null? [] : data['members'].map(membersModel.fromJson).toList().cast<membersModel>();
+    List<membersModel> members = data['members'] == null
+        ? []
+        : data['members']
+            .map(membersModel.fromJson)
+            .toList()
+            .cast<membersModel>();
     bool isin = data['isin'] ?? true;
     String image = data['image_path'] ?? '/media/image/default_group.jpg';
-    return GroupModel(name: name, id: id, members: members, isin: isin, image:image);
+    bool is_channel = data['is_channel'] ?? false;
+    return GroupModel(
+        name: name,
+        id: id,
+        members: members,
+        isin: isin,
+        image: image,
+        is_channel: is_channel);
   }
 
   String get imageUrl => base_url + this.image;
 
   static Future<GroupModel> createNewGroup(String name) async {
-    if (name=='' ? true : false){
+    if (name == '' ? true : false) {
       throw Exception(ErrorStrings.group_name_needed);
     }
     try {
-      Map data =await requestIfPossible(
-      url: '/groups/create/',
-      requestMethod: 'POST',
-      expectedCode: 201,
-      body: {
+      Map data = await requestIfPossible(
+        url: '/groups/create/',
+        requestMethod: 'POST',
+        expectedCode: 201,
+        body: {
           "group_name": name,
         },
       );
@@ -46,15 +64,14 @@ class GroupModel{
     }
   }
 
-
   static Future<List<GroupModel>> getgChannels() async {
     try {
-      Map data =await requestIfPossible(
+      Map data = await requestIfPossible(
         url: '/groups/gchannel/',
         requestMethod: 'GET',
         expectedCode: 200,
       );
-        List<GroupModel> localComments =  data['results']
+      List<GroupModel> localComments = data['results']
           .map((d) => GroupModel.fromJson(d))
           .toList()
           .cast<GroupModel>();
@@ -66,12 +83,12 @@ class GroupModel{
 
   static Future<List<GroupModel>> getGroups() async {
     try {
-      Map data =await requestIfPossible(
+      Map data = await requestIfPossible(
         url: '/groups/list/',
         requestMethod: 'GET',
         expectedCode: 200,
       );
-        List<GroupModel> localComments =  data['results']
+      List<GroupModel> localComments = data['results']
           .map((d) => GroupModel.fromJson(d))
           .toList()
           .cast<GroupModel>();
@@ -83,8 +100,8 @@ class GroupModel{
 
   static Future<GroupModel> getGroup({required int gid}) async {
     try {
-      Map data =await requestIfPossible(
-        url: '/groups/?group='+gid.toString(),
+      Map data = await requestIfPossible(
+        url: '/groups/?group=' + gid.toString(),
         requestMethod: 'GET',
         expectedCode: 200,
       );
@@ -95,26 +112,32 @@ class GroupModel{
     }
   }
 
-  Future<List<membersModel>> addMember({required String email, bool channel=false, required int group, required int gid}) async {
-    if (email=='' ? true : false){
+  Future<List<membersModel>> addMember(
+      {required String email,
+      bool channel = false,
+      required int group,
+      required int gid}) async {
+    if (email == '' ? true : false) {
       throw Exception(ErrorStrings.email_needed);
     }
-    String url = '/groups/members/?group='+gid.toString();
-    if (channel){
+    String url = '/groups/members/?group=' + gid.toString();
+    if (channel) {
       url = '/groups/gchannel/';
     }
     try {
       Map data = await requestIfPossible(
-          url: url,
-          body: {
-            'email': email,
-            'group':group.toString(),
-          },
-          requestMethod: 'POST',
-          expectedCode: 201,
-        );
-      if (!channel){
-        this.members+=[membersModel.fromJson({'email':email, 'username':email}), ];
+        url: url,
+        body: {
+          'email': email,
+          'group': group.toString(),
+        },
+        requestMethod: 'POST',
+        expectedCode: 201,
+      );
+      if (!channel) {
+        this.members += [
+          membersModel.fromJson({'email': email, 'username': email}),
+        ];
       }
       return this.members;
     } on Exception catch (e) {
@@ -122,13 +145,17 @@ class GroupModel{
     }
   }
 
-  Future<List<membersModel>> removeMember({required String email, bool channel=false, required int group, required int gid}) async {
-    if (email=='' ? true : false){
+  Future<List<membersModel>> removeMember(
+      {required String email,
+      bool channel = false,
+      required int group,
+      required int gid}) async {
+    if (email == '' ? true : false) {
       throw Exception(ErrorStrings.email_needed);
     }
-    
-    String url = '/groups/members/?group='+gid.toString();
-    if (channel){
+
+    String url = '/groups/members/?group=' + gid.toString();
+    if (channel) {
       url = '/groups/gchannel/';
     }
 
@@ -143,12 +170,12 @@ class GroupModel{
         expectedCode: 202,
       );
 
-      if (!channel){
+      if (!channel) {
         User user = Hive.box('userBox').getAt(0) as User;
-        if(email == user.email){
+        if (email == user.email) {
           User.addGroup(0);
         }
-        this.members.removeWhere((element) => element.email==email);
+        this.members.removeWhere((element) => element.email == email);
       }
       return this.members;
     } on Exception catch (e) {
@@ -156,14 +183,14 @@ class GroupModel{
     }
   }
 
-
-  Future<bool> editGroup({required String name, required int gid, image}) async {
-    if (name=='' ? true : false){
+  Future<bool> editGroup(
+      {required String name, required int gid, image}) async {
+    if (name == '' ? true : false) {
       throw Exception(ErrorStrings.name_needed);
     }
     try {
       Map data = await requestIfPossible(
-        url: '/groups/?group='+gid.toString(),
+        url: '/groups/?group=' + gid.toString(),
         body: {
           'group_name': name,
         },
@@ -184,18 +211,19 @@ class GroupModel{
       throw e;
     }
   }
-  
 }
 
-class membersModel{
+class membersModel {
   String userName, userImage, email;
-  membersModel({required this.userName, required this.email, required this.userImage});
-  String get userImageUrl => base_url + userImage; 
+  membersModel(
+      {required this.userName, required this.email, required this.userImage});
+  String get userImageUrl => base_url + userImage;
 
-  static membersModel fromJson(data){
+  static membersModel fromJson(data) {
     String email = data['email'] ?? "email";
     String userName = data['username'] ?? "username";
-    String userImage = data['userimage'] ?? data['userimage'] ?? "/media/image/notfound.jpg";
+    String userImage =
+        data['userimage'] ?? data['userimage'] ?? "/media/image/notfound.jpg";
     return membersModel(userName: userName, email: email, userImage: userImage);
   }
 }

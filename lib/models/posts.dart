@@ -11,7 +11,7 @@ class PostModel {
   String get imageUrl => base_url + image;
   List<CommentModel> commentsList = [];
   List<LikeModel> likesList = [];
-  String groupName, groupImage;
+  String groupName, groupImage, link;
   Map data = {};
 
   PostModel({
@@ -25,12 +25,13 @@ class PostModel {
     required this.liked,
     required this.id,
     required this.uid,
-    required this.groupName, 
+    required this.groupName,
     required this.groupImage,
     required this.group,
+    required this.link,
   });
 
-  Map getPreviousRawData(){
+  Map getPreviousRawData() {
     return data;
   }
 
@@ -41,8 +42,7 @@ class PostModel {
     String image = '/media/image/notfound.jpg';
     if (data['images'] != null) {
       if (data['images'].isNotEmpty) {
-        image = data['images'][0]['image_url'] ??
-            '/media/image/notfound.jpg';
+        image = data['images'][0]['image_url'] ?? '/media/image/notfound.jpg';
       }
     }
     int likes = data['like_count'] ?? 0;
@@ -54,31 +54,36 @@ class PostModel {
     String groupName = data['group_name'] ?? '';
     String groupImage = data['group_image'] ?? '';
     int group = data['group'] ?? 0;
+    String link = data['link'] ?? '';
     return PostModel(
-        userName: userName,
-        userImage: userImage,
-        title: title,
-        image: image,
-        likes: likes,
-        comments: comments,
-        owner: owner,
-        liked: liked,
-        id: id,
-        uid:uid,
-        groupImage:groupImage,
-        groupName:groupName,
-        group:group);
+      userName: userName,
+      userImage: userImage,
+      title: title,
+      image: image,
+      likes: likes,
+      comments: comments,
+      owner: owner,
+      liked: liked,
+      id: id,
+      uid: uid,
+      groupImage: groupImage,
+      groupName: groupName,
+      group: group,
+      link: link,
+    );
   }
 
   String get groupImageUrl => base_url + this.groupImage;
 
-
   Future<PostModel> createPost(
-      {required String title, required File image, required int group}) async {
+      {required String title,
+      required File image,
+      required int group,
+      required String link}) async {
     if (title == '' ? true : false) {
       throw Exception(ErrorStrings.title_needed);
     }
-
+    print(group);
     try {
       Iterable<MultipartFile> file = image == null
           ? []
@@ -96,6 +101,7 @@ class PostModel {
         body: {
           "title": title,
           'group': group.toString(),
+          'link': link,
         },
       );
       return PostModel.fromJson(data);
@@ -128,8 +134,8 @@ class PostModel {
         this.moreAvailable = false;
         return [];
       }
-      if(data['next']==null){
-          this.moreAvailable = false;
+      if (data['next'] == null) {
+        this.moreAvailable = false;
       }
 
       return data['results']
@@ -141,10 +147,14 @@ class PostModel {
     }
   }
 
-  Future<List<PostModel>> getProfilePostList({required int page, required int uid}) async {
+  Future<List<PostModel>> getProfilePostList(
+      {required int page, required int uid}) async {
     try {
       data = await requestIfPossible(
-        url: '/posts/profile/?page=' + page.toString()+"&user="+uid.toString(),
+        url: '/posts/profile/?page=' +
+            page.toString() +
+            "&user=" +
+            uid.toString(),
         requestMethod: 'GET',
         expectedCode: 200,
       );
@@ -152,8 +162,8 @@ class PostModel {
         this.moreAvailable = false;
         return [];
       }
-      if(data['next']==null){
-          this.moreAvailable = false;
+      if (data['next'] == null) {
+        this.moreAvailable = false;
       }
 
       return data['results']
@@ -228,7 +238,7 @@ class PostModel {
         return [];
       }
 
-      List<CommentModel> localComments =  data['results']
+      List<CommentModel> localComments = data['results']
           .map((d) => CommentModel.fromJson(d))
           .toList()
           .cast<CommentModel>();
@@ -284,7 +294,7 @@ class PostModel {
       return true;
     } catch (e) {
       throw e;
-    } 
+    }
   }
 }
 
@@ -294,7 +304,7 @@ class CommentModel {
   bool needFeedback;
   String get userImageUrl => base_url + this.userImage;
   String link;
-  get hasLink => link==''?false:true;
+  get hasLink => link == '' ? false : true;
 
   CommentModel(
       {required this.userName,
@@ -312,7 +322,12 @@ class CommentModel {
     bool needFeedback = data['need_feadback'] ?? false;
     String link = data['link'] ?? '';
     return CommentModel(
-        userName: userName, userImage: userImage, text: text, id: id, needFeedback:needFeedback, link:link);
+        userName: userName,
+        userImage: userImage,
+        text: text,
+        id: id,
+        needFeedback: needFeedback,
+        link: link);
   }
 
   sendfeedback({required FeedbackModel feeback}) async {
@@ -320,11 +335,15 @@ class CommentModel {
       Map data = await requestIfPossible(
         url: '/posts/feedback/',
         requestMethod: 'POST',
-        body: {'comment': this.id.toString(), 'text': feeback.text, 'rating': feeback.rating.toString()},
+        body: {
+          'comment': this.id.toString(),
+          'text': feeback.text,
+          'rating': feeback.rating.toString()
+        },
         expectedCode: 201,
-      ); 
+      );
       this.needFeedback = false;
-    }catch(e){
+    } catch (e) {
       throw e;
     }
   }
@@ -346,13 +365,11 @@ class LikeModel {
   }
 }
 
-
 class FeedbackModel {
   String text;
   int rating;
 
-  FeedbackModel(
-      {required this.rating, required this.text});
+  FeedbackModel({required this.rating, required this.text});
 
   static FeedbackModel fromJson(data) {
     int rating = data['rating'] ?? 0;

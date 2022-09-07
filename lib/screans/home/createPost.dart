@@ -25,8 +25,8 @@ class _CreatePostState extends State<CreatePost> {
   final cropKey = GlobalKey<CropState>();
   List<GroupModel> groups = [];
   File? image;
-  String title = '';
-  bool loading = false;
+  String title = '', link = '';
+  bool loading = false, isChannel = false;
   GroupModel dropdownValue = GroupModel.fromJson({});
 
   @override
@@ -52,6 +52,7 @@ class _CreatePostState extends State<CreatePost> {
     if (groups.length > 0)
       setState(() {
         dropdownValue = groups[0];
+        isChannel = groups[0].is_channel;
       });
     else {
       Navigator.of(context).pop();
@@ -81,8 +82,9 @@ class _CreatePostState extends State<CreatePost> {
           throw Exception(ErrorStrings.image_needed);
         }
         image = await cropMethod(image!);
-        await PostModel.fromJson({})
-            .createPost(title: title, image: image!, group: dropdownValue.id);
+        print(link);
+        await PostModel.fromJson({}).createPost(
+            title: title, image: image!, group: dropdownValue.id, link: link);
         Navigator.of(context).pop();
         Routing.wrapperPage(context);
       } on Exception catch (e) {
@@ -185,7 +187,9 @@ class _CreatePostState extends State<CreatePost> {
                     maxlength: 200,
                     keyboardtype: TextInputType.multiline,
                     maxlines: null,
-                    onChanged: (val) => title = val,
+                    onChanged: (val) {
+                      title = val;
+                    },
                   )),
               SizedBox(
                 height: 20.0,
@@ -231,6 +235,7 @@ class _CreatePostState extends State<CreatePost> {
                     onChanged: (GroupModel? newValue) {
                       setState(() {
                         dropdownValue = newValue!;
+                        isChannel = newValue.is_channel;
                       });
                     },
                     items: groups
@@ -254,6 +259,20 @@ class _CreatePostState extends State<CreatePost> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 30,
+              ),
+              isChannel
+                  ? Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: TextInput(
+                        initialText: link,
+                        labelText: InfoStrings.link_info,
+                        onChanged: (val) {
+                          link = val;
+                        },
+                      ))
+                  : Container()
             ],
           ),
         ),
