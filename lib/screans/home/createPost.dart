@@ -84,7 +84,10 @@ class _CreatePostState extends State<CreatePost> {
         image = await cropMethod(image!);
         print(link);
         await PostModel.fromJson({}).createPost(
-            title: title, image: image!, group: dropdownValue.id, link: link);
+            title: title,
+            image: image!,
+            group: dropdownValue.id,
+            link: dropdownValue.is_channel ? link : '');
         Navigator.of(context).pop();
         Routing.wrapperPage(context);
       } on Exception catch (e) {
