@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:social/models/users.dart';
+import 'package:social/routing.dart';
 import 'package:social/screans/utils/loading.dart';
 import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/textInput.dart';
@@ -38,6 +39,7 @@ class RresetPasswordState extends State<ResetPassword> {
             password: password,
             re_password: password_re);
         setState(() => hasEmail = true);
+        Routing.wrapperPage(context);
       } on Exception catch (e) {
         errorBox(
             context: context,
@@ -58,33 +60,33 @@ class RresetPasswordState extends State<ResetPassword> {
       fullscreen: true,
       loading: loading,
       child: Scaffold(
-        // appBar: 
+        // appBar:
         // PreferredSize(
         //   preferredSize: Size.fromHeight(100.0),
-        //   child: 
-          // AppBar(
-          //   centerTitle: true,
-          //   title: Text("Reset Password",
-          //       style: GoogleFonts.laila(fontSize: 35.0)),
-            // flexibleSpace: Image(
-            //   image: AssetImage('assets/background.png'),
-            //   fit: BoxFit.cover,
-            // ),
-            // backgroundColor: Colors.transparent,
-          // ),
+        //   child:
+        // AppBar(
+        //   centerTitle: true,
+        //   title: Text("Reset Password",
+        //       style: GoogleFonts.laila(fontSize: 35.0)),
+        // flexibleSpace: Image(
+        //   image: AssetImage('assets/background.png'),
+        //   fit: BoxFit.cover,
+        // ),
+        // backgroundColor: Colors.transparent,
+        // ),
         // ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-                              SizedBox(height:60),
-                Center(
-                  child: Text(
-                            "Reset Password",
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
+              SizedBox(height: 60),
+              Center(
+                child: Text(
+                  "Reset Password",
+                  style: Theme.of(context).textTheme.headline3,
                 ),
+              ),
               Container(
                 padding: EdgeInsets.all(25.0),
                 child: Column(
@@ -191,19 +193,19 @@ class RresetPasswordState extends State<ResetPassword> {
                     SizedBox(
                       height: 40.0,
                     ),
-                        TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Icon(Icons.lock_outline),
-                                  Text("Login")
-                                ],
-                              ),
-                            ),
-                          ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Icon(Icons.lock_outline),
+                            Text("Login")
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
