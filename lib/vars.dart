@@ -3,7 +3,7 @@ String base_url = 'https://131.212.41.11:57000';
 // String base_url = 'http://10.0.2.2:8000';
 // String base_url = 'http://127.0.0.1:8000';
 
-String app_version = "Version 1.7";
+String app_version = "Version 1.8";
 
 class ErrorStrings {
   static String group_name_needed = 'Please provide a name for the group';
@@ -32,4 +32,19 @@ class InfoStrings {
   static String password_helper =
       "Help us protect you, make sure your password \n\n• Is at least 8 character long\n• Contains at least one number\n• Contains at least one special character\n";
   static String link_info = "Please provide link to more information";
+  static String crisesline =
+      "You can call the crises line for many reasons need some need help, infomration or just want to talk to someone, crises line is here for you";
+  static String HealthServicesHours =
+      "Monday, Tuesday, Wednesday and Friday 8:00 am-4:00 pm \n\nThursday 9:00 am-4:00 pm \n\nclosed for all University Holidays.";
+  static String MediaclAppointments = """
+    This year we continue to request you call us first at to determine how we can best meet your needs. We offer both in-person and telephone consultations.
+    \n
+    If you are experiencing cough, fever or shortness of breath or have been exposed to someone with known or suspected COVID-19, it is important that you call Health Services at prior to arriving at the clinic. """;
+  static String ServicesHealthServices = """
+    Physicians, nurse practitioners, and registered nurses are available for medical appointments.  If you are taking 6+ credits, your medical consultations are free of charge (no co-pay!).  We do bill insurance for tests and procedures to include lab screenings, x-rays, and medical procedures.
+    \n
+    UMD Health Services also provides free and confidential counseling, drop-in Consultations ("Let's Talk") and grief support groups.
+    \n
+    Health education and wellness programs are provided for students of the UMD campus community.  You can view our current events on our News & Events page.  UMD Health Services supports professional health education internships; student graphic artist employment; and active student groups that make an impact on the UMD campus through peer health education. Please reach out if you are interested in getting involved in our student groups,  lmperry@d.umn.edu.
+    """;
 }

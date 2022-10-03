@@ -42,8 +42,7 @@ class _HomeState extends State<Home> {
     Routing.notificationsPage(context);
   }
 
-
-// 
+//
   logoutMethod() async {
     Navigator.pop(context);
     if (mounted) setState(() => loading = true);
@@ -85,57 +84,67 @@ class _HomeState extends State<Home> {
     Routing.SurveyPage(context);
   }
 
-  channelsMethod(){
+  channelsMethod() {
     Navigator.pop(context);
     Routing.ChannelsPage(context);
+  }
+
+  showCrisesMethod() {
+    Navigator.pop(context);
+    Routing.crisesPage(context);
+  }
+
+  showHealthServicesMethod() {
+    Navigator.pop(context);
+    Routing.healthServicesPage(context);
   }
 
   showLogoutAlertMethod() {
     Navigator.pop(context);
     Platform.isAndroid
-    ? showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Logout'),
-        content: Text(InfoStrings.logout_info),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Yes'),
-            isDestructiveAction: true,
-            onPressed: logoutMethod,
+        ? showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Logout'),
+              content: Text(InfoStrings.logout_info),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Yes'),
+                  isDestructiveAction: true,
+                  onPressed: logoutMethod,
+                )
+              ],
+            ),
           )
-        ],
-      ),
-    )
-    :showCupertinoDialog<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Logout'),
-        content: Text(InfoStrings.logout_info),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Yes'),
-            isDestructiveAction: true,
-            onPressed: logoutMethod,
-          )
-        ],
-      ),
-    );
+        : showCupertinoDialog<void>(
+            context: context,
+            builder: (BuildContext context) => CupertinoAlertDialog(
+              title: const Text('Logout'),
+              content: Text(InfoStrings.logout_info),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Yes'),
+                  isDestructiveAction: true,
+                  onPressed: logoutMethod,
+                )
+              ],
+            ),
+          );
   }
 
-  // 
+  //
 
   getPostsMethod() async {
     nextPage += 1;
@@ -143,12 +152,13 @@ class _HomeState extends State<Home> {
       List<PostModel> localPost =
           await postControler.getPostList(page: nextPage - 1);
       moreAvailable = postControler.moreAvailable;
-      if(mounted) setState(() {
-        if (nextPage == 1)
-          posts = localPost;
-        else
-          posts += localPost;
-      });
+      if (mounted)
+        setState(() {
+          if (nextPage == 1)
+            posts = localPost;
+          else
+            posts += localPost;
+        });
     } on Exception catch (e) {
       if (mounted)
         errorBox(
@@ -204,84 +214,98 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer:Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          InkWell(
-            onTap: profileMethod,
-            child: DrawerHeader(
-          decoration: BoxDecoration(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            InkWell(
+              onTap: profileMethod,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  ),
-              child: 
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(user.imageUrl),
-                        radius: 35.0,
-                      ),
-                      SizedBox(height: 10.0,),
-                      Text(
-                        user.userName.substring(0, min(10, user.userName.length)),
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                        style: TextStyle(color: Colors.white, fontSize: 22.0),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.start,children: [
-                  IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: profileEditMethod,
-                      color: Colors.white,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(user.imageUrl),
+                          radius: 35.0,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          user.userName
+                              .substring(0, min(10, user.userName.length)),
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                          style: TextStyle(color: Colors.white, fontSize: 22.0),
+                        ),
+                      ],
                     ),
-                    ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: profileEditMethod,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          ListTile(
-            leading: Icon(Icons.group_outlined),
-            title: Text('Manage Group'),
-            onTap: groupMethod,
-          ),
-          ListTile(
-            leading: Icon(Icons.lock_outline),
-            title: Text('Change Password'),
-            onTap: passwordMethod,
-          ),
-          ListTile(
-            leading: Icon(Icons.question_answer),
-            title: Text('Survey'),
-            onTap: surveyMethod,
-          ),
-          ListTile(
-            leading: Icon(Icons.group),
-            title: Text('Channels'),
-            onTap: channelsMethod,
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Logout'),
-            onTap: showLogoutAlertMethod,
-          ),
-          ListTile(
-            leading: Icon(Icons.info),
-            title: Text(app_version),
-            onTap: (){},
-          ),
-        ],
+            ListTile(
+              leading: Icon(Icons.group_outlined),
+              title: Text('Manage Group'),
+              onTap: groupMethod,
+            ),
+            ListTile(
+              leading: Icon(Icons.lock_outline),
+              title: Text('Change Password'),
+              onTap: passwordMethod,
+            ),
+            ListTile(
+              leading: Icon(Icons.question_answer),
+              title: Text('Survey'),
+              onTap: surveyMethod,
+            ),
+            ListTile(
+              leading: Icon(Icons.group),
+              title: Text('Channels'),
+              onTap: channelsMethod,
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: showLogoutAlertMethod,
+            ),
+            ListTile(
+              leading: Icon(Icons.health_and_safety),
+              title: Text('UMD Health Services'),
+              onTap: showHealthServicesMethod,
+            ),
+            ListTile(
+              leading: Icon(Icons.emergency),
+              title: Text('Crises'),
+              onTap: showCrisesMethod,
+            ),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text(app_version),
+              onTap: () {},
+            ),
+          ],
+        ),
       ),
-    ),
       appBar: AppBar(
           centerTitle: true,
           // leading: Padding(

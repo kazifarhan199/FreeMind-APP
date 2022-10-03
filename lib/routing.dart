@@ -1,5 +1,7 @@
 import 'package:social/screans/settings/channel.dart';
 import 'package:social/screans/settings/groups_list.dart';
+import 'package:social/screans/settings/crises.dart';
+import 'package:social/screans/settings/health_services.dart';
 import 'package:social/screans/settings/profile_posts.dart';
 import 'package:social/screans/utils/loadPost.dart';
 import 'package:social/wrapper.dart';
@@ -17,7 +19,7 @@ import 'package:social/screans/Auth/resetPassword.dart';
 import 'package:social/screans/home/notifications.dart';
 
 class Routing {
-  static  wrapperPage(context) {
+  static wrapperPage(context) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => Wrapper()),
@@ -62,11 +64,14 @@ class Routing {
   static profilePage(context, {required int uid}) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProfilePost(uid: uid,)),
+      MaterialPageRoute(
+          builder: (context) => ProfilePost(
+                uid: uid,
+              )),
     );
   }
 
-  static profileEditPage(context){
+  static profileEditPage(context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Profile()),
@@ -87,31 +92,52 @@ class Routing {
     );
   }
 
-  static groupsDetailPage(context, {required int gid, bool doublePop=true}) {
+  static groupsDetailPage(context, {required int gid, bool doublePop = true}) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Group(gid: gid,doublePop:doublePop)),
+      MaterialPageRoute(
+          builder: (context) => Group(gid: gid, doublePop: doublePop)),
     );
   }
 
-  static ChannelsPage(context){
+  static ChannelsPage(context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Channel()),
     );
   }
 
-  static PostPage(context, PostModel post, {bool defaultCollapsed=true}) async {
+  static crisesPage(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Crises()),
+    );
+  }
+
+  static healthServicesPage(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HealthServices()),
+    );
+  }
+
+  static PostPage(context, PostModel post,
+      {bool defaultCollapsed = true}) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Post(post:post, defaultCollapsed: defaultCollapsed,)),
+      MaterialPageRoute(
+          builder: (context) => Post(
+                post: post,
+                defaultCollapsed: defaultCollapsed,
+              )),
     );
   }
 
   static PostPageReplacement(context, PostModel post) async {
     await Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Post(post:post, defaultCollapsed:false)),
+      MaterialPageRoute(
+          builder: (context) => Post(post: post, defaultCollapsed: false)),
     );
   }
 
@@ -122,10 +148,10 @@ class Routing {
     );
   }
 
-  static LoadPostPage(context, int id){
+  static LoadPostPage(context, int id) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoadPost(id:id)),
+      MaterialPageRoute(builder: (context) => LoadPost(id: id)),
     );
   }
 }
