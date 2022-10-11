@@ -1,12 +1,12 @@
-// ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
-import 'package:social/models/posts.dart';
-import 'package:social/models/users.dart';
-import 'package:social/screans/utils/loading.dart';
-import 'package:social/screans/utils/nothing.dart';
-import 'package:social/screans/utils/errorBox.dart';
+import 'package:hive/hive.dart';
+
+import '../../models/posts.dart';
+import '../../models/users.dart';
+import '../../routing.dart';
+import '../utils/errorBox.dart';
+import '../utils/loading.dart';
+import '../utils/nothing.dart';
 
 class ProfilePost extends StatefulWidget {
   int uid;
@@ -19,6 +19,7 @@ class ProfilePost extends StatefulWidget {
 class _ProfilePostState extends State<ProfilePost> {
   ScrollController _scrollController = ScrollController();
   PostModel postControler = PostModel.fromJson({});
+  User loggedInUser = Hive.box('userBox').getAt(0) as User;
   User user = User.fromJson({});
   bool loading = false, moreAvailable = true;
   List<PostModel> posts = [];
@@ -31,15 +32,16 @@ class _ProfilePostState extends State<ProfilePost> {
   getPostsMethod() async {
     nextPage += 1;
     try {
-      List<PostModel> localPost =
-          await postControler.getProfilePostList(page: nextPage - 1, uid: widget.uid);
+      List<PostModel> localPost = await postControler.getProfilePostList(
+          page: nextPage - 1, uid: widget.uid);
       moreAvailable = postControler.moreAvailable;
-      if(mounted) setState(() {
-        if (nextPage == 1)
-          posts = localPost;
-        else
-          posts += localPost;
-      });
+      if (mounted)
+        setState(() {
+          if (nextPage == 1)
+            posts = localPost;
+          else
+            posts += localPost;
+        });
     } on Exception catch (e) {
       if (mounted)
         errorBox(
@@ -96,8 +98,10 @@ class _ProfilePostState extends State<ProfilePost> {
   }
 
   postDetailMethod(PostModel post) async {
-      await Routing.PostPage(context, post, defaultCollapsed:false);
-      setState(() {post;});
+    await Routing.PostPage(context, post, defaultCollapsed: false);
+    setState(() {
+      post;
+    });
   }
 
   @override
@@ -118,74 +122,108 @@ class _ProfilePostState extends State<ProfilePost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          centerTitle: true,
-          title: Text(user.userName),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
+        centerTitle: true,
+        title: Text(user.userName),
       ),
-      body: Loading(
-        loading: loading,
-        child: RefreshIndicator(
-          onRefresh: refreshMethod,
-          child: posts.length == 0
-          ? Nothing(text: "No posts")
-          : Expanded(
-            child: GridView.builder(
-                gridDelegate:SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2, mainAxisSpacing: 0.0, crossAxisSpacing:15.0),
-                physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-                controller: _scrollController ,
-                itemCount: posts.length+2,
-                itemBuilder: (context, index) {
-                  if (index==0){
-                    return Padding(
-                      padding: const EdgeInsets.all(40.0),
-                      child: InkWell(
-                        onTap: profileEditMethod,
-                        child: CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(user.imageUrl),
-                        radius: 30.0,
-                        ),
-                      ),
-                    );
-                  }
-                  else if (index==1){
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                      child: SingleChildScrollView(
-                        child: Column(
+      body: RefreshIndicator(
+        onRefresh: refreshMethod,
+        child: Loading(
+            loading: loading,
+            child: posts.length == 0
+                ? Nothing(text: "No posts")
+                : ListView.builder(
+                    itemCount: (posts.length / 2).ceil() + 2,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        // return Container();
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: InkWell(
+                                onTap: user.id == loggedInUser.id
+                                    ? profileEditMethod
+                                    : () {},
+                                child: CircleAvatar(
+                                  backgroundImage: NetworkImage(user.imageUrl),
+                                  radius: 60.0,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(height: 5,),
-                                  Padding(padding: const EdgeInsets.all(8.0),
-                                  // child: Center(child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20.0), )),),
-                                  // Padding(padding: const EdgeInsets.all(5.0),
-                                  child: Expanded(child: Center(child: Text(user.bio,))),),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    // child: Center(child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20.0), )),),
+                                    // Padding(padding: const EdgeInsets.all(5.0),
+                                    child: Center(
+                                        child: Text(
+                                      user.bio,
+                                    )),
+                                  ),
                                 ],
                               ),
-                      ),
-                    );
-                  }
-                  else{
-                    return InkWell(
-                      onTap: (() => postDetailMethod(posts[index-2])),
-                      child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width * 4 / 5,
-                          child: Image.network(posts[index-2].imageUrl)),
-                      ),
-                    );
-                  }
-                }
-              )
-          ),
+                            )
+                          ],
+                        );
+                      } else if (index == 1) {
+                        return Container();
+                      } else {
+                        return Row(
+                          children: [
+                            InkWell(
+                              onTap: (() =>
+                                  postDetailMethod(posts[(index - 1) * 2 - 2])),
+                              child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Column(
+                                    children: [
+                                      // Text(
+                                      //     posts[(index - 1) * 2 - 2].id.toString()),
+                                      Image.network(
+                                        posts[(index - 1) * 2 - 2].imageUrl,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            (index - 1) * 2 - 1 < posts.length
+                                ? InkWell(
+                                    onTap: (() => postDetailMethod(
+                                        posts[(index - 1) * 2 - 1])),
+                                    child: Column(
+                                      children: [
+                                        // Text(posts[(index - 1) * 2 - 1]
+                                        //     .id
+                                        //     .toString()),
+                                        Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 8.0),
+                                            child: Image.network(
+                                              posts[(index - 1) * 2 - 1]
+                                                  .imageUrl,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2,
+                                            )),
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                          ],
+                        );
+                      }
+                    })),
       ),
-    ),);
+    );
   }
 }
