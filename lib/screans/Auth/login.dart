@@ -18,6 +18,7 @@ class _LoginState extends State<Login> {
   String userName = '', password = '';
   bool loading = false;
 
+  // Try to login using API, if success go to wrapper (main page)
   Future loginMethod() async {
     if (mounted) setState(() => loading = true);
     try {
@@ -33,10 +34,12 @@ class _LoginState extends State<Login> {
     if (mounted) setState(() => loading = false);
   }
 
+  // Go to register page
   registerMethod() {
     Routing.registerPage(context);
   }
 
+  // Go to reset password page
   resetpasswordMethod() {
     Routing.resetPasswordPage(context);
   }
@@ -47,32 +50,17 @@ class _LoginState extends State<Login> {
       fullscreen: true,
       loading: loading,
       child: Scaffold(
-        // appBar: 
-        // PreferredSize(
-        //   preferredSize: Size.fromHeight(100.0),
-          // // child: 
-          // AppBar(
-          //   automaticallyImplyLeading: false,
-          //   centerTitle: true,
-          //   title: Text("Login", style: GoogleFonts.laila(fontSize: 35.0)),
-            // flexibleSpace: Image(
-            //   image: AssetImage('assets/background.png'),
-            //   fit: BoxFit.cover,
-            // ),
-            // backgroundColor: Colors.transparent,
-          // ),
-        // ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height:60),
+                SizedBox(height: 60),
                 Text(
-                          "Login",
-                          style: Theme.of(context).textTheme.headline2,
-                        ),
+                  "Login",
+                  style: Theme.of(context).textTheme.headline2,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,

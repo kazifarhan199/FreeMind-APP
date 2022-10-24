@@ -18,6 +18,7 @@ class _RegisterState extends State<Register> {
   String userName = '', email = '', password = '', password_re = '', bio = "";
   bool loading = false;
 
+  // Try to register using API, if success go to wrapper (main page)
   Future RegisterMethod() async {
     if (mounted) setState(() => loading = true);
     try {
@@ -39,6 +40,7 @@ class _RegisterState extends State<Register> {
     if (mounted) setState(() => loading = false);
   }
 
+  // Go to login page
   loginMethod() {
     Navigator.pop(context);
   }
@@ -49,20 +51,6 @@ class _RegisterState extends State<Register> {
       fullscreen: true,
       loading: loading,
       child: Scaffold(
-// appBar:
-// PreferredSize(
-//           preferredSize: Size.fromHeight(100.0),
-        // child:
-        // AppBar(
-        //   centerTitle: true,
-        //   title: Text("Register", style: GoogleFonts.laila(fontSize: 35.0)),
-        // flexibleSpace: Image(
-        //   image: AssetImage('assets/background.png'),
-        //   fit: BoxFit.cover,
-        // ),
-        // backgroundColor: Colors.transparent,
-        // ),
-        // ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

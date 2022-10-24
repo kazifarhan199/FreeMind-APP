@@ -18,6 +18,7 @@ class RresetPasswordState extends State<ResetPassword> {
   String email = '', otp = '', password = '', password_re = '';
   bool hasEmail = false, loading = false;
 
+  // Try to reset password using API, if success go to wrapper (main page)
   Future ResetPasswordMethod() async {
     if (mounted) setState(() => loading = true);
     if (hasEmail == false) {
@@ -50,6 +51,7 @@ class RresetPasswordState extends State<ResetPassword> {
     if (mounted) setState(() => loading = false);
   }
 
+  // Go to login page
   loginMethod() {
     Navigator.of(context).pop();
   }
@@ -60,21 +62,6 @@ class RresetPasswordState extends State<ResetPassword> {
       fullscreen: true,
       loading: loading,
       child: Scaffold(
-        // appBar:
-        // PreferredSize(
-        //   preferredSize: Size.fromHeight(100.0),
-        //   child:
-        // AppBar(
-        //   centerTitle: true,
-        //   title: Text("Reset Password",
-        //       style: GoogleFonts.laila(fontSize: 35.0)),
-        // flexibleSpace: Image(
-        //   image: AssetImage('assets/background.png'),
-        //   fit: BoxFit.cover,
-        // ),
-        // backgroundColor: Colors.transparent,
-        // ),
-        // ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
