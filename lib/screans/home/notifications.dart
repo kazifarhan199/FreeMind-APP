@@ -21,7 +21,7 @@ class _NotificationsState extends State<Notifications> {
   bool loading = false, moreAvailable = true;
   int nextPage = 1;
 
-  getNotifications() async {
+  Future<void> getNotifications() async {
     nextPage += 1;
     if (mounted) setState(() => loading = true);
     try {
@@ -45,19 +45,6 @@ class _NotificationsState extends State<Notifications> {
     if (mounted) setState(() => loading = false);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getNotifications();
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        if (moreAvailable) getNotifications();
-      }
-    });
-  }
-
   Future<void> refreshMethod() async {
     if (mounted) setState(() => notifications = []);
     nextPage = 1;
@@ -66,16 +53,25 @@ class _NotificationsState extends State<Notifications> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getNotifications();
+
+    // Check the user position to load more notifications
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        if (moreAvailable) getNotifications();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Notifications"),
-        // flexibleSpace: Image(
-        //   image: AssetImage('assets/background.png'),
-        //   fit: BoxFit.cover,
-        // ),
-        // backgroundColor: Colors.transparent,
       ),
       body: RefreshIndicator(
         onRefresh: refreshMethod,

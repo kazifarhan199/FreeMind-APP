@@ -22,20 +22,15 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
-  final cropKey = GlobalKey<CropState>();
-  List<GroupModel> groups = [];
   File? image;
+  List<GroupModel> groups = [];
   String title = '', link = '';
   bool loading = false, isChannel = false;
+  final cropKey = GlobalKey<CropState>();
   GroupModel dropdownValue = GroupModel.fromJson({});
 
-  @override
-  void initState() {
-    super.initState();
-    getGroupMethod();
-  }
-
-  getGroupMethod() async {
+  // Get the list of groups and put it in groups list
+  Future<void> getGroupMethod() async {
     if (mounted) setState(() => loading = true);
     try {
       List<GroupModel> g = await GroupModel.getGroups();
@@ -65,7 +60,8 @@ class _CreatePostState extends State<CreatePost> {
     if (mounted) setState(() => loading = false);
   }
 
-  Future createPostMethod() async {
+  // use the image, title and dropdownValue to create a post
+  Future<void> createPostMethod() async {
     if (mounted) setState(() => loading = true);
 
     FocusManager.instance.primaryFocus?.unfocus();
@@ -101,6 +97,21 @@ class _CreatePostState extends State<CreatePost> {
     if (mounted) setState(() => loading = false);
   }
 
+  Future<File> cropMethod(File fileImage) async {
+    return await ImageCrop.cropImage(
+      file: File(fileImage.path),
+      scale: cropKey.currentState!.scale,
+      area: cropKey.currentState!.area!,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getGroupMethod();
+  }
+
+  //  Get image from camera or photos
   getImageMethod(String fromWhere) async {
     XFile? localImage;
     if (fromWhere == 'camera') {
@@ -112,14 +123,7 @@ class _CreatePostState extends State<CreatePost> {
       setState(() => image = File(localImage!.path));
   }
 
-  Future<File> cropMethod(File fileImage) async {
-    return await ImageCrop.cropImage(
-      file: File(fileImage.path),
-      scale: cropKey.currentState!.scale,
-      area: cropKey.currentState!.area!,
-    );
-  }
-
+  // Display the image choser (camera or photos)
   fromWhereChooser() {
     showCupertinoModalPopup<void>(
       context: context,
@@ -167,11 +171,6 @@ class _CreatePostState extends State<CreatePost> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("Post"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
           actions: [
             IconButton(onPressed: createPostMethod, icon: Icon(Icons.send)),
           ],
@@ -214,7 +213,8 @@ class _CreatePostState extends State<CreatePost> {
                                 aspectRatio: 5 / 4,
                               ),
                       ),
-                      onTap: fromWhereChooser),
+                      onTap: fromWhereChooser,
+                    ),
               SizedBox(height: 40),
               Divider(),
               SizedBox(height: 20),

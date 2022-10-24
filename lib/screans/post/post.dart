@@ -14,7 +14,8 @@ import 'package:social/screans/utils/commentCard.dart';
 class Post extends StatefulWidget {
   PostModel post;
   bool defaultCollapsed;
-  Post({required this.post, this.defaultCollapsed=true ,Key? key}) : super(key: key);
+  Post({required this.post, this.defaultCollapsed = true, Key? key})
+      : super(key: key);
 
   @override
   State<Post> createState() => _PostState();
@@ -27,7 +28,19 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
   List<CommentModel> comments = [];
   List<LikeModel> likes = [];
 
-  Future addCommentMethod() async {
+  deletePostMethod(PostModel localPost) {
+    try {
+      localPost.deletePost();
+      Navigator.pop(context);
+    } on Exception catch (e) {
+      errorBox(
+          context: context,
+          errorTitle: "Error",
+          error: e.toString().substring(11));
+    }
+  }
+
+  Future<void> addCommentMethod() async {
     if (mounted) setState(() => loadingcomments = true);
     try {
       await widget.post.addComment(textController.text);
@@ -46,7 +59,7 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
     if (mounted) setState(() => loadingcomments = false);
   }
 
-  getCommentMethod() async {
+  Future<void> getCommentMethod() async {
     if (mounted) setState(() => loadingcomments = true);
     try {
       comments = await widget.post.getCommentList();
@@ -60,7 +73,7 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
     if (mounted) setState(() => loadingcomments = false);
   }
 
-  deleteComment(int id) async {
+  Future<void> deleteComment(int id) async {
     if (mounted) setState(() => loadingcomments = true);
     try {
       await widget.post.removeComment(id);
@@ -77,7 +90,7 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
     if (mounted) setState(() => loadingcomments = false);
   }
 
-  getLikesMethod() async {
+  Future<void> getLikesMethod() async {
     if (mounted) setState(() => loadinglikes = true);
     try {
       likes = await widget.post.getLikeList();
@@ -89,18 +102,6 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
             errorTitle: 'Error');
     }
     if (mounted) setState(() => loadinglikes = false);
-  }
-
-  deletePostMethod(PostModel localPost) {
-    try {
-      localPost.deletePost();
-      Navigator.pop(context);
-    } on Exception catch (e) {
-      errorBox(
-          context: context,
-          errorTitle: "Error",
-          error: e.toString().substring(11));
-    }
   }
 
   Future<void> commentsRefreshMethod() async {
@@ -116,14 +117,13 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
   Future<void> refreshMethod() async {
     if (mounted) setState(() => comments = []);
     if (mounted) setState(() => likes = []);
-    
+
     await getLikesMethod();
     await getCommentMethod();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     getCommentMethod();
@@ -138,11 +138,6 @@ class _PostState extends State<Post> with TickerProviderStateMixin {
         appBar: AppBar(
           centerTitle: true,
           title: Text("Post"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
         ),
         body: Column(
           children: [

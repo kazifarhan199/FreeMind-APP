@@ -20,7 +20,7 @@ class _SurveyState extends State<Survey> {
   bool loading = false;
   int no_questions = 0, no_cuppled = 0;
 
-  getSurvey() async {
+  Future<void> getSurvey() async {
     if (mounted) setState(() => loading = true);
     try {
       List<SurveyModel> localQuestions = await SurveyModel.getSurvey();
@@ -43,7 +43,7 @@ class _SurveyState extends State<Survey> {
     if (mounted) setState(() => loading = false);
   }
 
-  sendQuestionReplyMethod() async {
+  Future<void> sendQuestionReplyMethod() async {
     // if (mounted) setState(() => loading = true);
     for (var question in questions) {
       if (question.rating == 0) {
@@ -76,7 +76,6 @@ class _SurveyState extends State<Survey> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getSurvey();
   }
@@ -89,11 +88,6 @@ class _SurveyState extends State<Survey> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("Survey"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
           actions: [
             IconButton(
                 onPressed: sendQuestionReplyMethod, icon: Icon(Icons.send)),

@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:social/models/groups.dart';
 
-class 
-MemeberCard extends StatefulWidget {
+class MemeberCard extends StatefulWidget {
   membersModel member;
   Function removeMemberMethod;
-  MemeberCard({required this.member, required this.removeMemberMethod, Key? key}) : super(key: key);
+  MemeberCard(
+      {required this.member, required this.removeMemberMethod, Key? key})
+      : super(key: key);
 
   @override
   State<MemeberCard> createState() => _MemeberCardState();
 }
 
 class _MemeberCardState extends State<MemeberCard> {
-
   showOptions() {
     showCupertinoModalPopup<void>(
       context: context,
@@ -70,7 +70,7 @@ class _MemeberCardState extends State<MemeberCard> {
                   ),
                 ),
                 IconButton(
-                onPressed: showOptions, icon: Icon(CupertinoIcons.ellipsis))
+                    onPressed: showOptions, icon: Icon(CupertinoIcons.ellipsis))
               ],
             ),
           ),

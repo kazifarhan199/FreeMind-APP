@@ -13,7 +13,7 @@ import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/textInput.dart';
 
 class NoGroup extends StatefulWidget {
-  const NoGroup({ Key? key }) : super(key: key);
+  const NoGroup({Key? key}) : super(key: key);
 
   @override
   State<NoGroup> createState() => _NoGroupState();
@@ -21,27 +21,34 @@ class NoGroup extends StatefulWidget {
 
 class _NoGroupState extends State<NoGroup> {
   User user = Hive.box('userBox').getAt(0) as User;
-  bool loading=false;
-  String name='';
+  bool loading = false;
+  String name = '';
 
   Future createGroupMethod() async {
     if (mounted) setState(() => loading = true);
     try {
       await GroupModel.createNewGroup(name);
       Routing.wrapperPage(context);
-    } on Exception catch( e){
-      if (mounted) errorBox(context:context, error:e.toString().substring(11), errorTitle: 'Error'); 
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
     }
     if (mounted) setState(() => loading = false);
   }
 
   Future<void> refreshMethod() async {
     if (mounted) setState(() => loading = true);
-    try{
+    try {
       await User.profile();
       Routing.wrapperPage(context);
-    }on Exception catch(e){
-      errorBox(context: context, errorTitle: "Refreshing", error:e.toString().substring(11));
+    } on Exception catch (e) {
+      errorBox(
+          context: context,
+          errorTitle: "Refreshing",
+          error: e.toString().substring(11));
     }
     if (mounted) setState(() => loading = false);
   }
@@ -64,46 +71,46 @@ class _NoGroupState extends State<NoGroup> {
 
   showLogoutAlertMethod() {
     Platform.isAndroid
-    ? showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout ?'),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Yes'),
-            isDestructiveAction: true,
-            onPressed: logoutMethod,
+        ? showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Logout'),
+              content: const Text('Are you sure you want to logout ?'),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Yes'),
+                  isDestructiveAction: true,
+                  onPressed: logoutMethod,
+                )
+              ],
+            ),
           )
-        ],
-      ),
-    )
-    :showCupertinoDialog<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout ?'),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Yes'),
-            isDestructiveAction: true,
-            onPressed: logoutMethod,
-          )
-        ],
-      ),
-    );
+        : showCupertinoDialog<void>(
+            context: context,
+            builder: (BuildContext context) => CupertinoAlertDialog(
+              title: const Text('Logout'),
+              content: const Text('Are you sure you want to logout ?'),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Yes'),
+                  isDestructiveAction: true,
+                  onPressed: logoutMethod,
+                )
+              ],
+            ),
+          );
   }
 
   @override
@@ -112,127 +119,118 @@ class _NoGroupState extends State<NoGroup> {
       loading: loading,
       fullscreen: true,
       child: Scaffold(
-        
-          appBar: 
-          // PreferredSize(
-          // preferredSize: Size.fromHeight(100.0),
-          // child: 
-          AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            title: Text("No Group Found", style: TextStyle(fontSize: 30.0)),
-            // flexibleSpace: Image(
-            //   image: AssetImage('assets/background.png'),
-            //   fit: BoxFit.cover,
-            // ),
-            // backgroundColor: Colors.transparent,
-          // ),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Text("No Group Found", style: TextStyle(fontSize: 30.0)),
         ),
-          body: RefreshIndicator(
-            onRefresh: refreshMethod,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              child: Container(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          """\nYou have not been added to any group yet :(\n
+        body: RefreshIndicator(
+          onRefresh: refreshMethod,
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            child: Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        """\nYou have not been added to any group yet :(\n
       Please ask your group members to add you in the group\n
       Your email is ${user.email}\n
       Refresh here""",
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                      ),
-                      Tooltip(
-                        message: "Refresh",
-                        child: IconButton(
-                            icon: Icon(
-                              Icons.refresh,
-                              color: Colors.blue,
-                              size: 30.0,
-                            ),
-                            onPressed: refreshMethod),
-                      ),
-                      Text(
-                        "\n-- OR --\n",
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline5,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 15.0),
-                          child: TextInput(
-                            onChanged: (value) => name = value,
-                            initialText: name,
-                            labelText: 'Group name',
+                    ),
+                    Tooltip(
+                      message: "Refresh",
+                      child: IconButton(
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Colors.blue,
+                            size: 30.0,
                           ),
+                          onPressed: refreshMethod),
+                    ),
+                    Text(
+                      "\n-- OR --\n",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        child: TextInput(
+                          onChanged: (value) => name = value,
+                          initialText: name,
+                          labelText: 'Group name',
                         ),
                       ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 40.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: createGroupMethod,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(" Create a new Group  "),
-                                Icon(Icons.send),
-                              ],
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 40.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: createGroupMethod,
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(" Create a new Group  "),
+                                  Icon(Icons.send),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 40.0,
-                        ),
-                      ],
-                    ),),
-
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 60.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: showLogoutAlertMethod,
-                          style: ButtonStyle(backgroundColor:MaterialStateProperty.all(Colors.red)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(" Logout  "),
-                                Icon(Icons.lock),
-                              ],
+                          SizedBox(
+                            height: 40.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 60.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: showLogoutAlertMethod,
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(" Logout  "),
+                                  Icon(Icons.lock),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                      ],
-                    ),)
-
-                    ],
-                  ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
           ),
         ),
+      ),
     );
   }
 }

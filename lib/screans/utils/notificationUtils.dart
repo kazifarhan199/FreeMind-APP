@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-
 awsomeNotificationInit() async {
   await AwesomeNotifications().initialize(
       // set the icon to null if you want to use the default app icon
@@ -32,20 +31,20 @@ awsomeNotificationPermissions() async {
 sendAwsomeNotification(Map data) {
   AwesomeNotifications().createNotification(
     content: NotificationContent(
-        id: int.parse(data["notification_id"]),
-        locked: false,
-        channelKey: 'basic_channel',
-        title: data['title'],
-        body: data['body'],
-        payload: {"post": data["post"]},
-        displayOnForeground: true,
-        displayOnBackground: true,
-        wakeUpScreen: true,
-        ),
+      id: int.parse(data["notification_id"]),
+      locked: false,
+      channelKey: 'basic_channel',
+      title: data['title'],
+      body: data['body'],
+      payload: {"post": data["post"]},
+      displayOnForeground: true,
+      displayOnBackground: true,
+      wakeUpScreen: true,
+    ),
   );
 }
 
-testingAwsomeNotification(){
+testingAwsomeNotification() {
   AwesomeNotifications().createNotification(
     content: NotificationContent(
         id: 12,
@@ -57,4 +56,3 @@ testingAwsomeNotification(){
         displayOnBackground: true),
   );
 }
-

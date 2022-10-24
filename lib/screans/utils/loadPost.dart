@@ -5,29 +5,26 @@ import 'package:social/screans/utils/loading.dart';
 
 class LoadPost extends StatefulWidget {
   int id;
-  LoadPost({required this.id,  Key? key }) : super(key: key);
+  LoadPost({required this.id, Key? key}) : super(key: key);
 
   @override
   State<LoadPost> createState() => _LoadPostState();
 }
 
 class _LoadPostState extends State<LoadPost> {
-  bool loading=false;
+  bool loading = false;
 
   gotoPostMethod() async {
-    if(mounted) setState(() => loading=true);
-    try{
+    if (mounted) setState(() => loading = true);
+    try {
       PostModel post = await PostModel.fromJson({}).getPost(id: widget.id);
       Routing.PostPageReplacement(context, post);
-    }catch(e) {
-
-    }
-    if(mounted) setState(() => loading=false);
+    } catch (e) {}
+    if (mounted) setState(() => loading = false);
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     gotoPostMethod();
   }

@@ -15,14 +15,18 @@ class GroupsCard extends StatefulWidget {
 }
 
 class _GroupsCardState extends State<GroupsCard> {
-  bool loading=false;
+  bool loading = false;
 
   groupsDetailPageMethod() async {
     if (mounted) setState(() => loading = true);
     try {
       Routing.groupsDetailPage(context, gid: widget.group.id);
-    } on Exception catch( e){
-      if (mounted) errorBox(context:context, error:e.toString().substring(11), errorTitle: 'Error'); 
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
     }
     if (mounted) setState(() => loading = false);
   }

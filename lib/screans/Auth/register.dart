@@ -19,7 +19,7 @@ class _RegisterState extends State<Register> {
   bool loading = false;
 
   // Try to register using API, if success go to wrapper (main page)
-  Future RegisterMethod() async {
+  Future<void> RegisterMethod() async {
     if (mounted) setState(() => loading = true);
     try {
       await User.register(

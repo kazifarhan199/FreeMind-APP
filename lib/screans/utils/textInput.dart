@@ -4,27 +4,25 @@ import 'package:flutter/material.dart';
 
 class TextInput extends StatelessWidget {
   String? initialText, labelText;
-  int? maxlength=null, maxlines=1;
+  int? maxlength = null, maxlines = 1;
   TextInputType keyboardtype = TextInputType.text;
   dynamic onChanged;
   TextEditingController? controller;
-  bool obscureText=false;
+  bool obscureText = false;
   var textInputAction;
 
   TextInput(
-    {
-      this.initialText, 
+      {this.initialText,
       this.labelText,
-      this.maxlength=null, 
-      this.keyboardtype=TextInputType.text,
-      this.maxlines=1,
+      this.maxlength = null,
+      this.keyboardtype = TextInputType.text,
+      this.maxlines = 1,
       this.onChanged,
       this.controller,
-      this.obscureText=false,
+      this.obscureText = false,
       this.textInputAction,
-      Key? key 
-    }) : super(key: key);
-  
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +30,11 @@ class TextInput extends StatelessWidget {
       onChanged: onChanged,
       initialValue: initialText,
       keyboardType: keyboardtype,
-      maxLength:maxlength,
+      maxLength: maxlength,
       maxLines: maxlines,
       controller: controller,
-      obscureText:obscureText,
-      textInputAction:textInputAction,
+      obscureText: obscureText,
+      textInputAction: textInputAction,
       decoration: InputDecoration(
         labelText: labelText,
         border: OutlineInputBorder(

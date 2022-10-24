@@ -2,7 +2,6 @@
 
 import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:social/routing.dart';
@@ -30,33 +29,12 @@ class _HomeState extends State<Home> {
   List<PostModel> posts = [];
   int nextPage = 1;
 
-  // settingsMethod() {
-  //   Routing.settingsPage(context);
-  // }
-
   createPostMethod() {
     Routing.createPostPage(context);
   }
 
   notificationsMethod() {
     Routing.notificationsPage(context);
-  }
-
-//
-  logoutMethod() async {
-    Navigator.pop(context);
-    if (mounted) setState(() => loading = true);
-    try {
-      await User.logout();
-      Routing.wrapperPage(context);
-    } on Exception catch (e) {
-      if (mounted)
-        errorBox(
-            context: context,
-            error: e.toString().substring(11),
-            errorTitle: 'Error');
-    }
-    if (mounted) setState(() => loading = false);
   }
 
   profileMethod() {
@@ -97,6 +75,88 @@ class _HomeState extends State<Home> {
   showHealthServicesMethod() {
     Navigator.pop(context);
     Routing.healthServicesPage(context);
+  }
+
+  Future<void> logoutMethod() async {
+    Navigator.pop(context);
+    if (mounted) setState(() => loading = true);
+    try {
+      await User.logout();
+      Routing.wrapperPage(context);
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
+    }
+    if (mounted) setState(() => loading = false);
+  }
+
+  Future<void> getPostsMethod() async {
+    nextPage += 1;
+    try {
+      List<PostModel> localPost =
+          await postControler.getPostList(page: nextPage - 1);
+      moreAvailable = postControler.moreAvailable;
+      if (mounted)
+        setState(() {
+          if (nextPage == 1)
+            posts = localPost;
+          else
+            posts += localPost;
+        });
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
+    }
+  }
+
+  Future<void> deletePostMethod(PostModel localPost) async {
+    try {
+      await localPost.deletePost();
+      setState(() {
+        print(posts);
+        posts.removeWhere((element) => element.id == localPost.id);
+      });
+    } on Exception catch (e) {
+      errorBox(
+          context: context,
+          errorTitle: "Error",
+          error: e.toString().substring(11));
+    }
+  }
+
+  Future<void> getInitialPosts() async {
+    if (mounted) setState(() => loading = true);
+    await getPostsMethod();
+    if (mounted) setState(() => loading = false);
+  }
+
+  Future<void> refreshMethod() async {
+    if (mounted) setState(() => loading = true);
+    if (mounted) setState(() => posts = []);
+    nextPage = 1;
+    moreAvailable = true;
+    await getPostsMethod();
+    if (mounted) setState(() => loading = false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getInitialPosts();
+
+    // Check the user position to load more posts
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        if (moreAvailable) getPostsMethod();
+      }
+    });
   }
 
   showLogoutAlertMethod() {
@@ -142,73 +202,6 @@ class _HomeState extends State<Home> {
               ],
             ),
           );
-  }
-
-  //
-
-  getPostsMethod() async {
-    nextPage += 1;
-    try {
-      List<PostModel> localPost =
-          await postControler.getPostList(page: nextPage - 1);
-      moreAvailable = postControler.moreAvailable;
-      if (mounted)
-        setState(() {
-          if (nextPage == 1)
-            posts = localPost;
-          else
-            posts += localPost;
-        });
-    } on Exception catch (e) {
-      if (mounted)
-        errorBox(
-            context: context,
-            error: e.toString().substring(11),
-            errorTitle: 'Error');
-    }
-  }
-
-  Future<void> refreshMethod() async {
-    if (mounted) setState(() => loading = true);
-    if (mounted) setState(() => posts = []);
-    nextPage = 1;
-    moreAvailable = true;
-    await getPostsMethod();
-    if (mounted) setState(() => loading = false);
-  }
-
-  Future deletePostMethod(PostModel localPost) async {
-    try {
-      await localPost.deletePost();
-      setState(() {
-        print(posts);
-        posts.removeWhere((element) => element.id == localPost.id);
-      });
-    } on Exception catch (e) {
-      errorBox(
-          context: context,
-          errorTitle: "Error",
-          error: e.toString().substring(11));
-    }
-  }
-
-  getInitialPosts() async {
-    if (mounted) setState(() => loading = true);
-    await getPostsMethod();
-    if (mounted) setState(() => loading = false);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getInitialPosts();
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        if (moreAvailable) getPostsMethod();
-      }
-    });
   }
 
   @override
@@ -306,52 +299,12 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      appBar: AppBar(
-          centerTitle: true,
-          // leading: Padding(
-          //   padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          //   child: Row(
-          //     children: [
-          //       Expanded(
-          //         child: IconButton(
-          //           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          //           icon: CircleAvatar(backgroundImage: NetworkImage(user.imageUrl)),
-          //           onPressed: profileMethod,
-          //         ),
-          //       ),
-          //       SizedBox(width: 3,),
-          //       Expanded(
-          //         child: IconButton(
-          //           icon: Icon(Icons.settings),
-          //           onPressed: settingsMethod,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          title: Text("FreeMind"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
-          actions: [
-            // IconButton(
-            //         padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            //         icon: CircleAvatar(backgroundImage: NetworkImage(user.imageUrl)),
-            //         onPressed: profileMethod,
-            //       ),
-            //       IconButton(
-            //         icon: Icon(Icons.settings),
-            //         onPressed: settingsMethod,
-            //       ),
-            IconButton(
-                onPressed: notificationsMethod,
-                icon: Icon(Icons.notifications)),
-            IconButton(
-                onPressed: createPostMethod,
-                icon: Icon(Icons.add_circle_outline)),
-          ]),
+      appBar: AppBar(centerTitle: true, title: Text("FreeMind"), actions: [
+        IconButton(
+            onPressed: notificationsMethod, icon: Icon(Icons.notifications)),
+        IconButton(
+            onPressed: createPostMethod, icon: Icon(Icons.add_circle_outline)),
+      ]),
       body: Loading(
         loading: loading,
         child: RefreshIndicator(

@@ -1,7 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
-
 import 'package:hive/hive.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
@@ -22,23 +21,6 @@ class _SettingsState extends State<Settings> {
   User user = Hive.box('userBox').getAt(0) as User;
   bool loading = false;
 
-  logoutMethod() async {
-    Navigator.pop(context);
-    if (mounted) setState(() => loading = true);
-    try {
-      await User.logout();
-      Navigator.of(context).pop();
-      Routing.wrapperPage(context);
-    } on Exception catch (e) {
-      if (mounted)
-        errorBox(
-            context: context,
-            error: e.toString().substring(11),
-            errorTitle: 'Error');
-    }
-    if (mounted) setState(() => loading = false);
-  }
-
   profileEditMethod() {
     Routing.profileEditPage(context);
   }
@@ -55,52 +37,69 @@ class _SettingsState extends State<Settings> {
     Routing.SurveyPage(context);
   }
 
-  channelsMethod(){
+  channelsMethod() {
     Routing.ChannelsPage(context);
+  }
+
+  Future<void> logoutMethod() async {
+    Navigator.pop(context);
+    if (mounted) setState(() => loading = true);
+    try {
+      await User.logout();
+      Navigator.of(context).pop();
+      Routing.wrapperPage(context);
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
+    }
+    if (mounted) setState(() => loading = false);
   }
 
   showLogoutAlertMethod() {
     Platform.isAndroid
-    ? showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Logout'),
-        content: Text(InfoStrings.logout_info),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Yes'),
-            isDestructiveAction: true,
-            onPressed: logoutMethod,
+        ? showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Logout'),
+              content: Text(InfoStrings.logout_info),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Yes'),
+                  isDestructiveAction: true,
+                  onPressed: logoutMethod,
+                )
+              ],
+            ),
           )
-        ],
-      ),
-    )
-    :showCupertinoDialog<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Logout'),
-        content: Text(InfoStrings.logout_info),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Yes'),
-            isDestructiveAction: true,
-            onPressed: logoutMethod,
-          )
-        ],
-      ),
-    );
+        : showCupertinoDialog<void>(
+            context: context,
+            builder: (BuildContext context) => CupertinoAlertDialog(
+              title: const Text('Logout'),
+              content: Text(InfoStrings.logout_info),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Yes'),
+                  isDestructiveAction: true,
+                  onPressed: logoutMethod,
+                )
+              ],
+            ),
+          );
   }
 
   @override
@@ -112,11 +111,6 @@ class _SettingsState extends State<Settings> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("Settings"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -196,8 +190,7 @@ class _SettingsState extends State<Settings> {
                 child: Row(
                   children: [
                     IconButton(
-                        icon: Icon(Icons.group),
-                        onPressed: channelsMethod),
+                        icon: Icon(Icons.group), onPressed: channelsMethod),
                     SizedBox(
                       width: 10.0,
                       height: 80.0,
@@ -222,7 +215,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               InkWell(
-                onTap: (){},
+                onTap: () {},
                 child: Row(
                   children: [
                     IconButton(

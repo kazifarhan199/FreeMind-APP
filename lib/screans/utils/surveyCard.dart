@@ -13,7 +13,6 @@ class SurveyCard extends StatefulWidget {
 }
 
 class _SurveyCardState extends State<SurveyCard> {
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -75,7 +74,8 @@ class _SurveyCardState extends State<SurveyCard> {
                             color: Colors.green,
                           );
                         },
-                        onRatingUpdate: (val) => widget.question.rating = val.toInt(),
+                        onRatingUpdate: (val) =>
+                            widget.question.rating = val.toInt(),
                       ),
                     ],
                   ),

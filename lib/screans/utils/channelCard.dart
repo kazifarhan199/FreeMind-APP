@@ -20,13 +20,7 @@ class _ChannelCardState extends State<ChannelCard> {
   bool loading = false;
   User user = Hive.box('userBox').getAt(0) as User;
 
-  @override
-  void initState() {
-    super.initState();
-    _switchValue = widget.group.isin;
-  }
-
-  addUserMethod() async {
+  Future<void> addUserMethod() async {
     setState(() => loading = true);
     await widget.group.addMember(
         email: user.email,
@@ -36,7 +30,7 @@ class _ChannelCardState extends State<ChannelCard> {
     setState(() => loading = false);
   }
 
-  removeUserMethod() async {
+  Future<void> removeUserMethod() async {
     setState(() => loading = true);
     await widget.group.removeMember(
         email: user.email,
@@ -44,6 +38,12 @@ class _ChannelCardState extends State<ChannelCard> {
         group: widget.group.id,
         gid: widget.group.id);
     setState(() => loading = false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _switchValue = widget.group.isin;
   }
 
   @override

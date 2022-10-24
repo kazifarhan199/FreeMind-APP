@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   bool loading = false;
 
   // Try to login using API, if success go to wrapper (main page)
-  Future loginMethod() async {
+  Future<void> loginMethod() async {
     if (mounted) setState(() => loading = true);
     try {
       await User.login(userName: userName, password: password);

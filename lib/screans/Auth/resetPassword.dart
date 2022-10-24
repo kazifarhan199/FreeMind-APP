@@ -19,7 +19,7 @@ class RresetPasswordState extends State<ResetPassword> {
   bool hasEmail = false, loading = false;
 
   // Try to reset password using API, if success go to wrapper (main page)
-  Future ResetPasswordMethod() async {
+  Future<void> ResetPasswordMethod() async {
     if (mounted) setState(() => loading = true);
     if (hasEmail == false) {
       try {

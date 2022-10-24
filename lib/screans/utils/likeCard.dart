@@ -12,8 +12,6 @@ class LikeCard extends StatefulWidget {
 }
 
 class _LikeCardState extends State<LikeCard> {
-
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -28,8 +26,7 @@ class _LikeCardState extends State<LikeCard> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      widget.like.userImageUrl),
+                  backgroundImage: NetworkImage(widget.like.userImageUrl),
                 ),
                 SizedBox(width: 10.0),
                 Expanded(
