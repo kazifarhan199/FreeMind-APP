@@ -17,7 +17,7 @@ class GroupsCard extends StatefulWidget {
 class _GroupsCardState extends State<GroupsCard> {
   bool loading = false;
 
-  groupsDetailPageMethod() async {
+  Future<void> groupsDetailPageMethod() async {
     if (mounted) setState(() => loading = true);
     try {
       Routing.groupsDetailPage(context, gid: widget.group.id);

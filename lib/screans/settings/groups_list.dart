@@ -63,7 +63,17 @@ class _GroupsListState extends State<GroupsList> {
     if (mounted) setState(() => loading = false);
   }
 
-  Future<void> showGroupPopup() {
+  Future<void> refreshMethod() async {
+    await getGroupMethod();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getGroupMethod();
+  }
+
+  showGroupPopup() {
     Platform.isAndroid
         ? showDialog(
             context: context,
@@ -115,16 +125,6 @@ class _GroupsListState extends State<GroupsList> {
               ],
             ),
           );
-  }
-
-  Future<void> refreshMethod() async {
-    await getGroupMethod();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getGroupMethod();
   }
 
   @override
