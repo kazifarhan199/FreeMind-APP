@@ -208,8 +208,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
+          // padding: EdgeInsets.zero,
           children: <Widget>[
             InkWell(
               onTap: profileMethod,
@@ -290,14 +290,18 @@ class _HomeState extends State<Home> {
               onTap: showCrisesMethod,
             ),
             ListTile(
-              leading: Icon(Icons.info),
-              title: Text(app_version),
-              onTap: () {},
-            ),
-            ListTile(
               leading: Icon(Icons.logout),
               title: Text('Logout'),
               onTap: showLogoutAlertMethod,
+            ),
+            Expanded(child: Container()),
+            Opacity(
+              opacity: 0.5,
+              child: ListTile(
+                leading: Icon(Icons.info),
+                title: Text(app_version),
+                onTap: () {},
+              ),
             ),
           ],
         ),
