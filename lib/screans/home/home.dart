@@ -277,11 +277,6 @@ class _HomeState extends State<Home> {
               onTap: channelsMethod,
             ),
             ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: showLogoutAlertMethod,
-            ),
-            ListTile(
               leading: Icon(Icons.health_and_safety),
               title: Text('UMD Health Services'),
               onTap: showHealthServicesMethod,
@@ -295,6 +290,11 @@ class _HomeState extends State<Home> {
               leading: Icon(Icons.info),
               title: Text(app_version),
               onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: showLogoutAlertMethod,
             ),
           ],
         ),
