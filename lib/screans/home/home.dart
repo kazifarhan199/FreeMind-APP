@@ -223,10 +223,26 @@ class _HomeState extends State<Home> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(user.imageUrl),
-                          radius: 35.0,
-                        ),
+                        Stack(children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(user.imageUrl),
+                            radius: 35.0,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(width: 45),
+                              CircleAvatar(
+                                child: IconButton(
+                                  icon: Icon(Icons.edit),
+                                  onPressed: profileEditMethod,
+                                  iconSize: 17,
+                                  color: Colors.white,
+                                ),
+                                radius: 17,
+                              ),
+                            ],
+                          ),
+                        ]),
                         SizedBox(
                           height: 10.0,
                         ),
@@ -238,19 +254,6 @@ class _HomeState extends State<Home> {
                           style: TextStyle(color: Colors.white, fontSize: 22.0),
                         ),
                       ],
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: profileEditMethod,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 ),
