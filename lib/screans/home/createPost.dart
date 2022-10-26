@@ -219,7 +219,7 @@ class _CreatePostState extends State<CreatePost> {
               Divider(),
               SizedBox(height: 20),
               Text(
-                "Group",
+                InfoStrings.GroupSelectionString,
                 style: TextStyle(fontSize: 20.0),
               ),
               SizedBox(height: 20),

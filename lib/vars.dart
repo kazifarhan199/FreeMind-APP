@@ -47,4 +47,6 @@ class InfoStrings {
     \n
     Health education and wellness programs are provided for students of the UMD campus community.  You can view our current events on our News & Events page.  UMD Health Services supports professional health education internships; student graphic artist employment; and active student groups that make an impact on the UMD campus through peer health education. Please reach out if you are interested in getting involved in our student groups,  lmperry@d.umn.edu.
     """;
+  static String GroupSelectionString =
+      "Select a group from the list to post in";
 }
