@@ -309,9 +309,11 @@ class _HomeState extends State<Home> {
       appBar: AppBar(centerTitle: true, title: Text("FreeMind"), actions: [
         IconButton(
             onPressed: notificationsMethod, icon: Icon(Icons.notifications)),
-        IconButton(
-            onPressed: createPostMethod, icon: Icon(Icons.add_circle_outline)),
       ]),
+      floatingActionButton: FloatingActionButton(
+        onPressed: createPostMethod,
+        child: Icon(Icons.add_circle_outline),
+      ),
       body: Loading(
         loading: loading,
         child: RefreshIndicator(
