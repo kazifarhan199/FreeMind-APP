@@ -346,20 +346,6 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-            child: Row(
-              children: [
-                Text(
-                  DateFormat('MMMM dd, yy').format(widget.post.datetime),
-                  style: TextStyle(
-                    fontSize: 8,
-                  ),
-                ),
-              ],
-            ),
-          ),
           colaps
               ? Container()
               : Padding(
@@ -372,43 +358,63 @@ class _PostCardState extends State<PostCard> {
           widget.on_home == false
               ? Container()
               : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
                         Row(
                           children: [
-                            loading
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    child: LoafingInternal(),
-                                  )
-                                : IconButton(
-                                    onPressed: likeMethod,
-                                    icon: Icon(
-                                      widget.post.liked
-                                          ? Icons.favorite
-                                          : Icons.favorite_border,
-                                      color: widget.post.liked
-                                          ? Colors.red
-                                          : Colors.black,
-                                    )),
-                            Text(widget.post.likes.toString())
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: detailsPageMethod,
-                              icon: FaIcon(FontAwesomeIcons.comment),
+                            Row(
+                              children: [
+                                loading
+                                    ? Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                        child: LoafingInternal(),
+                                      )
+                                    : IconButton(
+                                        onPressed: likeMethod,
+                                        icon: Icon(
+                                          widget.post.liked
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: widget.post.liked
+                                              ? Colors.red
+                                              : Colors.black,
+                                        )),
+                                Text(widget.post.likes.toString()),
+                              ],
                             ),
-                            Text(widget.post.comments.toString()),
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: detailsPageMethod,
+                                  icon: FaIcon(FontAwesomeIcons.comment),
+                                ),
+                                Text(widget.post.comments.toString()),
+                              ],
+                            ),
                           ],
                         ),
                       ],
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 4.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            DateFormat('MMMM dd, yy')
+                                .format(widget.post.datetime),
+                            style: TextStyle(
+                              fontSize: 8,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
           widget.post.link == ""
               ? Container()
