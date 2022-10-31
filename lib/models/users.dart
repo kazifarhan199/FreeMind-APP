@@ -208,7 +208,7 @@ class User {
     }
   }
 
-  static Future<bool> logout() async {
+  static Future<bool> logout({int delay = 1}) async {
     try {
       requestIfPossible(
         url: '/accounts/logout/',
@@ -218,7 +218,7 @@ class User {
           "devicetoken": await User.getDeviceToekn(),
         },
       );
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: delay));
       // This is so that the request method has enough time to send the logout request
       //  (we want to be able to retrive the user token from hive before removing it)
       await Hive.box("userBox").delete(0);
