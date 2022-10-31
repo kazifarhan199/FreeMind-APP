@@ -14,6 +14,7 @@ import 'package:social/screans/utils/errorBox.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 class PostCard extends StatefulWidget {
   bool on_home;
@@ -290,27 +291,33 @@ class _PostCardState extends State<PostCard> {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ),
-                            Row(
+                            Column(
                               children: [
-                                InkWell(
-                                  onTap: groupsDetailPageMethod,
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(widget.post.groupImageUrl),
-                                    radius: 10.0,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                SizedBox(
-                                  width: widget.on_home
-                                      ? MediaQuery.of(context).size.width * 0.5
-                                      : MediaQuery.of(context).size.width * 0.4,
-                                  child: Text(
-                                    widget.post.groupName,
-                                    style: TextStyle(fontSize: 10),
-                                  ),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: groupsDetailPageMethod,
+                                      child: CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            widget.post.groupImageUrl),
+                                        radius: 10.0,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    SizedBox(
+                                      width: widget.on_home
+                                          ? MediaQuery.of(context).size.width *
+                                              0.5
+                                          : MediaQuery.of(context).size.width *
+                                              0.4,
+                                      child: Text(
+                                        widget.post.groupName,
+                                        style: TextStyle(fontSize: 10),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -336,6 +343,20 @@ class _PostCardState extends State<PostCard> {
             child: Row(
               children: [
                 Expanded(child: Text(widget.post.title)),
+              ],
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+            child: Row(
+              children: [
+                Text(
+                  DateFormat('MMMM dd, yy').format(widget.post.datetime),
+                  style: TextStyle(
+                    fontSize: 8,
+                  ),
+                ),
               ],
             ),
           ),

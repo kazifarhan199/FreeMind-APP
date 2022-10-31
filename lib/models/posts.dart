@@ -13,6 +13,7 @@ class PostModel {
   List<LikeModel> likesList = [];
   String groupName, groupImage, link;
   Map data = {};
+  DateTime datetime;
 
   PostModel({
     required this.userName,
@@ -29,6 +30,7 @@ class PostModel {
     required this.groupImage,
     required this.group,
     required this.link,
+    required this.datetime,
   });
 
   Map getPreviousRawData() {
@@ -55,6 +57,8 @@ class PostModel {
     String groupImage = data['group_image'] ?? '';
     int group = data['group'] ?? 0;
     String link = data['link'] ?? '';
+    String datetimeString = data['created_on'] ?? '1969-07-20 20:18:04Z';
+    DateTime datetime = DateTime.parse(datetimeString);
     return PostModel(
       userName: userName,
       userImage: userImage,
@@ -70,6 +74,7 @@ class PostModel {
       groupName: groupName,
       group: group,
       link: link,
+      datetime: datetime,
     );
   }
 
