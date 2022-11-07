@@ -24,7 +24,8 @@ class UserAdapter extends TypeAdapter<User> {
       gid: fields[4] as int,
       token: fields[5] as String,
       bio: fields[6] as String,
-    )..surveyGiven = fields[7] as bool;
+      surveyGiven: fields[7] as bool,
+    );
   }
 
   @override

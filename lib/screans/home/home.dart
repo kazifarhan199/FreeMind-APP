@@ -269,11 +269,13 @@ class _HomeState extends State<Home> {
               title: Text('Change Password'),
               onTap: passwordMethod,
             ),
-            ListTile(
-              leading: Icon(Icons.question_answer),
-              title: Text('Survey'),
-              onTap: surveyMethod,
-            ),
+            user.surveyGiven
+                ? Container()
+                : ListTile(
+                    leading: Icon(Icons.question_answer),
+                    title: Text('Survey'),
+                    onTap: surveyMethod,
+                  ),
             ListTile(
               leading: Icon(Icons.group),
               title: Text('Channels'),

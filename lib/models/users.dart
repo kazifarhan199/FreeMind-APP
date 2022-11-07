@@ -42,7 +42,8 @@ class User {
       required this.id,
       required this.gid,
       required this.token,
-      required this.bio});
+      required this.bio,
+      required this.surveyGiven});
 
   static Future<String> getDeviceToekn() async {
     return (await messaging.getToken())!;
@@ -56,6 +57,8 @@ class User {
     int id = data['id'] ?? 0;
     int gid = data['gid'] ?? 0;
     String bio = data['bio'] ?? '';
+    bool surveyGiven = data['survey_given'] ?? false;
+    print(data);
     return User(
         userName: userName,
         userImage: userImage,
@@ -63,7 +66,8 @@ class User {
         id: id,
         gid: gid,
         token: token,
-        bio: bio);
+        bio: bio,
+        surveyGiven: surveyGiven);
   }
 
   Map data = {};
