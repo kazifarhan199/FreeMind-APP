@@ -6,8 +6,6 @@ import 'package:social/models/users.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:social/vars.dart';
 
-import '../routing.dart';
-
 Future<Map> requestIfPossible({
   Map<String, String> body = const {},
   Iterable<MultipartFile> files = const [],
@@ -42,7 +40,6 @@ Future<Map> requestIfPossible({
   // Send request
   try {
     response = await Response.fromStream(await request.send());
-    print(response.body);
   } catch (e) {
     throw Exception(ErrorStrings.server_needed);
   }
@@ -58,7 +55,6 @@ Future<Map> requestIfPossible({
     if (response.statusCode == expectedCode) {
       return data;
     } else {
-      print(data);
       if (data.keys.contains('non_field_errors')) {
         throw Exception(data['non_field_errors'][0]);
       } else if (data.keys.contains('detail')) {

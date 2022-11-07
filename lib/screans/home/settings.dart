@@ -170,21 +170,23 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
-              InkWell(
-                onTap: surveyMethod,
-                child: Row(
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.question_answer),
-                        onPressed: surveyMethod),
-                    SizedBox(
-                      width: 10.0,
-                      height: 80.0,
+              user.surveyGiven
+                  ? Container()
+                  : InkWell(
+                      onTap: surveyMethod,
+                      child: Row(
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.question_answer),
+                              onPressed: surveyMethod),
+                          SizedBox(
+                            width: 10.0,
+                            height: 80.0,
+                          ),
+                          Text("Survey"),
+                        ],
+                      ),
                     ),
-                    Text("Survey"),
-                  ],
-                ),
-              ),
               InkWell(
                 onTap: channelsMethod,
                 child: Row(

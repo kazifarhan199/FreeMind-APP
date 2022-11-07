@@ -24,13 +24,13 @@ class UserAdapter extends TypeAdapter<User> {
       gid: fields[4] as int,
       token: fields[5] as String,
       bio: fields[6] as String,
-    );
+    )..surveyGiven = fields[7] as bool;
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.userName)
       ..writeByte(1)
@@ -44,7 +44,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(5)
       ..write(obj.token)
       ..writeByte(6)
-      ..write(obj.bio);
+      ..write(obj.bio)
+      ..writeByte(7)
+      ..write(obj.surveyGiven);
   }
 
   @override

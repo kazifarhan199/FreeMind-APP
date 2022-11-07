@@ -32,6 +32,9 @@ class User {
   @HiveField(6)
   String bio;
 
+  @HiveField(7)
+  bool surveyGiven = false;
+
   User(
       {required this.userName,
       required this.userImage,
