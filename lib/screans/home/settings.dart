@@ -57,46 +57,46 @@ class _SettingsState extends State<Settings> {
 
   showLogoutAlertMethod() {
     Platform.isAndroid
-    ? showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Logout'),
-        content: Text(InfoStrings.logout_info),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Yes'),
-            isDestructiveAction: true,
-            onPressed: logoutMethod,
+        ? showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Logout'),
+              content: Text(InfoStrings.logout_info),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Yes'),
+                  isDestructiveAction: true,
+                  onPressed: logoutMethod,
+                )
+              ],
+            ),
           )
-        ],
-      ),
-    )
-    :showCupertinoDialog<void>(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Logout'),
-        content: Text(InfoStrings.logout_info),
-        actions: <CupertinoDialogAction>[
-          CupertinoDialogAction(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text('Yes'),
-            isDestructiveAction: true,
-            onPressed: logoutMethod,
-          )
-        ],
-      ),
-    );
+        : showCupertinoDialog<void>(
+            context: context,
+            builder: (BuildContext context) => CupertinoAlertDialog(
+              title: const Text('Logout'),
+              content: Text(InfoStrings.logout_info),
+              actions: <CupertinoDialogAction>[
+                CupertinoDialogAction(
+                  child: const Text('No'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('Yes'),
+                  isDestructiveAction: true,
+                  onPressed: logoutMethod,
+                )
+              ],
+            ),
+          );
   }
 
   @override
@@ -172,21 +172,23 @@ class _SettingsState extends State<Settings> {
                   ],
                 ),
               ),
-              InkWell(
-                onTap: surveyMethod,
-                child: Row(
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.question_answer),
-                        onPressed: surveyMethod),
-                    SizedBox(
-                      width: 10.0,
-                      height: 80.0,
+              user.surveyGiven
+                  ? Container()
+                  : InkWell(
+                      onTap: surveyMethod,
+                      child: Row(
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.question_answer),
+                              onPressed: surveyMethod),
+                          SizedBox(
+                            width: 10.0,
+                            height: 80.0,
+                          ),
+                          Text("Survey"),
+                        ],
+                      ),
                     ),
-                    Text("Survey"),
-                  ],
-                ),
-              ),
               InkWell(
                 onTap: showLogoutAlertMethod,
                 child: Row(
@@ -203,7 +205,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               InkWell(
-                onTap: (){},
+                onTap: () {},
                 child: Row(
                   children: [
                     IconButton(

@@ -9,7 +9,6 @@ part 'users.g.dart';
 
 FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-
 @HiveType(typeId: 0)
 class User {
   @HiveField(0)
@@ -29,6 +28,9 @@ class User {
 
   @HiveField(5)
   String token;
+
+  @HiveField(6)
+  bool surveyGiven = false;
 
   User(
       {required this.userName,
@@ -108,7 +110,6 @@ class User {
       required String email,
       required String password,
       required String re_password}) async {
-
     if (userName == ''
         ? true
         : email == ''
@@ -147,7 +148,6 @@ class User {
   }
 
   static Future<bool> sendPasswordResetEmail({required String email}) async {
-
     if (email == '' ? true : false) {
       throw Exception(ErrorStrings.email_needed);
     }
@@ -172,7 +172,6 @@ class User {
       required String email,
       required String password,
       required String re_password}) async {
-
     if (otp == ''
         ? true
         : password == ''
@@ -205,7 +204,6 @@ class User {
   }
 
   static Future<bool> logout() async {
-
     try {
       requestIfPossible(
         url: '/accounts/logout/',
@@ -215,8 +213,8 @@ class User {
           "devicetoken": await User.getDeviceToekn(),
         },
       );
-      await Future.delayed(Duration(seconds: 1)); 
-      // This is so that the request method has enough time to send the logout request 
+      await Future.delayed(Duration(seconds: 1));
+      // This is so that the request method has enough time to send the logout request
       //  (we want to be able to retrive the user token from hive before removing it)
       await Hive.box("userBox").delete(0);
       User user = User.fromJson({});
@@ -230,7 +228,6 @@ class User {
 
   static Future<bool> profileEdit(
       {required String email, required String userName, required image}) async {
-
     if (email == ''
         ? true
         : userName == ''
@@ -268,7 +265,6 @@ class User {
 
   static Future<bool> passwordChange(
       {required String password, required String re_password}) async {
-
     if (password == ''
         ? true
         : re_password == ''
@@ -298,11 +294,11 @@ class User {
 
   static Future<bool> profile() async {
     try {
-      Map  data = await requestIfPossible(
-      url: '/accounts/profile/',
-      requestMethod: 'GET',
-      expectedCode: 200,
-    );
+      Map data = await requestIfPossible(
+        url: '/accounts/profile/',
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
 
       User user = User.fromJson(data);
       await Hive.box("userBox").put(0, user);

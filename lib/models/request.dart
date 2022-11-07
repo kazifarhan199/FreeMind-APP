@@ -5,7 +5,6 @@ import 'package:social/models/users.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:social/vars.dart';
 
-
 Future<Map> requestIfPossible({
   Map<String, String> body = const {},
   Iterable<MultipartFile> files = const [],
@@ -18,16 +17,15 @@ Future<Map> requestIfPossible({
   if (connectivityResult == ConnectivityResult.none)
     throw Exception(ErrorStrings.internet_needed);
 
-  
   Map<String, String> headers = {};
-  if (Hive.box('userBox').isNotEmpty) 
-    // ignore: curly_braces_in_flow_control_structures
-    if ((Hive.box('userBox').getAt(0) as User).id != 0){
-      User user = Hive.box('userBox').getAt(0) as User;
-      headers = {
-        'Authorization':'Token ${user.token}',
-        "Device": await User.getDeviceToekn(),
-      };
+  if (Hive.box('userBox').isNotEmpty)
+  // ignore: curly_braces_in_flow_control_structures
+  if ((Hive.box('userBox').getAt(0) as User).id != 0) {
+    User user = Hive.box('userBox').getAt(0) as User;
+    headers = {
+      'Authorization': 'Token ${user.token}',
+      "Device": await User.getDeviceToekn(),
+    };
   }
 
   Response response;
@@ -41,10 +39,10 @@ Future<Map> requestIfPossible({
   // Send request
   try {
     response = await Response.fromStream(await request.send());
-  }catch(e) {
+  } catch (e) {
     throw Exception(ErrorStrings.server_needed);
   }
-  
+
   Map data = {};
 
   try {
@@ -56,21 +54,17 @@ Future<Map> requestIfPossible({
     if (response.statusCode == expectedCode) {
       return data;
     } else {
-      if (data.keys.contains('non_field_errors')){
-          throw Exception(data['non_field_errors'][0]);
-      }else if (data.keys.contains('detail')){
-        if (data['detail']=='Invalid page.')
-          return {'results':[]};
-        if (data['detail']=='Invalid token.')
-          User.logout();
-          throw Exception(ErrorStrings.loggedout);
+      if (data.keys.contains('non_field_errors')) {
+        throw Exception(data['non_field_errors'][0]);
+      } else if (data.keys.contains('detail')) {
+        if (data['detail'] == 'Invalid page.') return {'results': []};
+        if (data['detail'] == 'Invalid token.') User.logout();
+        throw Exception(ErrorStrings.loggedout);
         throw Exception(data['detail']);
       }
       throw Exception(data.values.toList()[0][0].toString());
     }
   } catch (e) {
-      throw e;
-    }
-  
+    throw e;
+  }
 }
-
