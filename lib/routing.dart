@@ -1,3 +1,5 @@
+import 'package:social/screans/Auth/login.dart';
+import 'package:social/screans/home/home.dart';
 import 'package:social/screans/settings/channel.dart';
 import 'package:social/screans/settings/groups_list.dart';
 import 'package:social/screans/settings/crises.dart';
@@ -23,6 +25,20 @@ class Routing {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => Wrapper()),
+    );
+  }
+
+  static homePage(context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
+  }
+
+  static loginPage(context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
     );
   }
 
@@ -142,7 +158,7 @@ class Routing {
   }
 
   static SurveyPage(context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => Survey()),
     );

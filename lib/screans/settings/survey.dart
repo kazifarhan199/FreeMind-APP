@@ -1,5 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:hive/hive.dart';
+import 'package:social/models/users.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:social/models/survey.dart';
@@ -45,13 +47,14 @@ class _SurveyState extends State<Survey> {
   }
 
   Future<void> sendQuestionReplyMethod() async {
-    // if (mounted) setState(() => loading = true);
+    if (mounted) setState(() => loading = true);
     for (var question in questions) {
       if (question.rating == 0) {
         errorBox(
             context: context,
             errorTitle: "Error",
             error: ErrorStrings.all_fiields_needed);
+        if (mounted) setState(() => loading = false);
         return;
       }
     }
@@ -69,7 +72,12 @@ class _SurveyState extends State<Survey> {
       }
     }
 
-    Navigator.of(context).pop();
+    User user = Hive.box('userBox').getAt(0) as User;
+    user.surveyGiven = true;
+    await Hive.box("userBox").put(0, user);
+
+    print(user.surveyGiven);
+
     Routing.wrapperPage(context);
 
     if (mounted) setState(() => loading = false);
