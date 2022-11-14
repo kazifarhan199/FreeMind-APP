@@ -19,8 +19,13 @@ awsomeNotificationListner() {
   try {
     AwesomeNotifications().actionStream.listen((receivedNotification) async {
       print("received from the listener");
-      Routing.LoadPostPage(navigatorKey.currentContext,
-          int.parse(receivedNotification.payload!['post']!));
+      print(receivedNotification.payload!["survey"]);
+      if (receivedNotification.payload!["survey"] == "true") {
+        Routing.SurveyPagePopup(navigatorKey.currentContext);
+      } else {
+        Routing.LoadPostPage(navigatorKey.currentContext,
+            int.parse(receivedNotification.payload!['post']!));
+      }
     });
   } catch (e) {}
 }
