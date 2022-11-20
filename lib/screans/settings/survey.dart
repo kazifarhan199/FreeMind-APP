@@ -9,7 +9,8 @@ import 'package:social/screans/utils/SurveyCard.dart';
 import 'package:social/vars.dart';
 
 class Survey extends StatefulWidget {
-  const Survey({Key? key}) : super(key: key);
+  bool popup;
+  Survey({this.popup=false ,Key? key}) : super(key: key);
 
   @override
   State<Survey> createState() => _SurveyState();
@@ -87,13 +88,13 @@ class _SurveyState extends State<Survey> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Survey"),
+          title: widget.popup ? Text("Daily Update"):Text("Survey"),
           actions: [
             IconButton(
                 onPressed: sendQuestionReplyMethod, icon: Icon(Icons.send)),
           ],
         ),
-        body: ListView.builder(
+        body: ListView.builder( 
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
           itemCount: questions.length + 4,
@@ -102,10 +103,15 @@ class _SurveyState extends State<Survey> {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
-                    child: Text(
-                  InfoStrings.survey_info,
-                  style: Theme.of(context).textTheme.headline6,
-                )),
+                  child: widget.popup?
+                    Text(
+                      InfoStrings.surveypopup_info,
+                      style: Theme.of(context).textTheme.headline5,
+                  ):Text(
+                      InfoStrings.survey_info,
+                      style: Theme.of(context).textTheme.headline5,
+                  ),
+                ),
               );
             }
 
