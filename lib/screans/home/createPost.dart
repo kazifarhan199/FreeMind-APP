@@ -50,10 +50,10 @@ class _CreatePostState extends State<CreatePost> {
         isChannel = groups[0].is_channel;
       });
     else {
-      Navigator.of(context).pop();
       errorBox(
           context: context,
           errorTitle: "Need to be part of a group",
+          runAfterClose:()=>Navigator.of(context).pop(),
           error:
               "You need to be part of at least one group to be able to post");
     }
