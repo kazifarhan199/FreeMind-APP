@@ -164,6 +164,13 @@ class Routing {
     );
   }
 
+  static SurveyPagePopup(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Survey()),
+    );
+  }
+
   static LoadPostPage(context, int id) {
     Navigator.push(
       context,
