@@ -53,17 +53,23 @@ class _WrapperState extends State<Wrapper> {
   }
 
   init() async {
-    User user = Hive.box('userBox').getAt(0) as User;
-    print(user.surveyGiven);
-    print("In init function wrapper");
-    print(userHasGivenSurvey());
-    if (await isUserLoggedIn()) {
-      if (userHasGivenSurvey()) {
-        Routing.homePage(context);
+    try {
+      User user = Hive.box('userBox').getAt(0) as User;
+      print(user.surveyGiven);
+      print("In init function wrapper");
+      print(userHasGivenSurvey());
+      if (await isUserLoggedIn()) {
+        if (userHasGivenSurvey()) {
+          Routing.homePage(context);
+        } else {
+          Routing.SurveyPage(context);
+        }
       } else {
-        Routing.SurveyPage(context);
+        Routing.loginPage(context);
       }
-    } else {
+    } catch (e) {
+      // print(e);
+      await Future.delayed(Duration(seconds: 1));
       Routing.loginPage(context);
     }
   }
