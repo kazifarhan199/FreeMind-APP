@@ -167,7 +167,10 @@ class Routing {
   static SurveyPagePopup(context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Survey()),
+      MaterialPageRoute(
+          builder: (context) => Survey(
+                popup: true,
+              )),
     );
   }
 
