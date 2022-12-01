@@ -107,6 +107,7 @@ class _HomeState extends State<Home> {
             posts += localPost;
         });
     } on Exception catch (e) {
+      posts = [];
       if (mounted)
         errorBox(
             context: context,
