@@ -353,7 +353,12 @@ class _PostCardState extends State<PostCard> {
                   child: SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.width * 4 / 5,
-                      child: Image.network(widget.post.imageUrl)),
+                      child: FittedBox(
+                        child: Image.network(
+                          widget.post.imageUrl,
+                        ),
+                        fit: BoxFit.fitWidth,
+                      )),
                 ),
           widget.on_home == false
               ? Container()
