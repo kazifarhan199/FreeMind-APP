@@ -1,4 +1,4 @@
-String base_url = 'https://131.212.41.11:57000';
+String base_url = 'http://131.212.41.25:59000';
 // String base_url = 'http://131.212.41.11:50000';
 // String base_url = 'http://10.0.2.2:8000';
 // String base_url = 'http://127.0.0.1:8000';
@@ -29,7 +29,8 @@ class InfoStrings {
       "How would you rate the following recommendation ...";
   static String survey_info =
       "Help us to help you by telling us about your linkings\n\nThis data will be used to recommend you activities to improve your self care\n";
-  static String surveypopup_info = "Tell us about how you are feeling today\n\nThis data will be used to recommend you activities to improve your self care\n";
+  static String surveypopup_info =
+      "Tell us about how you are feeling today\n\nThis data will be used to recommend you activities to improve your self care\n";
   static String password_helper =
       "Help us protect you, make sure your password \n\n• Is at least 8 character long\n• Contains at least one number\n• Contains at least one special character\n";
   static String link_info = "Please provide link to more information";
