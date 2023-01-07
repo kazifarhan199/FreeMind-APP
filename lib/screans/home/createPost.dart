@@ -53,7 +53,7 @@ class _CreatePostState extends State<CreatePost> {
       errorBox(
           context: context,
           errorTitle: "Need to be part of a group",
-          runAfterClose:()=>Navigator.of(context).pop(),
+          runAfterClose: () => Navigator.of(context).pop(),
           error:
               "You need to be part of at least one group to be able to post");
     }
@@ -196,9 +196,14 @@ class _CreatePostState extends State<CreatePost> {
               SizedBox(
                 height: 20.0,
               ),
+              Divider(),
               image == null
                   ? InkWell(
-                      child: Image.asset('assets/addimage.png'),
+                      child: Image.asset(
+                        'assets/addimage.png',
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width * 720 / 1280,
+                      ),
                       onTap: fromWhereChooser,
                     )
                   : InkWell(
@@ -215,7 +220,6 @@ class _CreatePostState extends State<CreatePost> {
                       ),
                       onTap: fromWhereChooser,
                     ),
-              SizedBox(height: 40),
               Divider(),
               SizedBox(height: 20),
               Text(
