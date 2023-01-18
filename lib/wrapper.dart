@@ -1,11 +1,7 @@
+import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:social/models/users.dart';
-import 'package:social/routing.dart';
-import 'package:social/screans/home/home.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:social/screans/Auth/login.dart';
-import 'package:social/screans/settings/survey.dart';
-import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/loading.dart';
 
 class Wrapper extends StatefulWidget {
@@ -30,20 +26,6 @@ class _WrapperState extends State<Wrapper> {
     return false;
   }
 
-  // Sync local user profile with one on the server
-  updateUserProfile() async {
-    User user = Hive.box('userBox').getAt(0) as User;
-    try {
-      await User.profile();
-    } catch (e) {
-      if (mounted)
-        errorBox(
-            context: context,
-            errorTitle: "Error",
-            error: e.toString().substring(11));
-    }
-  }
-
   bool userHasGivenSurvey() {
     User user = Hive.box('userBox').getAt(0) as User;
     if (user.surveyGiven) {
@@ -53,12 +35,9 @@ class _WrapperState extends State<Wrapper> {
   }
 
   init() async {
+    await Future.delayed(Duration.zero);
     try {
-      User user = Hive.box('userBox').getAt(0) as User;
-      print(user.surveyGiven);
-      print("In init function wrapper");
-      print(userHasGivenSurvey());
-      if (await isUserLoggedIn()) {
+      if (isUserLoggedIn()) {
         if (userHasGivenSurvey()) {
           Routing.homePage(context);
         } else {
@@ -68,8 +47,6 @@ class _WrapperState extends State<Wrapper> {
         Routing.loginPage(context);
       }
     } catch (e) {
-      // print(e);
-      await Future.delayed(Duration(seconds: 1));
       Routing.loginPage(context);
     }
   }

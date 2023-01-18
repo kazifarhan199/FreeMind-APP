@@ -31,7 +31,6 @@ class _GroupState extends State<Group> {
   User user = Hive.box('userBox').getAt(0) as User;
   List<membersModel> members = [];
 
-  final ImagePicker _picker = ImagePicker();
   File? image;
 
   Future<void> saveGroupMethod() async {

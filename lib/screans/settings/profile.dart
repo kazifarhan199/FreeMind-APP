@@ -21,7 +21,6 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   User user = Hive.box('userBox').getAt(0) as User;
-  final ImagePicker _picker = ImagePicker();
   String email = '', userName = '', bio = '';
   File? image;
   bool loading = false;

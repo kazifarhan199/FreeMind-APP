@@ -20,8 +20,7 @@ class GroupsList extends StatefulWidget {
 
 class _GroupsListState extends State<GroupsList> {
   bool loading = false;
-  String _email = '';
-  String _name = '', gName = '';
+  String gName = '';
   User user = Hive.box('userBox').getAt(0) as User;
   List<GroupModel> groups = [];
 

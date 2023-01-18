@@ -17,8 +17,6 @@ class Channel extends StatefulWidget {
 
 class _ChannelState extends State<Channel> {
   bool loading = false;
-  String _email = '';
-  String _name = '';
   User user = Hive.box('userBox').getAt(0) as User;
   List<GroupModel> groups = [];
 
