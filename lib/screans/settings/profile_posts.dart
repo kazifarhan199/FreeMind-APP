@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:social/screans/utils/postCard.dart';
 import '../../models/posts.dart';
 import '../../models/users.dart';
 import '../../routing.dart';
@@ -128,101 +129,185 @@ class _ProfilePostState extends State<ProfilePost> {
       body: RefreshIndicator(
         onRefresh: refreshMethod,
         child: Loading(
-          loading: loading,
-          child: posts.length == 0
-              ? Nothing(text: "No posts")
-              : ListView.builder(
-                  itemCount: (posts.length / 2).ceil() + 2,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      // return Container();
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: InkWell(
-                              onTap: user.id == loggedInUser.id
-                                  ? profileEditMethod
-                                  : () {},
-                              child: CircleAvatar(
-                                backgroundImage: NetworkImage(user.imageUrl),
-                                radius: 60.0,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  // child: Center(child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20.0), )),),
-                                  // Padding(padding: const EdgeInsets.all(5.0),
-                                  child: Center(
-                                      child: Text(
-                                    user.bio,
-                                  )),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      );
-                    } else if (index == 1) {
-                      return Container();
-                    } else {
-                      return Row(
-                        children: [
-                          InkWell(
-                            onTap: (() =>
-                                postDetailMethod(posts[(index - 1) * 2 - 2])),
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
-                                child: Column(
-                                  children: [
-                                    // Text(
-                                    //     posts[(index - 1) * 2 - 2].id.toString()),
-                                    Image.network(
-                                      posts[(index - 1) * 2 - 2].imageUrl,
-                                      width:
-                                          MediaQuery.of(context).size.width / 2,
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          (index - 1) * 2 - 1 < posts.length
-                              ? InkWell(
-                                  onTap: (() => postDetailMethod(
-                                      posts[(index - 1) * 2 - 1])),
-                                  child: Column(
-                                    children: [
-                                      // Text(posts[(index - 1) * 2 - 1]
-                                      //     .id
-                                      //     .toString()),
-                                      Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8.0),
-                                          child: Image.network(
-                                            posts[(index - 1) * 2 - 1].imageUrl,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2,
-                                          )),
-                                    ],
+            loading: loading,
+            child: posts.length == 0
+                ? Nothing(text: "No posts")
+                : Column(
+                    children: [
+                      SizedBox(
+                        height:
+                            ((MediaQuery.of(context).size.height / 5) * 1) + 60,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: user.id == loggedInUser.id
+                                      ? profileEditMethod
+                                      : () {},
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(user.imageUrl),
+                                    radius: 60.0,
                                   ),
-                                )
-                              : Container(),
-                        ],
-                      );
-                    }
-                  },
-                ),
-        ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 50,
+                                child: SingleChildScrollView(
+                                  child: Text(user.bio),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: ((MediaQuery.of(context).size.height / 5) * 4) -
+                            140,
+                        child: GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisSpacing: 0,
+                              mainAxisSpacing: 0,
+                              crossAxisCount: 2,
+                            ),
+                            itemCount: posts.length + 2,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  postDetailMethod(posts[index]);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image:
+                                          NetworkImage(posts[index].imageUrl),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                    ],
+                  )
+            // ListView.builder(
+            //     itemCount: (posts.length / 2).ceil() + 2,
+            //     itemBuilder: (context, index) {
+            //       if (index == 0) {
+            //         // return Container();
+            //         return Column(
+            //           children: [
+            //             Padding(
+            //               padding: const EdgeInsets.all(10.0),
+            //   child: InkWell(
+            //     onTap: user.id == loggedInUser.id
+            //         ? profileEditMethod
+            //         : () {},
+            //     child: CircleAvatar(
+            //       backgroundImage: NetworkImage(user.imageUrl),
+            //       radius: 60.0,
+            //     ),
+            //   ),
+            // ),
+            //             Padding(
+            //               padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+            //               child: Column(
+            //                 crossAxisAlignment: CrossAxisAlignment.start,
+            //                 children: [
+            //                   SizedBox(
+            //                     height: 5,
+            //                   ),
+            //                   Padding(
+            //                     padding: const EdgeInsets.all(8.0),
+            //                     // child: Center(child: Text(user.userName, style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20.0), )),),
+            //                     // Padding(padding: const EdgeInsets.all(5.0),
+            //                     child: Center(
+            //                         child: Text(
+            //                       user.bio,
+            //                     )),
+            //                   ),
+            //                 ],
+            //               ),
+            //             )
+            //           ],
+            //         );
+            //       } else if (index == 1) {
+            //         return Container();
+            //       } else {
+            //         return Row(
+            //           children: [
+            //             InkWell(
+            //               onTap: (() =>
+            //                   postDetailMethod(posts[(index - 1) * 2 - 2])),
+            //               child: Padding(
+            //                   padding: EdgeInsets.symmetric(vertical: 8.0),
+            //                   child: Column(
+            //                     children: [
+            //                       // Text(
+            //                       //     posts[(index - 1) * 2 - 2].id.toString()),
+
+            //                       // SizedBox(
+            //                       //     width:
+            //                       //         MediaQuery.of(context).size.width /
+            //                       //             2,
+            //                       //     child: FittedBox(
+            //                       //       child: Image.network(
+            //                       //         posts[(index - 1) * 2 - 2].imageUrl,
+            //                       //       ),
+            //                       //       fit: BoxFit.fitWidth,
+            //                       //     )),
+
+            //                       Image.network(
+            //                         posts[(index - 1) * 2 - 2].imageUrl,
+            //                         width:
+            //                             MediaQuery.of(context).size.width / 2,
+            //                       ),
+            //                     ],
+            //                   )),
+            //             ),
+            //             (index - 1) * 2 - 1 < posts.length
+            //                 ? InkWell(
+            //                     onTap: (() => postDetailMethod(
+            //                         posts[(index - 1) * 2 - 1])),
+            //                     child: Column(
+            //                       children: [
+            //                         // Text(posts[(index - 1) * 2 - 1]
+            //                         //     .id
+            //                         //     .toString()),
+
+            //                         // SizedBox(
+            //                         //     width: MediaQuery.of(context)
+            //                         //             .size
+            //                         //             .width /
+            //                         //         2,
+            //                         //     child: FittedBox(
+            //                         //       child: Image.network(
+            //                         //         posts[(index - 1) * 2 - 1]
+            //                         //             .imageUrl,
+            //                         //       ),
+            //                         //       fit: BoxFit.fitWidth,
+            //                         //     )),
+
+            //                         Image.network(
+            //                           posts[(index - 1) * 2 - 1].imageUrl,
+            //                           width:
+            //                               MediaQuery.of(context).size.width /
+            //                                   2,
+            //                         ),
+            //                       ],
+            //                     ),
+            //                   )
+            //                 : Container(),
+            //           ],
+            //         );
+            //       }
+            //     },
+            //   ),
+            ),
       ),
     );
   }
