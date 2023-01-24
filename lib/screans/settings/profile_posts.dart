@@ -130,70 +130,80 @@ class _ProfilePostState extends State<ProfilePost> {
         onRefresh: refreshMethod,
         child: Loading(
             loading: loading,
-            child: posts.length == 0
-                ? Nothing(text: "No posts")
-                : Column(
-                    children: [
-                      SizedBox(
-                        height:
-                            ((MediaQuery.of(context).size.height / 5) * 1) + 60,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: InkWell(
-                                  onTap: user.id == loggedInUser.id
-                                      ? profileEditMethod
-                                      : () {},
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(user.imageUrl),
-                                    radius: 60.0,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 50,
-                                child: SingleChildScrollView(
-                                  child: Text(user.bio),
-                                ),
-                              )
-                            ],
+            child: Column(
+              children: [
+                SizedBox(
+                  height: ((MediaQuery.of(context).size.height / 5) * 1) + 60,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: InkWell(
+                            onTap: user.id == loggedInUser.id
+                                ? profileEditMethod
+                                : () {},
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(user.imageUrl),
+                              radius: 60.0,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: ((MediaQuery.of(context).size.height / 5) * 4) -
-                            140,
-                        child: GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisSpacing: 0,
-                              mainAxisSpacing: 0,
-                              crossAxisCount: 2,
-                            ),
-                            itemCount: posts.length + 2,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  postDetailMethod(posts[index]);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image:
-                                          NetworkImage(posts[index].imageUrl),
+                        SizedBox(
+                          height: 50,
+                          child: SingleChildScrollView(
+                            child: Text(user.bio),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: ((MediaQuery.of(context).size.height / 5) * 4) - 140,
+                  child: posts.length == 0
+                      ? Nothing(text: "No posts")
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: 0,
+                            mainAxisSpacing: 0,
+                            crossAxisCount: 2,
+                          ),
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                postDetailMethod(posts[index]);
+                              },
+                              child: posts[index].isRecommendation
+                                  ? Container(
+                                      padding: EdgeInsets.all(16.0),
+                                      child: Center(
+                                        child: SingleChildScrollView(
+                                          child: Text(
+                                            posts[index].title +
+                                                posts[index].title +
+                                                posts[index].title,
+                                            style: TextStyle(fontSize: 21),
+                                          ),
+                                        ),
+                                      ))
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                              posts[index].imageUrl),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            }),
-                      ),
-                    ],
-                  )
+                            );
+                          }),
+                ),
+              ],
+            )
             // ListView.builder(
             //     itemCount: (posts.length / 2).ceil() + 2,
             //     itemBuilder: (context, index) {
