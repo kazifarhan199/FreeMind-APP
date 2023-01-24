@@ -346,20 +346,22 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
           ),
-          colaps
+          widget.post.isRecommendation
               ? Container()
-              : Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width * 4 / 5,
-                      child: FittedBox(
-                        child: Image.network(
-                          widget.post.imageUrl,
-                        ),
-                        fit: BoxFit.fitWidth,
-                      )),
-                ),
+              : colaps
+                  ? Container()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width * 4 / 5,
+                          child: FittedBox(
+                            child: Image.network(
+                              widget.post.imageUrl,
+                            ),
+                            fit: BoxFit.fitWidth,
+                          )),
+                    ),
           widget.on_home == false
               ? Container()
               : Row(
