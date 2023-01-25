@@ -1,4 +1,4 @@
-# social
+# FreeMind
 
 A new Flutter project.
 
