@@ -182,11 +182,18 @@ class _CommentCardState extends State<CommentCard> {
           widget.comment.hasLink
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: TextButton(
-                    child: Text("Read more"),
+                  child: ElevatedButton(
                     onPressed: () => _launchURL(widget.comment.link),
-                  ),
-                )
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50))),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1.0, vertical: 1.0),
+                      child: Text("Read more"),
+                    ),
+                  ))
               : Container(),
           Divider()
         ],
