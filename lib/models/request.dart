@@ -54,13 +54,16 @@ Future<Map> requestIfPossible({
   try {
     if (response.statusCode == expectedCode) {
       return data;
+    } else if (response.statusCode == 403 || response.statusCode == 404) {
+      throw Exception("Cant find");
+    } else if (response.statusCode == 401) {
+      User.logout();
+      throw Exception(ErrorStrings.loggedout);
     } else {
       if (data.keys.contains('non_field_errors')) {
         throw Exception(data['non_field_errors'][0]);
       } else if (data.keys.contains('detail')) {
         if (data['detail'] == 'Invalid page.') return {'results': []};
-        if (data['detail'] == 'Invalid token.') User.logout();
-        throw Exception(ErrorStrings.loggedout);
         throw Exception(data['detail']);
       }
       throw Exception(data.values.toList()[0][0].toString());
