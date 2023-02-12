@@ -67,9 +67,9 @@ class _HomeState extends State<Home> {
     Routing.ChannelsPage(context);
   }
 
-  showCrisesMethod() {
+  showCrisisMethod() {
     Navigator.pop(context);
-    Routing.crisesPage(context);
+    Routing.crisisPage(context);
   }
 
   showHealthServicesMethod() {
@@ -282,8 +282,8 @@ class _HomeState extends State<Home> {
             ),
             ListTile(
               leading: Icon(Icons.emergency),
-              title: Text('Crises'),
-              onTap: showCrisesMethod,
+              title: Text('Crisis'),
+              onTap: showCrisisMethod,
             ),
             ListTile(
               leading: Icon(Icons.logout),

@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:social/vars.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
-class Crises extends StatefulWidget {
-  const Crises({Key? key}) : super(key: key);
+class Crisis extends StatefulWidget {
+  const Crisis({Key? key}) : super(key: key);
 
   @override
-  State<Crises> createState() => CrisesState();
+  State<Crisis> createState() => CrisisState();
 }
 
-class CrisesState extends State<Crises> {
+class CrisisState extends State<Crisis> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Crises"),
+        title: Text("Crisis"),
         centerTitle: true,
       ),
       body: Container(
@@ -32,7 +32,7 @@ class CrisesState extends State<Crises> {
                   child: Container(
                     padding: EdgeInsets.all(10.0),
                     child: Text(
-                      InfoStrings.crisesline,
+                      InfoStrings.crisis_line,
                       style: TextStyle(fontSize: 17.0),
                     ),
                   ),
@@ -42,7 +42,7 @@ class CrisesState extends State<Crises> {
           ),
           SizedBox(height: 20.0),
           Text(
-            "Crices line",
+            "Crisis line",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
           ),
           Divider(),

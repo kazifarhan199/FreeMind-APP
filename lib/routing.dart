@@ -2,7 +2,7 @@ import 'package:social/screans/Auth/login.dart';
 import 'package:social/screans/home/home.dart';
 import 'package:social/screans/settings/channel.dart';
 import 'package:social/screans/settings/groups_list.dart';
-import 'package:social/screans/settings/crises.dart';
+import 'package:social/screans/settings/crisis.dart';
 import 'package:social/screans/settings/health_services.dart';
 import 'package:social/screans/settings/profile_posts.dart';
 import 'package:social/screans/utils/loadPost.dart';
@@ -123,10 +123,10 @@ class Routing {
     );
   }
 
-  static crisesPage(context) {
+  static crisisPage(context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Crises()),
+      MaterialPageRoute(builder: (context) => Crisis()),
     );
   }
 
