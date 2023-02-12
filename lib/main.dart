@@ -15,16 +15,21 @@ GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 // This function is triggered when the user clicks on a notification
 //  it will then look at which page to open and open that page in the app
+
+// Type of notifications - post, comment, like, survey, reminder (as of now)
 awsomeNotificationListner() {
   try {
     AwesomeNotifications().actionStream.listen((receivedNotification) async {
       print("received from the listener");
-      print(receivedNotification.payload!["survey"]);
-      if (receivedNotification.payload!["survey"] == "true") {
-        Routing.SurveyPagePopup(navigatorKey.currentContext);
-      } else {
+      if (receivedNotification.payload!["type"] == "post" ||
+          receivedNotification.payload!["type"] == "comment" ||
+          receivedNotification.payload!["type"] == "like") {
         Routing.LoadPostPage(navigatorKey.currentContext,
-            int.parse(receivedNotification.payload!['post']!));
+            int.parse(receivedNotification.payload!['send_object']!));
+      } else if (receivedNotification.payload!["type"] == "survey") {
+        Routing.SurveyPagePopup(navigatorKey.currentContext);
+      } else if (receivedNotification.payload!["type"] == "reminder") {
+        Routing.createPostPage(navigatorKey.currentContext);
       }
     });
   } catch (e) {}

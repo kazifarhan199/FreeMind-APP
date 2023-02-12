@@ -36,7 +36,11 @@ sendAwsomeNotification(Map data) {
       channelKey: 'basic_channel',
       title: data['title'],
       body: data['body'],
-      payload: {"post": data["post"] ?? 0, "survey": data["survey"] ?? false},
+      payload: {
+        "object_id": data["object_id"] ?? 0,
+        "send_object": data["send_object"] ?? "",
+        "type": data["type"] ?? ""
+      },
       displayOnForeground: true,
       displayOnBackground: true,
       wakeUpScreen: true,
