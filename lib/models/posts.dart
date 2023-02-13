@@ -313,14 +313,17 @@ class CommentModel {
   String get userImageUrl => base_url + this.userImage;
   String link;
   get hasLink => link == '' ? false : true;
+  DateTime datetime;
 
-  CommentModel(
-      {required this.userName,
-      required this.userImage,
-      required this.text,
-      required this.id,
-      required this.needFeedback,
-      required this.link});
+  CommentModel({
+    required this.userName,
+    required this.userImage,
+    required this.text,
+    required this.id,
+    required this.needFeedback,
+    required this.link,
+    required this.datetime,
+  });
 
   static CommentModel fromJson(data) {
     String userName = data['username'] ?? 'User Name';
@@ -328,12 +331,15 @@ class CommentModel {
     String text = data['text'] ?? 'this is text';
     int id = data['id'] ?? 0;
     bool needFeedback = data['need_feadback'] ?? false;
+    String datetimeString = data['created_on'] ?? '1969-07-20 20:18:04Z';
+    DateTime datetime = DateTime.parse(datetimeString);
     String link = data['link'] ?? '';
     return CommentModel(
         userName: userName,
         userImage: userImage,
         text: text,
         id: id,
+        datetime: datetime,
         needFeedback: needFeedback,
         link: link);
   }

@@ -411,6 +411,24 @@ class _PostCardState extends State<PostCard> {
                           horizontal: 12.0, vertical: 4.0),
                       child: Row(
                         children: [
+                          widget.post.link == ""
+                              ? Container()
+                              : ElevatedButton(
+                                  onPressed: () => _launchURL(widget.post.link),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.green,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 1.0, vertical: 1.0),
+                                    child: Text("Read more"),
+                                  ),
+                                ),
+                          SizedBox(
+                            width: 20,
+                          ),
                           Text(
                             DateFormat('MMMM dd, yy')
                                 .format(widget.post.datetime),
@@ -420,19 +438,6 @@ class _PostCardState extends State<PostCard> {
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-          widget.post.link == ""
-              ? Container()
-              : Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                          child: Text("Link to read more"),
-                          onPressed: () {
-                            _launchURL(widget.post.link);
-                          }),
                     ),
                   ],
                 ),

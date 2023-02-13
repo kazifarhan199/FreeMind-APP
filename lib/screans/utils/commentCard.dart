@@ -10,6 +10,7 @@ import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/textInput.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 class CommentCard extends StatefulWidget {
   CommentModel comment;
@@ -143,35 +144,22 @@ class _CommentCardState extends State<CommentCard> {
                 ),
                 SizedBox(width: 10.0),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.comment.userName,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      widget.comment.needFeedback
-                          ? widget.post.userName == user.userName
-                              ? ElevatedButton(
-                                  onPressed: _showCommentFeedback,
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(50))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 1.0, vertical: 1.0),
-                                    child: Text("Give feedback"),
-                                  ),
-                                )
-                              : Container()
-                          : Container()
-                    ],
+                  child: Text(
+                    widget.comment.userName,
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-                IconButton(
-                    onPressed: showOptions, icon: Icon(CupertinoIcons.ellipsis))
+                Row(
+                  children: [
+                    Text(DateFormat('MMMM dd, yy').format(widget.post.datetime),
+                        style: TextStyle(
+                          fontSize: 8,
+                        )),
+                    IconButton(
+                        onPressed: showOptions,
+                        icon: Icon(CupertinoIcons.ellipsis)),
+                  ],
+                )
               ],
             ),
           ),
@@ -182,17 +170,42 @@ class _CommentCardState extends State<CommentCard> {
           widget.comment.hasLink
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: ElevatedButton(
-                    onPressed: () => _launchURL(widget.comment.link),
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.green,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 1.0, vertical: 1.0),
-                      child: Text("Read more"),
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      widget.comment.needFeedback
+                          ? widget.post.userName == user.userName
+                              ? ElevatedButton(
+                                  onPressed: _showCommentFeedback,
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Color.fromARGB(255, 48, 146, 51),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50))),
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 1, 1, 1),
+                                    child: Text("Give feedback"),
+                                  ),
+                                )
+                              : Container()
+                          : Container(),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      ElevatedButton(
+                        onPressed: () => _launchURL(widget.comment.link),
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.green,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50))),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 1.0, vertical: 1.0),
+                          child: Text("Read more"),
+                        ),
+                      ),
+                    ],
                   ))
               : Container(),
           Divider()
