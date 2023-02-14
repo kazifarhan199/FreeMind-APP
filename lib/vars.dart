@@ -35,7 +35,7 @@ class InfoStrings {
       "Help us protect you, make sure your password \n\n• Is at least 8 character long\n• Contains at least one number\n• Contains at least one special character\n";
   static String link_info = "Please provide link to more information";
   static String crisis_line =
-      "You can call the crisis line for many reasons need some need help, information or just want to talk to someone, crisis line is here for you";
+      "In the event of a mental health or medical emergency, or non-emergency medical concern occurring after the Health Service's hours, please see the contact information below.";
   static String HealthServicesHours =
       "Monday, Tuesday, Wednesday, and Friday 8:00 am-4:00 pm \n\nThursday 9:00 am-4:00 pm \n\nclosed for all University Holidays.";
   static String MediaclAppointments = """
