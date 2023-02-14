@@ -19,10 +19,10 @@ Future<Map> requestIfPossible({
     throw Exception(ErrorStrings.internet_needed);
 
   Map<String, String> headers = {};
-  if (Hive.box('userBox').isNotEmpty)
+  if (await Hive.box('userBox').isNotEmpty)
   // ignore: curly_braces_in_flow_control_structures
-  if ((Hive.box('userBox').getAt(0) as User).id != 0) {
-    User user = Hive.box('userBox').getAt(0) as User;
+  if ((await Hive.box('userBox').getAt(0) as User).id != 0) {
+    User user = await Hive.box('userBox').getAt(0) as User;
     headers = {
       'Authorization': 'Token ${user.token}',
       "Device": await User.getDeviceToekn(),
