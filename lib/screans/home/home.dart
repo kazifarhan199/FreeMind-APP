@@ -282,7 +282,7 @@ class _HomeState extends State<Home> {
             ),
             ListTile(
               leading: Icon(Icons.emergency),
-              title: Text('Crisis'),
+              title: Text('Crisis line information'),
               onTap: showCrisisMethod,
             ),
             ListTile(
