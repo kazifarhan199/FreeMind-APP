@@ -57,7 +57,9 @@ Future<Map> requestIfPossible({
     } else if (response.statusCode == 403 || response.statusCode == 404) {
       throw Exception("Cant find");
     } else if (response.statusCode == 401) {
-      User.logout();
+      if ((Hive.box('userBox').getAt(0) as User).id != 0) {
+        User.logout();
+      }
       throw Exception(ErrorStrings.loggedout);
     } else {
       if (data.keys.contains('non_field_errors')) {
