@@ -4,7 +4,7 @@ String base_url = 'https://csgrad08.d.umn.edu';
 // String base_url = 'http://10.0.2.2:8000';
 // String base_url = 'http://127.0.0.1:8000';
 
-String app_version = "Version 2.0";
+String app_version = "Version 2.2";
 
 class ErrorStrings {
   static String group_name_needed = 'Please provide a name for the group';
