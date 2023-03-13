@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:social/routing.dart';
 import 'package:social/wrapper.dart';
 import 'package:flutter/material.dart';
@@ -12,36 +13,71 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+// This function is triggered when the user clicks on a notification
+//  it will then look at which page to open and open that page in the app
+
+// Type of notifications - post, comment, like, survey, reminder (as of now)
 awsomeNotificationListner() {
-  try{    
+  try {
     AwesomeNotifications().actionStream.listen((receivedNotification) async {
       print("received from the listener");
-      Routing.LoadPostPage(navigatorKey.currentContext, int. parse(receivedNotification.payload!['post']!));
+      if (receivedNotification.payload!["type"] == "post" ||
+          receivedNotification.payload!["type"] == "comment" ||
+          receivedNotification.payload!["type"] == "like") {
+        Routing.LoadPostPage(navigatorKey.currentContext,
+            int.parse(receivedNotification.payload!['send_object']!));
+      } else if (receivedNotification.payload!["type"] == "survey") {
+        Routing.SurveyPagePopup(navigatorKey.currentContext);
+      } else if (receivedNotification.payload!["type"] == "reminder") {
+        Routing.createPostPage(navigatorKey.currentContext);
+      }
     });
-  }catch(e){}
+  } catch (e) {}
+}
+
+// This class allows self signed ssl certificate
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 void main() async {
+  // Fun ensures that the app is loaded and then continues
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initializing the data bases (also registering UserAdapter model)
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   await Hive.openBox('userBox');
 
+  // Initializing firebase also asking for permission and setting up listners
   await Firebase.initializeApp();
   await getPermissions();
   FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
-  FirebaseMessaging.onMessageOpenedApp.listen(firebaseMessagingForegroundHandler);
+  FirebaseMessaging.onMessageOpenedApp
+      .listen(firebaseMessagingForegroundHandler);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
+  // Getting the firebase token and APNS(Apple push notifications) token and
+  // printing it
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   String? token = await messaging.getToken();
   var iosToken = await FirebaseMessaging.instance.getAPNSToken();
   print(token);
   print(iosToken);
 
+  // Initializing notifications and asking for permission
   await awsomeNotificationInit();
   await awsomeNotificationPermissions();
+
+  // Allowing self signed ssl certificates
+  HttpOverrides.global = new MyHttpOverrides();
+
+  // Starting the App
   runApp(const MyApp());
 }
 
@@ -51,32 +87,22 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // Setting app orientation, not alloing app rotation
     SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
+    // Listen for notification when notification is clicked
     awsomeNotificationListner();
+
+    // The main material app
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       navigatorKey: navigatorKey,
-      home: MainWrapper(),
+      home: Wrapper(),
     );
-  }
-}
-
-class MainWrapper extends StatefulWidget {
-  const MainWrapper({ Key? key }) : super(key: key);
-
-  @override
-  State<MainWrapper> createState() => _MainWrapperState();
-}
-
-class _MainWrapperState extends State<MainWrapper> {
-  @override
-  Widget build(BuildContext context) {
-    return Wrapper();
   }
 }

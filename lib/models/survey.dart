@@ -1,6 +1,4 @@
-import 'package:hive/hive.dart';
 import 'package:social/models/request.dart';
-import 'package:social/models/users.dart';
 
 class SurveyModel {
   String text;
@@ -34,9 +32,6 @@ class SurveyModel {
         },
         expectedCode: 201,
       );
-      User user = Hive.box('userBox').getAt(0) as User;
-      user.surveyGiven = true;
-      await Hive.box("userBox").put(0, user);
 
       return true;
     } on Exception catch (e) {

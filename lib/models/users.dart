@@ -30,6 +30,9 @@ class User {
   String token;
 
   @HiveField(6)
+  String bio;
+
+  @HiveField(7)
   bool surveyGiven = false;
 
   User(
@@ -38,7 +41,9 @@ class User {
       required this.email,
       required this.id,
       required this.gid,
-      required this.token});
+      required this.token,
+      required this.bio,
+      required this.surveyGiven});
 
   static Future<String> getDeviceToekn() async {
     return (await messaging.getToken())!;
@@ -51,13 +56,18 @@ class User {
     String userImage = data['image'] ?? '/media/image/notfound.jpg';
     int id = data['id'] ?? 0;
     int gid = data['gid'] ?? 0;
+    String bio = data['bio'] ?? '';
+    bool surveyGiven = data['survey_given'] ?? false;
+    print(data);
     return User(
         userName: userName,
         userImage: userImage,
         email: email,
         id: id,
         gid: gid,
-        token: token);
+        token: token,
+        bio: bio,
+        surveyGiven: surveyGiven);
   }
 
   Map data = {};
@@ -109,7 +119,8 @@ class User {
       {required String userName,
       required String email,
       required String password,
-      required String re_password}) async {
+      required String re_password,
+      required String bio}) async {
     if (userName == ''
         ? true
         : email == ''
@@ -134,6 +145,7 @@ class User {
           "username": userName,
           "email": email,
           "password": password,
+          "bio_obj": bio,
           "devicetoken": await User.getDeviceToekn(),
           "devicename": "somename",
           "devicetype": Platform.operatingSystem,
@@ -203,7 +215,7 @@ class User {
     }
   }
 
-  static Future<bool> logout() async {
+  static Future<bool> logout({int delay = 1}) async {
     try {
       requestIfPossible(
         url: '/accounts/logout/',
@@ -213,7 +225,7 @@ class User {
           "devicetoken": await User.getDeviceToekn(),
         },
       );
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: delay));
       // This is so that the request method has enough time to send the logout request
       //  (we want to be able to retrive the user token from hive before removing it)
       await Hive.box("userBox").delete(0);
@@ -227,12 +239,17 @@ class User {
   }
 
   static Future<bool> profileEdit(
-      {required String email, required String userName, required image}) async {
+      {required String email,
+      required String userName,
+      required String bio,
+      required image}) async {
     if (email == ''
         ? true
         : userName == ''
             ? true
-            : false) {
+            : bio == ''
+                ? true
+                : false) {
       throw Exception(ErrorStrings.all_fiields_needed);
     }
 
@@ -241,10 +258,7 @@ class User {
         url: '/accounts/edit/',
         requestMethod: 'PUT',
         expectedCode: 200,
-        body: {
-          "email": email,
-          "username": userName,
-        },
+        body: {"email": email, "username": userName, "bio_obj": bio},
         files: image == null
             ? []
             : [
@@ -303,6 +317,20 @@ class User {
       User user = User.fromJson(data);
       await Hive.box("userBox").put(0, user);
       return true;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static Future<User> getUserProfile({required int uid}) async {
+    try {
+      Map data = await requestIfPossible(
+        url: '/accounts/profile/?user=' + uid.toString(),
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+      User user = User.fromJson(data);
+      return user;
     } catch (e) {
       throw e;
     }

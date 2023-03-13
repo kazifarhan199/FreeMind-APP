@@ -1,7 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
-
 import 'package:hive/hive.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,27 @@ class _SettingsState extends State<Settings> {
   User user = Hive.box('userBox').getAt(0) as User;
   bool loading = false;
 
-  logoutMethod() async {
+  profileEditMethod() {
+    Routing.profileEditPage(context);
+  }
+
+  passwordMethod() {
+    Routing.passwordPage(context);
+  }
+
+  groupMethod() {
+    Routing.groupsPage(context);
+  }
+
+  surveyMethod() {
+    Routing.SurveyPage(context);
+  }
+
+  channelsMethod() {
+    Routing.ChannelsPage(context);
+  }
+
+  Future<void> logoutMethod() async {
     Navigator.pop(context);
     if (mounted) setState(() => loading = true);
     try {
@@ -37,22 +56,6 @@ class _SettingsState extends State<Settings> {
             errorTitle: 'Error');
     }
     if (mounted) setState(() => loading = false);
-  }
-
-  profileMethod() {
-    Routing.profilePage(context);
-  }
-
-  passwordMethod() {
-    Routing.passwordPage(context);
-  }
-
-  groupMethod() {
-    Routing.groupsPage(context);
-  }
-
-  surveyMethod() {
-    Routing.SurveyPage(context);
   }
 
   showLogoutAlertMethod() {
@@ -108,17 +111,12 @@ class _SettingsState extends State<Settings> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("Settings"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
               InkWell(
-                onTap: profileMethod,
+                onTap: profileEditMethod,
                 child: Row(
                   children: [
                     Padding(
@@ -189,6 +187,20 @@ class _SettingsState extends State<Settings> {
                         ],
                       ),
                     ),
+              InkWell(
+                onTap: channelsMethod,
+                child: Row(
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.group), onPressed: channelsMethod),
+                    SizedBox(
+                      width: 10.0,
+                      height: 80.0,
+                    ),
+                    Text("Channels"),
+                  ],
+                ),
+              ),
               InkWell(
                 onTap: showLogoutAlertMethod,
                 child: Row(

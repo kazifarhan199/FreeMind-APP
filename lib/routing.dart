@@ -1,3 +1,10 @@
+import 'package:social/screans/Auth/login.dart';
+import 'package:social/screans/home/home.dart';
+import 'package:social/screans/settings/channel.dart';
+import 'package:social/screans/settings/groups_list.dart';
+import 'package:social/screans/settings/crisis.dart';
+import 'package:social/screans/settings/health_services.dart';
+import 'package:social/screans/settings/profile_posts.dart';
 import 'package:social/screans/utils/loadPost.dart';
 import 'package:social/wrapper.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +25,20 @@ class Routing {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => Wrapper()),
+    );
+  }
+
+  static homePage(context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => Home()),
+    );
+  }
+
+  static loginPage(context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
     );
   }
 
@@ -56,7 +77,17 @@ class Routing {
     );
   }
 
-  static profilePage(context) {
+  static profilePage(context, {required int uid}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ProfilePost(
+                uid: uid,
+              )),
+    );
+  }
+
+  static profileEditPage(context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Profile()),
@@ -73,35 +104,80 @@ class Routing {
   static groupsPage(context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Group()),
+      MaterialPageRoute(builder: (context) => GroupsList()),
     );
   }
 
-  static PostPage(context, PostModel post) async {
+  static groupsDetailPage(context, {required int gid, bool doublePop = true}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Group(gid: gid, doublePop: doublePop)),
+    );
+  }
+
+  static ChannelsPage(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Channel()),
+    );
+  }
+
+  static crisisPage(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Crisis()),
+    );
+  }
+
+  static healthServicesPage(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HealthServices()),
+    );
+  }
+
+  static PostPage(context, PostModel post,
+      {bool defaultCollapsed = true}) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Post(post:post, defaultCollapsed: true,)),
+      MaterialPageRoute(
+          builder: (context) => Post(
+                post: post,
+                defaultCollapsed: defaultCollapsed,
+              )),
     );
   }
 
   static PostPageReplacement(context, PostModel post) async {
     await Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Post(post:post, defaultCollapsed:false)),
+      MaterialPageRoute(
+          builder: (context) => Post(post: post, defaultCollapsed: false)),
     );
   }
 
   static SurveyPage(context) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => Survey()),
     );
   }
 
-  static LoadPostPage(context, int id){
+  static SurveyPagePopup(context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LoadPost(id:id)),
+      MaterialPageRoute(
+          builder: (context) => Survey(
+                popup: true,
+              )),
+    );
+  }
+
+  static LoadPostPage(context, int id) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoadPost(id: id)),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:social/models/users.dart';
@@ -18,10 +19,10 @@ Future<Map> requestIfPossible({
     throw Exception(ErrorStrings.internet_needed);
 
   Map<String, String> headers = {};
-  if (Hive.box('userBox').isNotEmpty)
+  if (await Hive.box('userBox').isNotEmpty)
   // ignore: curly_braces_in_flow_control_structures
-  if ((Hive.box('userBox').getAt(0) as User).id != 0) {
-    User user = Hive.box('userBox').getAt(0) as User;
+  if ((await Hive.box('userBox').getAt(0) as User).id != 0) {
+    User user = await Hive.box('userBox').getAt(0) as User;
     headers = {
       'Authorization': 'Token ${user.token}',
       "Device": await User.getDeviceToekn(),
@@ -53,13 +54,18 @@ Future<Map> requestIfPossible({
   try {
     if (response.statusCode == expectedCode) {
       return data;
+    } else if (response.statusCode == 403 || response.statusCode == 404) {
+      throw Exception("Cant find");
+    } else if (response.statusCode == 401) {
+      if ((Hive.box('userBox').getAt(0) as User).id != 0) {
+        User.logout();
+      }
+      throw Exception(ErrorStrings.loggedout);
     } else {
       if (data.keys.contains('non_field_errors')) {
         throw Exception(data['non_field_errors'][0]);
       } else if (data.keys.contains('detail')) {
         if (data['detail'] == 'Invalid page.') return {'results': []};
-        if (data['detail'] == 'Invalid token.') User.logout();
-        throw Exception(ErrorStrings.loggedout);
         throw Exception(data['detail']);
       }
       throw Exception(data.values.toList()[0][0].toString());

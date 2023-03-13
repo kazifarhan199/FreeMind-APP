@@ -16,15 +16,28 @@ class NotificationsCard extends StatefulWidget {
 }
 
 class _NotificationsCardState extends State<NotificationsCard> {
-  bool loading=false;
+  bool loading = false;
 
   goToPostMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      PostModel post = await PostModel.getPost(id: widget.notification.post);
-      Routing.PostPage(context, post);
-    } on Exception catch( e){
-      if (mounted) errorBox(context:context, error:e.toString().substring(11), errorTitle: 'Error'); 
+      if (widget.notification.type == "post" ||
+          widget.notification.type == "comment" ||
+          widget.notification.type == "like") {
+        PostModel post = await PostModel.fromJson({})
+            .getPost(id: widget.notification.send_object);
+        Routing.PostPage(context, post);
+      } else if (widget.notification.type == "reminder") {
+        Routing.createPostPage(context);
+      } else if (widget.notification.type == "survey") {
+        Routing.SurveyPagePopup(context);
+      }
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
     }
     if (mounted) setState(() => loading = false);
   }
@@ -51,7 +64,7 @@ class _NotificationsCardState extends State<NotificationsCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.notification.text,
+                        widget.notification.title,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       loading ? LoafingInternal() : Container(),

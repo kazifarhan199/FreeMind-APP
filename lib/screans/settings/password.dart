@@ -18,11 +18,10 @@ class _PasswordState extends State<Password> {
   String password = '', password_re = '';
   bool loading = false;
 
-  Future changePasswordMethod() async {
+  Future<void> changePasswordMethod() async {
     if (mounted) setState(() => loading = true);
     try {
       await User.passwordChange(password: password, re_password: password_re);
-      Navigator.of(context).pop();
       Navigator.of(context).pop();
       Routing.wrapperPage(context);
     } on Exception catch (e) {
@@ -43,11 +42,6 @@ class _PasswordState extends State<Password> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("FreeMind"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
           actions: [
             IconButton(onPressed: changePasswordMethod, icon: Icon(Icons.send)),
           ],

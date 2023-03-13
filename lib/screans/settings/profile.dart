@@ -1,7 +1,6 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
-
 import 'package:hive/hive.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
@@ -22,16 +21,15 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   User user = Hive.box('userBox').getAt(0) as User;
-  final ImagePicker _picker = ImagePicker();
-  String email = '', userName = '';
+  String email = '', userName = '', bio = '';
   File? image;
   bool loading = false;
 
-  Future saveProfileMethod() async {
+  Future<void> saveProfileMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      await User.profileEdit(email: email, userName: userName, image: image);
-      Navigator.of(context).pop();
+      await User.profileEdit(
+          email: email, userName: userName, bio: bio, image: image);
       Navigator.of(context).pop();
       Routing.wrapperPage(context);
     } on Exception catch (e) {
@@ -42,6 +40,14 @@ class _ProfileState extends State<Profile> {
             errorTitle: 'Error');
     }
     if (mounted) setState(() => loading = false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    email = user.email;
+    bio = user.bio;
+    userName = user.userName;
   }
 
   getImageMethod(String fromWhere) async {
@@ -95,13 +101,6 @@ class _ProfileState extends State<Profile> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    email = user.email;
-    userName = user.userName;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Loading(
       loading: loading,
@@ -109,12 +108,7 @@ class _ProfileState extends State<Profile> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Profile"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
+          title: Text("Edit Profile"),
           actions: [
             IconButton(onPressed: saveProfileMethod, icon: Icon(Icons.send)),
           ],
@@ -154,6 +148,13 @@ class _ProfileState extends State<Profile> {
                   onChanged: (val) => userName = val,
                   initialText: user.userName,
                   labelText: 'User id',
+                ),
+                SizedBox(height: 30.0),
+                // bio
+                TextInput(
+                  onChanged: (val) => bio = val,
+                  initialText: user.bio,
+                  labelText: 'Bio',
                 ),
                 SizedBox(
                   height: 40.0,

@@ -5,12 +5,16 @@ import 'package:social/models/request.dart';
 
 class PostModel {
   String userName, userImage, title, image;
-  int likes, comments, id;
+  int likes, comments, id, uid, group;
   bool owner, liked, moreAvailable = true;
   String get userImageUrl => base_url + userImage;
   String get imageUrl => base_url + image;
   List<CommentModel> commentsList = [];
   List<LikeModel> likesList = [];
+  String groupName, groupImage, link;
+  Map data = {};
+  DateTime datetime;
+  bool isRecommendation;
 
   PostModel({
     required this.userName,
@@ -22,17 +26,27 @@ class PostModel {
     required this.owner,
     required this.liked,
     required this.id,
+    required this.uid,
+    required this.groupName,
+    required this.groupImage,
+    required this.group,
+    required this.link,
+    required this.datetime,
+    required this.isRecommendation,
   });
 
-  static PostModel fromJson(Map data) {
+  Map getPreviousRawData() {
+    return data;
+  }
+
+  static PostModel fromJson(data) {
     String userName = data['username'] ?? 'User Name :)';
     String userImage = data['user_image'] ?? '/media/image/notfound.jpg';
     String title = data['title'] ?? 'This is title';
     String image = '/media/image/notfound.jpg';
     if (data['images'] != null) {
       if (data['images'].isNotEmpty) {
-        image = data['images'][0]['image_url'] ??
-            '/media/image/notfound.jpg';
+        image = data['images'][0]['image_url'] ?? '/media/image/notfound.jpg';
       }
     }
     int likes = data['like_count'] ?? 0;
@@ -40,6 +54,14 @@ class PostModel {
     int id = data['id'] ?? 0;
     bool owner = data['owner'] ?? false;
     bool liked = data['liked'] ?? false;
+    int uid = data['uid'] ?? 0;
+    String groupName = data['group_name'] ?? '';
+    String groupImage = data['group_image'] ?? '';
+    int group = data['group'] ?? 0;
+    String link = data['link'] ?? '';
+    String datetimeString = data['created_on'] ?? '1969-07-20 20:18:04Z';
+    DateTime datetime = DateTime.parse(datetimeString);
+    bool isRecommendation = data['is_recommendation'] ?? false;
     return PostModel(
         userName: userName,
         userImage: userImage,
@@ -49,15 +71,27 @@ class PostModel {
         comments: comments,
         owner: owner,
         liked: liked,
-        id: id);
+        id: id,
+        uid: uid,
+        groupImage: groupImage,
+        groupName: groupName,
+        group: group,
+        link: link,
+        datetime: datetime,
+        isRecommendation: isRecommendation);
   }
 
-  static Future<PostModel> createPost(
-      {required String title, required File image}) async {
+  String get groupImageUrl => base_url + this.groupImage;
+
+  Future<PostModel> createPost(
+      {required String title,
+      required File image,
+      required int group,
+      required String link}) async {
     if (title == '' ? true : false) {
       throw Exception(ErrorStrings.title_needed);
     }
-
+    print(group);
     try {
       Iterable<MultipartFile> file = image == null
           ? []
@@ -67,13 +101,15 @@ class PostModel {
                 image.path,
               )
             ];
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/create/',
         requestMethod: 'POST',
         expectedCode: 201,
         files: file,
         body: {
           "title": title,
+          'group': group.toString(),
+          'link': link,
         },
       );
       return PostModel.fromJson(data);
@@ -82,9 +118,9 @@ class PostModel {
     }
   }
 
-  static Future<PostModel> getPost({required int id}) async {
+  Future<PostModel> getPost({required int id}) async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/detail/?post=' + id.toString(),
         requestMethod: 'GET',
         expectedCode: 200,
@@ -97,7 +133,7 @@ class PostModel {
 
   Future<List<PostModel>> getPostList({required int page}) async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/?page=' + page.toString(),
         requestMethod: 'GET',
         expectedCode: 200,
@@ -106,8 +142,36 @@ class PostModel {
         this.moreAvailable = false;
         return [];
       }
-      if(data['next']==null){
-          this.moreAvailable = false;
+      if (data['next'] == null) {
+        this.moreAvailable = false;
+      }
+
+      return data['results']
+          .map((d) => PostModel.fromJson(d))
+          .toList()
+          .cast<PostModel>();
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+  Future<List<PostModel>> getProfilePostList(
+      {required int page, required int uid}) async {
+    try {
+      data = await requestIfPossible(
+        url: '/posts/profile/?page=' +
+            page.toString() +
+            "&user=" +
+            uid.toString(),
+        requestMethod: 'GET',
+        expectedCode: 200,
+      );
+      if (data['results'].length == 0) {
+        this.moreAvailable = false;
+        return [];
+      }
+      if (data['next'] == null) {
+        this.moreAvailable = false;
       }
 
       return data['results']
@@ -121,7 +185,7 @@ class PostModel {
 
   Future<List<LikeModel>> getLikeList() async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/likes/?post=' + this.id.toString(),
         requestMethod: 'GET',
         expectedCode: 200,
@@ -141,7 +205,7 @@ class PostModel {
 
   Future<LikeModel> addLike() async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/likes/detail/',
         requestMethod: 'POST',
         body: {'post': this.id.toString()},
@@ -157,7 +221,7 @@ class PostModel {
 
   Future<LikeModel> removeLike() async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/likes/detail/',
         requestMethod: 'DELETE',
         body: {'post': this.id.toString()},
@@ -173,7 +237,7 @@ class PostModel {
 
   Future<List<CommentModel>> getCommentList() async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/comments/?post=' + this.id.toString(),
         requestMethod: 'GET',
         expectedCode: 200,
@@ -182,7 +246,7 @@ class PostModel {
         return [];
       }
 
-      List<CommentModel> localComments =  data['results']
+      List<CommentModel> localComments = data['results']
           .map((d) => CommentModel.fromJson(d))
           .toList()
           .cast<CommentModel>();
@@ -196,7 +260,7 @@ class PostModel {
 
   Future<CommentModel> addComment(String text) async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/comments/detail/',
         requestMethod: 'POST',
         body: {'post': this.id.toString(), 'text': text},
@@ -213,7 +277,7 @@ class PostModel {
 
   Future<bool> removeComment(int id) async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/comments/detail/',
         requestMethod: 'DELETE',
         body: {'post': this.id.toString(), 'comment': id.toString()},
@@ -229,7 +293,7 @@ class PostModel {
 
   Future<bool> deletePost() async {
     try {
-      Map data = await requestIfPossible(
+      data = await requestIfPossible(
         url: '/posts/delete/',
         requestMethod: 'DELETE',
         body: {'post': this.id.toString()},
@@ -238,7 +302,7 @@ class PostModel {
       return true;
     } catch (e) {
       throw e;
-    } 
+    }
   }
 }
 
@@ -248,25 +312,36 @@ class CommentModel {
   bool needFeedback;
   String get userImageUrl => base_url + this.userImage;
   String link;
-  get hasLink => link==''?false:true;
+  get hasLink => link == '' ? false : true;
+  DateTime datetime;
 
-  CommentModel(
-      {required this.userName,
-      required this.userImage,
-      required this.text,
-      required this.id,
-      required this.needFeedback,
-      required this.link});
+  CommentModel({
+    required this.userName,
+    required this.userImage,
+    required this.text,
+    required this.id,
+    required this.needFeedback,
+    required this.link,
+    required this.datetime,
+  });
 
-  static CommentModel fromJson(Map data) {
+  static CommentModel fromJson(data) {
     String userName = data['username'] ?? 'User Name';
     String userImage = data['userimage'] ?? '/media/image/notfound.jpg';
     String text = data['text'] ?? 'this is text';
     int id = data['id'] ?? 0;
     bool needFeedback = data['need_feadback'] ?? false;
+    String datetimeString = data['created_on'] ?? '1969-07-20 20:18:04Z';
+    DateTime datetime = DateTime.parse(datetimeString);
     String link = data['link'] ?? '';
     return CommentModel(
-        userName: userName, userImage: userImage, text: text, id: id, needFeedback:needFeedback, link:link);
+        userName: userName,
+        userImage: userImage,
+        text: text,
+        id: id,
+        datetime: datetime,
+        needFeedback: needFeedback,
+        link: link);
   }
 
   sendfeedback({required FeedbackModel feeback}) async {
@@ -274,11 +349,15 @@ class CommentModel {
       Map data = await requestIfPossible(
         url: '/posts/feedback/',
         requestMethod: 'POST',
-        body: {'comment': this.id.toString(), 'text': feeback.text, 'rating': feeback.rating.toString()},
+        body: {
+          'comment': this.id.toString(),
+          'text': feeback.text,
+          'rating': feeback.rating.toString()
+        },
         expectedCode: 201,
-      ); 
+      );
       this.needFeedback = false;
-    }catch(e){
+    } catch (e) {
       throw e;
     }
   }
@@ -292,7 +371,7 @@ class LikeModel {
   LikeModel(
       {required this.userName, required this.userImage, required this.id});
 
-  static LikeModel fromJson(Map data) {
+  static LikeModel fromJson(data) {
     String userName = data['username'] ?? 'User Name';
     String userImage = data['userimage'] ?? '/media/image/notfound.jpg';
     int id = data['id'] ?? 0;
@@ -300,15 +379,13 @@ class LikeModel {
   }
 }
 
-
 class FeedbackModel {
   String text;
   int rating;
 
-  FeedbackModel(
-      {required this.rating, required this.text});
+  FeedbackModel({required this.rating, required this.text});
 
-  static FeedbackModel fromJson(Map data) {
+  static FeedbackModel fromJson(data) {
     int rating = data['rating'] ?? 0;
     String text = data['text'] ?? '';
     return FeedbackModel(rating: rating, text: text);

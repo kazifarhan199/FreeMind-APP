@@ -1,22 +1,41 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:social/models/groups.dart';
+import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
-import 'package:social/models/posts.dart';
+import 'package:social/screans/utils/loading.dart';
+import 'package:social/screans/utils/errorBox.dart';
 
-class LikeCard extends StatefulWidget {
-  LikeModel like;
-  LikeCard({required this.like, Key? key}) : super(key: key);
+class GroupsCard extends StatefulWidget {
+  GroupModel group;
+  GroupsCard({required this.group, Key? key}) : super(key: key);
 
   @override
-  State<LikeCard> createState() => _LikeCardState();
+  State<GroupsCard> createState() => _GroupsCardState();
 }
 
-class _LikeCardState extends State<LikeCard> {
+class _GroupsCardState extends State<GroupsCard> {
+  bool loading = false;
+
+  Future<void> groupsDetailPageMethod() async {
+    if (mounted) setState(() => loading = true);
+    try {
+      Routing.groupsDetailPage(context, gid: widget.group.id);
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
+    }
+    if (mounted) setState(() => loading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onDoubleTap: () {},
-      onTap: () {},
+      onTap: groupsDetailPageMethod,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,18 +45,18 @@ class _LikeCardState extends State<LikeCard> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage: NetworkImage(widget.like.userImageUrl),
+                  backgroundImage: NetworkImage(widget.group.imageUrl),
                 ),
                 SizedBox(width: 10.0),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    // ignore: prefer_const_literals_to_create_immutables
                     children: [
                       Text(
-                        widget.like.userName,
+                        widget.group.name,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      loading ? LoafingInternal() : Container(),
                     ],
                   ),
                 ),

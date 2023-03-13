@@ -1,17 +1,23 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:social/models/users.dart';
 import 'package:social/models/groups.dart';
+import 'package:social/screans/utils/imagePicker.dart';
 import 'package:social/screans/utils/loading.dart';
 import 'package:social/screans/utils/errorBox.dart';
 import 'package:social/screans/utils/textInput.dart';
 import 'package:social/screans/utils/memberCard.dart';
 
 class Group extends StatefulWidget {
-  const Group({Key? key}) : super(key: key);
+  int gid;
+  bool doublePop;
+  Group({required this.gid, this.doublePop = true, Key? key}) : super(key: key);
 
   @override
   State<Group> createState() => _GroupState();
@@ -25,10 +31,43 @@ class _GroupState extends State<Group> {
   User user = Hive.box('userBox').getAt(0) as User;
   List<membersModel> members = [];
 
-  getGroupMethod() async {
+  File? image;
+
+  Future<void> saveGroupMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      group = await GroupModel.getGroup();
+      await group.editGroup(name: _name, gid: widget.gid, image: image);
+      Navigator.of(context).pop();
+      if (widget.doublePop) {
+        Navigator.of(context).pop();
+      }
+      Routing.wrapperPage(context);
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
+    }
+    if (mounted) setState(() => loading = false);
+  }
+
+  getImageMethod(String fromWhere) async {
+    XFile? localImage;
+    if (fromWhere == 'camera') {
+      localImage = await getImageFromCamera(context);
+    } else if (fromWhere == 'photos') {
+      localImage = await getImageFromPhtos(context);
+    }
+    if (localImage != null) {
+      if (mounted) setState(() => image = File(localImage!.path));
+    }
+  }
+
+  Future<void> getGroupMethod() async {
+    if (mounted) setState(() => loading = true);
+    try {
+      group = await GroupModel.getGroup(gid: widget.gid);
       setState(() => members = group.members);
       setState(() => _name = group.name);
     } on Exception catch (e) {
@@ -41,27 +80,11 @@ class _GroupState extends State<Group> {
     if (mounted) setState(() => loading = false);
   }
 
-  saveGroupMethod() async {
+  Future<void> addUserMethod() async {
     if (mounted) setState(() => loading = true);
     try {
-      await group.editGroup(name: _name);
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
-      Routing.wrapperPage(context);
-    } on Exception catch (e) {
-      if (mounted)
-        errorBox(
-            context: context,
-            error: e.toString().substring(11),
-            errorTitle: 'Error');
-    }
-    if (mounted) setState(() => loading = false);
-  }
-
-  addUserMethod() async {
-    if (mounted) setState(() => loading = true);
-    try {
-      List<membersModel> localMemebers = await group.addMember(email: _email);
+      List<membersModel> localMemebers = await group.addMember(
+          email: _email, group: user.gid, gid: widget.gid);
       setState(() => members = localMemebers);
       setState(() => _email = '');
     } on Exception catch (e) {
@@ -71,14 +94,15 @@ class _GroupState extends State<Group> {
             error: e.toString().substring(11),
             errorTitle: 'Error');
     }
+    await getGroupMethod();
     if (mounted) setState(() => loading = false);
   }
 
-  removeMemberMethod(String email) async {
+  Future<void> removeMemberMethod(String email) async {
     if (mounted) setState(() => loading = true);
-
     try {
-      List<membersModel> localMemebers = await group.removeMember(email: email);
+      List<membersModel> localMemebers = await group.removeMember(
+          email: email, group: user.gid, gid: widget.gid);
       setState(() => members = localMemebers);
       if (user.email == email) {
         Navigator.of(context).pop();
@@ -92,7 +116,6 @@ class _GroupState extends State<Group> {
             error: e.toString().substring(11),
             errorTitle: 'Error');
     }
-
     if (mounted) setState(() => loading = false);
   }
 
@@ -102,17 +125,50 @@ class _GroupState extends State<Group> {
     getGroupMethod();
   }
 
+  fromWhereChooser() {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text('Image from'),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Icon(Icons.camera), Text('  Camera')],
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              getImageMethod('camera');
+            },
+          ),
+          CupertinoActionSheetAction(
+            isDestructiveAction: false,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Icon(Icons.photo), Text('  Photos')],
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              getImageMethod('photos');
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: const Text('Cancle'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Group"),
-        // flexibleSpace: Image(
-        //   image: AssetImage('assets/background.png'),
-        //   fit: BoxFit.cover,
-        // ),
-        // backgroundColor: Colors.transparent,
         actions: [
           IconButton(
             onPressed: _email == '' ? saveGroupMethod : addUserMethod,
@@ -123,7 +179,9 @@ class _GroupState extends State<Group> {
       body: Loading(
         loading: loading,
         child: RefreshIndicator(
-          onRefresh: () async {},
+          onRefresh: () async {
+            getGroupMethod();
+          },
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
@@ -132,6 +190,15 @@ class _GroupState extends State<Group> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  SizedBox(height: 15.0),
+                  InkWell(
+                      onTap: () => fromWhereChooser(),
+                      child: CircleAvatar(
+                        backgroundImage: image == null
+                            ? NetworkImage(group.imageUrl)
+                            : FileImage(image!) as ImageProvider,
+                        radius: 130.0,
+                      )),
                   SizedBox(height: 15.0),
                   TextInput(
                     initialText: _name,
@@ -144,7 +211,7 @@ class _GroupState extends State<Group> {
                   SizedBox(height: 20.0),
                   TextInput(
                     initialText: _email,
-                    labelText: 'Email',
+                    labelText: 'Email/Username',
                     onChanged: (val) => setState(() => _email = val),
                   ),
                   SizedBox(height: 20.0),

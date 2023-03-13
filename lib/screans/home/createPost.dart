@@ -1,6 +1,7 @@
 // ignore_for_file: curly_braces_in_flow_control_structures, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
+import 'package:social/models/groups.dart';
 import 'package:social/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,12 +22,46 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
-  final cropKey = GlobalKey<CropState>();
   File? image;
-  String title = '';
-  bool loading = false;
+  List<GroupModel> groups = [];
+  String title = '', link = '';
+  bool loading = false, isChannel = false;
+  final cropKey = GlobalKey<CropState>();
+  GroupModel dropdownValue = GroupModel.fromJson({});
 
-  Future createPostMethod() async {
+  // Get the list of groups and put it in groups list
+  Future<void> getGroupMethod() async {
+    if (mounted) setState(() => loading = true);
+    try {
+      List<GroupModel> g = await GroupModel.getGroups();
+      setState(() {
+        groups = g;
+      });
+    } on Exception catch (e) {
+      if (mounted)
+        errorBox(
+            context: context,
+            error: e.toString().substring(11),
+            errorTitle: 'Error');
+    }
+    if (groups.length > 0)
+      setState(() {
+        dropdownValue = groups[0];
+        isChannel = groups[0].is_channel;
+      });
+    else {
+      errorBox(
+          context: context,
+          errorTitle: "Need to be part of a group",
+          runAfterClose: () => Navigator.of(context).pop(),
+          error:
+              "You need to be part of at least one group to be able to post");
+    }
+    if (mounted) setState(() => loading = false);
+  }
+
+  // use the image, title and dropdownValue to create a post
+  Future<void> createPostMethod() async {
     if (mounted) setState(() => loading = true);
 
     FocusManager.instance.primaryFocus?.unfocus();
@@ -43,7 +78,12 @@ class _CreatePostState extends State<CreatePost> {
           throw Exception(ErrorStrings.image_needed);
         }
         image = await cropMethod(image!);
-        await PostModel.createPost(title: title, image: image!);
+        print(link);
+        await PostModel.fromJson({}).createPost(
+            title: title,
+            image: image!,
+            group: dropdownValue.id,
+            link: dropdownValue.is_channel ? link : '');
         Navigator.of(context).pop();
         Routing.wrapperPage(context);
       } on Exception catch (e) {
@@ -57,6 +97,21 @@ class _CreatePostState extends State<CreatePost> {
     if (mounted) setState(() => loading = false);
   }
 
+  Future<File> cropMethod(File fileImage) async {
+    return await ImageCrop.cropImage(
+      file: File(fileImage.path),
+      scale: cropKey.currentState!.scale,
+      area: cropKey.currentState!.area!,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getGroupMethod();
+  }
+
+  //  Get image from camera or photos
   getImageMethod(String fromWhere) async {
     XFile? localImage;
     if (fromWhere == 'camera') {
@@ -68,14 +123,7 @@ class _CreatePostState extends State<CreatePost> {
       setState(() => image = File(localImage!.path));
   }
 
-  Future<File> cropMethod(File fileImage) async {
-    return await ImageCrop.cropImage(
-      file: File(fileImage.path),
-      scale: cropKey.currentState!.scale,
-      area: cropKey.currentState!.area!,
-    );
-  }
-
+  // Display the image choser (camera or photos)
   fromWhereChooser() {
     showCupertinoModalPopup<void>(
       context: context,
@@ -123,11 +171,6 @@ class _CreatePostState extends State<CreatePost> {
         appBar: AppBar(
           centerTitle: true,
           title: Text("Post"),
-          // flexibleSpace: Image(
-          //   image: AssetImage('assets/background.png'),
-          //   fit: BoxFit.cover,
-          // ),
-          // backgroundColor: Colors.transparent,
           actions: [
             IconButton(onPressed: createPostMethod, icon: Icon(Icons.send)),
           ],
@@ -146,14 +189,21 @@ class _CreatePostState extends State<CreatePost> {
                     maxlength: 200,
                     keyboardtype: TextInputType.multiline,
                     maxlines: null,
-                    onChanged: (val) => title = val,
+                    onChanged: (val) {
+                      title = val;
+                    },
                   )),
               SizedBox(
                 height: 20.0,
               ),
+              Divider(),
               image == null
                   ? InkWell(
-                      child: Image.asset('assets/addimage.png'),
+                      child: Image.asset(
+                        'assets/addimage.png',
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width * 720 / 1280,
+                      ),
                       onTap: fromWhereChooser,
                     )
                   : InkWell(
@@ -168,10 +218,68 @@ class _CreatePostState extends State<CreatePost> {
                                 aspectRatio: 5 / 4,
                               ),
                       ),
-                      onTap: fromWhereChooser),
-              SizedBox(
-                height: 40,
+                      onTap: fromWhereChooser,
+                    ),
+              Divider(),
+              SizedBox(height: 20),
+              Text(
+                InfoStrings.GroupSelectionString,
+                style: TextStyle(fontSize: 20.0),
               ),
+              SizedBox(height: 20),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: DropdownButton<GroupModel>(
+                    value: dropdownValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    // style: TextStyle(color: Theme.of(context).primaryColor),
+                    underline: Container(
+                      height: 0,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onChanged: (GroupModel? newValue) {
+                      setState(() {
+                        dropdownValue = newValue!;
+                        isChannel = newValue.is_channel;
+                      });
+                    },
+                    items: groups
+                        .map<DropdownMenuItem<GroupModel>>((GroupModel g) {
+                      return DropdownMenuItem<GroupModel>(
+                        value: g,
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(g.imageUrl),
+                              radius: 15.0,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text(g.name),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              isChannel
+                  ? Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: TextInput(
+                        initialText: link,
+                        labelText: InfoStrings.link_info,
+                        onChanged: (val) {
+                          link = val;
+                        },
+                      ))
+                  : Container()
             ],
           ),
         ),
