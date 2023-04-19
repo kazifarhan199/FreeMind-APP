@@ -10,6 +10,7 @@ class GroupModel {
   bool isin, is_channel;
   List<membersModel> members;
   String image;
+  bool is_hidden;
 
   GroupModel({
     required this.name,
@@ -18,6 +19,7 @@ class GroupModel {
     required this.isin,
     required this.image,
     required this.is_channel,
+    required this.is_hidden,
   });
 
   static GroupModel fromJson(Map data) {
@@ -33,13 +35,16 @@ class GroupModel {
     bool isin = data['isin'] ?? true;
     String image = data['image_path'] ?? '/media/image/default_group.jpg';
     bool is_channel = data['is_channel'] ?? false;
+    bool is_hidden = data['is_hidden'] ?? false;
     return GroupModel(
-        name: name,
-        id: id,
-        members: members,
-        isin: isin,
-        image: image,
-        is_channel: is_channel);
+      name: name,
+      id: id,
+      members: members,
+      isin: isin,
+      image: image,
+      is_channel: is_channel,
+      is_hidden: is_hidden,
+    );
   }
 
   String get imageUrl => base_url + this.image;

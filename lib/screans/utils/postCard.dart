@@ -293,32 +293,38 @@ class _PostCardState extends State<PostCard> {
                             ),
                             Column(
                               children: [
-                                Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: groupsDetailPageMethod,
-                                      child: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                            widget.post.groupImageUrl),
-                                        radius: 10.0,
+                                widget.post.group_is_hidden
+                                    ? Container()
+                                    : Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: groupsDetailPageMethod,
+                                            child: CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  widget.post.groupImageUrl),
+                                              radius: 10.0,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          SizedBox(
+                                            width: widget.on_home
+                                                ? MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.5
+                                                : MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.4,
+                                            child: Text(
+                                              widget.post.groupName,
+                                              style: TextStyle(fontSize: 10),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    SizedBox(
-                                      width: widget.on_home
-                                          ? MediaQuery.of(context).size.width *
-                                              0.5
-                                          : MediaQuery.of(context).size.width *
-                                              0.4,
-                                      child: Text(
-                                        widget.post.groupName,
-                                        style: TextStyle(fontSize: 10),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ],
                             ),
                           ],

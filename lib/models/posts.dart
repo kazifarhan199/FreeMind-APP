@@ -15,6 +15,7 @@ class PostModel {
   Map data = {};
   DateTime datetime;
   bool isRecommendation;
+  bool group_is_hidden;
 
   PostModel({
     required this.userName,
@@ -33,6 +34,7 @@ class PostModel {
     required this.link,
     required this.datetime,
     required this.isRecommendation,
+    required this.group_is_hidden,
   });
 
   Map getPreviousRawData() {
@@ -62,23 +64,26 @@ class PostModel {
     String datetimeString = data['created_on'] ?? '1969-07-20 20:18:04Z';
     DateTime datetime = DateTime.parse(datetimeString);
     bool isRecommendation = data['is_recommendation'] ?? false;
+    bool group_is_hidden = data['group_is_hidden'] ?? false;
     return PostModel(
-        userName: userName,
-        userImage: userImage,
-        title: title,
-        image: image,
-        likes: likes,
-        comments: comments,
-        owner: owner,
-        liked: liked,
-        id: id,
-        uid: uid,
-        groupImage: groupImage,
-        groupName: groupName,
-        group: group,
-        link: link,
-        datetime: datetime,
-        isRecommendation: isRecommendation);
+      userName: userName,
+      userImage: userImage,
+      title: title,
+      image: image,
+      likes: likes,
+      comments: comments,
+      owner: owner,
+      liked: liked,
+      id: id,
+      uid: uid,
+      groupImage: groupImage,
+      groupName: groupName,
+      group: group,
+      link: link,
+      datetime: datetime,
+      isRecommendation: isRecommendation,
+      group_is_hidden: group_is_hidden,
+    );
   }
 
   String get groupImageUrl => base_url + this.groupImage;
