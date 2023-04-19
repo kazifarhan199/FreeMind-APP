@@ -13,12 +13,13 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 awsomeNotificationListner() {
-  try{    
+  try {
     AwesomeNotifications().actionStream.listen((receivedNotification) async {
       print("received from the listener");
-      Routing.LoadPostPage(navigatorKey.currentContext, int. parse(receivedNotification.payload!['post']!));
+      Routing.LoadPostPage(navigatorKey.currentContext,
+          int.parse(receivedNotification.payload!['post']!));
     });
-  }catch(e){}
+  } catch (e) {}
 }
 
 void main() async {
@@ -31,7 +32,8 @@ void main() async {
   await Firebase.initializeApp();
   await getPermissions();
   FirebaseMessaging.onMessage.listen(firebaseMessagingForegroundHandler);
-  FirebaseMessaging.onMessageOpenedApp.listen(firebaseMessagingForegroundHandler);
+  FirebaseMessaging.onMessageOpenedApp
+      .listen(firebaseMessagingForegroundHandler);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -52,8 +54,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
     awsomeNotificationListner();
     return MaterialApp(
@@ -62,13 +64,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
       home: MainWrapper(),
     );
   }
 }
 
 class MainWrapper extends StatefulWidget {
-  const MainWrapper({ Key? key }) : super(key: key);
+  const MainWrapper({Key? key}) : super(key: key);
 
   @override
   State<MainWrapper> createState() => _MainWrapperState();
