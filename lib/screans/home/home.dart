@@ -234,11 +234,9 @@ class _HomeState extends State<Home> {
                               SizedBox(width: 45),
                               CircleAvatar(
                                 child: IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: profileEditMethod,
-                                  iconSize: 17,
-                                  color: Colors.white,
-                                ),
+                                    icon: Icon(Icons.edit),
+                                    onPressed: profileEditMethod,
+                                    iconSize: 17),
                                 radius: 17,
                               ),
                             ],
