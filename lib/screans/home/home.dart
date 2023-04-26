@@ -293,14 +293,20 @@ class _HomeState extends State<Home> {
               opacity: 0.5,
               child: ListTile(
                 leading: Icon(Icons.info),
-                title: Text(app_version),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(app_full_name),
+                    Text(app_version),
+                  ],
+                ),
                 onTap: () {},
               ),
             ),
           ],
         ),
       ),
-      appBar: AppBar(centerTitle: true, title: Text("FreeMind"), actions: [
+      appBar: AppBar(centerTitle: true, title: Text("FreeMind-HT"), actions: [
         IconButton(
             onPressed: notificationsMethod, icon: Icon(Icons.notifications)),
       ]),

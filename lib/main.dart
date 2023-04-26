@@ -97,7 +97,7 @@ class MyApp extends StatelessWidget {
 
     // The main material app
     return MaterialApp(
-      title: 'FreeMind',
+      title: 'FreeMind-HT',
       theme: MyThemes.lightTheme,
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,

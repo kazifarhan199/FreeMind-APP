@@ -41,7 +41,7 @@ class _PasswordState extends State<Password> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("FreeMind"),
+          title: Text("FreeMind-HT"),
           actions: [
             IconButton(onPressed: changePasswordMethod, icon: Icon(Icons.send)),
           ],

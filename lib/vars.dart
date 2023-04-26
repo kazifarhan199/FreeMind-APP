@@ -5,6 +5,7 @@ String base_url = 'https://csgrad06.d.umn.edu';
 // String base_url = 'http://127.0.0.1:8000';
 
 String app_version = "Version 2.2";
+String app_full_name = "FreeMind-HealthTracker";
 
 class ErrorStrings {
   static String group_name_needed = 'Please provide a name for the group';
