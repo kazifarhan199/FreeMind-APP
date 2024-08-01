@@ -1,16 +1,23 @@
 # FreeMind
 
-A new Flutter project.
+FreeMind is a mobile application designed to address the mental health challenges faced by college students, especially in the wake of the COVID-19 pandemic. Recognizing the heightened stress and emotional health decline among students, FreeMind aims to provide a supportive platform for social interaction and personalized well-being recommendations.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application (FreeMind).
+Step 1: Run FreeMind API on port 8000 - [link](https://github.com/kazifarhan199/FreeMind-API)
 
-A few resources to get you started if this is your first Flutter project:
+Step 2: Install dependencies flutter pub get
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Step 3: Run App flutter run
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Interface
+
+![](./images/screenshot.png)
+
+## More details
+
+For more details you can please take a look at the links bellow.
+
+Presentations: https://www.canva.com/design/DAGE8tyBM6o/UZTTgef_ZA6XtsML222s6g/edit?utm_content=DAGE8tyBM6o&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+Journal(Smart health): https://scholar.google.com/citations?view_op=view_citation&hl=en&user=fAqtNUIAAAAJ&citation_for_view=fAqtNUIAAAAJ:u5HHmVD_uO8C
